@@ -1,0 +1,136 @@
+{
+  "reviews": [
+    {
+      "id": "rv-001",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "title": "Tươi, sạch, đóng gói kỹ",
+      "content": "Hàng hút chân không tới nơi vẫn lạnh, làm bánh lên màu đẹp.",
+      "images": [],
+      "createdAt": "2025-08-10T08:30:00.000Z",
+      "author": {
+        "name": "Thanh Trúc"
+      }
+    },
+    {
+      "id": "rv-002",
+      "productId": "prd-ld-8-9-50",
+      "rating": 5,
+      "title": "Size nhỏ vừa ăn",
+      "content": "Làm topping bánh bông lan rất hợp.",
+      "images": [],
+      "createdAt": "2025-08-12T15:20:00.000Z",
+      "author": {
+        "name": "Quốc Việt"
+      }
+    },
+    {
+      "id": "rv-usr-001",
+      "productId": "prd-ld-10-13-100",
+      "rating": 3,
+      "title": "Đóng gói chưa kỹ, shop xử lý nhanh",
+      "content": "Shop hút chân không còn nhiều nước, gói hàng 1 lớp chống sốc nên thùng bị đè bẹp, trứng dập mất hình. Shop đã chuyển khoản bù 50k, tạm ổn.",
+      "variantNote": "Túi 50 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-08-06T22:19:00.000Z",
+      "author": { "name": "x*****1" }
+    },
+    {
+      "id": "rv-usr-002",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Trứng to, khá đều, màu đẹp. Chưa dùng nhưng tổng thể nghĩ chất lượng tốt. Shop giao nhanh, gói cẩn thận, giá tốt. Hài lòng.",
+      "variantNote": "Túi 50 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-08-25T13:50:00.000Z",
+      "author": { "name": "doannguyen81" }
+    },
+    {
+      "id": "rv-usr-003",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Đã nhận hàng. Trứng muối nhìn đẹp. Chưa sử dụng. Nếu ngon sẽ ủng hộ tiếp.",
+      "variantNote": "Túi 50 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-07-19T12:22:00.000Z",
+      "author": { "name": "wuyuxia" }
+    },
+    {
+      "id": "rv-usr-004",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Đóng gói tốt, đủ 50 cái. Muối kỹ nên không tanh. Dùng làm bánh hay sốt rất ok.",
+      "variantNote": "Túi 50 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-07-09T08:52:00.000Z",
+      "author": { "name": "p*****h" }
+    },
+    {
+      "id": "rv-usr-005",
+      "productId": "prd-ld-10-13-100",
+      "rating": 4,
+      "content": "Sp oki! Đang tức shiper! K tìm được địa chỉ lại lèm bèm khách. Không đánh giá được ship nên viết ở đây cho đỡ ức chế!",
+      "variantNote": "Túi 100 quả size 13g",
+      "helpfulCount": 1,
+      "sellerReply": "Bớt giận, bớt giận, hoan hỉ thôi!",
+      "createdAt": "2024-09-07T10:37:00.000Z",
+      "author": { "name": "rzpv55i060" }
+    },
+    {
+      "id": "rv-usr-006",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Giao hàng nhanh, số lượng đầy đủ. Đóng gói dày và chắc chắn.",
+      "variantNote": "Túi 100 quả size 13g",
+      "createdAt": "2025-06-05T15:33:00.000Z",
+      "author": { "name": "t*****h" }
+    },
+    {
+      "id": "rv-usr-007",
+      "productId": "prd-ld-12-100",
+      "rating": 5,
+      "content": "Tốt, shop tư vấn nhiệt tình, gửi hàng nhanh.",
+      "variantNote": "Túi 50 quả size 11g",
+      "createdAt": "2025-07-21T08:56:00.000Z",
+      "author": { "name": "ym1n4zmfa1" }
+    },
+    {
+      "id": "rv-usr-008",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Sản phẩm tuyệt vời, đóng gói quá ok luôn. Lần sau mua tiếp nha shop.",
+      "variantNote": "Túi 100 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-05-26T16:26:00.000Z",
+      "author": { "name": "aimynhan1270" }
+    },
+    {
+      "id": "rv-usr-009",
+      "productId": "prd-ld-10-13-100",
+      "rating": 4,
+      "content": "Giao hàng siêu nhanh, màu đẹp, chất lượng chưa thử, trừ 1 sao do bọc bị thủng (có thể bị từ trước khi đóng gói).",
+      "variantNote": "Túi 50 quả size 13g",
+      "hasVideo": true,
+      "createdAt": "2025-08-01T10:40:00.000Z",
+      "author": { "name": "cmhuan91" }
+    },
+    {
+      "id": "rv-usr-010",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Hàng giao nhanh chóng, đóng gói cẩn thận, chất lượng ok, sẽ tiếp tục mua lần sau.",
+      "variantNote": "Túi 100 quả size 10g",
+      "createdAt": "2025-07-17T23:18:00.000Z",
+      "author": { "name": "bebong51299" }
+    },
+    {
+      "id": "rv-usr-011",
+      "productId": "prd-ld-10-13-100",
+      "rating": 5,
+      "content": "Giao nhanh. Sản phẩm chất lượng, nên mua.",
+      "variantNote": "Túi 50 quả size 10g",
+      "createdAt": "2025-05-06T13:35:00.000Z",
+      "author": { "name": "5cl_axow27" }
+    }
+  ]
+}
