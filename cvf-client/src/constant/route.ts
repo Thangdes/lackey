@@ -1,0 +1,41 @@
+export const ROUTES = {
+    home: "/",
+    login: "/login",
+    admin: "/admin",
+    products: "/products",
+    cart: "/cart",
+    checkout: "/checkout",
+    orders: "/orders",
+    ordersLookup: "/orders/lookup",
+    profile: "/profile",
+    about: "/about",
+    contact: "/contact",
+    terms: "/terms",
+    privacy: "/privacy",
+    help: "/help",
+    shipping: "/shipping",
+    return: "/return",
+    guide: "/guide",
+    blog: "/blog",
+  } as const;
+  
+  export type RouteKey = keyof typeof ROUTES;
+  export type RouteValue = (typeof ROUTES)[RouteKey];
+  
+  export const buildProductDetailPath = (idOrSlug: string): string =>
+    `/products/${encodeURIComponent(idOrSlug)}`;
+  
+  export const buildProductsByCategory = (categoryId: string): string =>
+    `${ROUTES.products}?category=${encodeURIComponent(categoryId)}`;
+  
+  export const buildSearchPath = (q: string): string =>
+    `${ROUTES.products}?q=${encodeURIComponent(q)}`;
+  
+  export const buildProductsWithParams = (params: Record<string, string | number | boolean | undefined>): string => {
+    const usp = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined) usp.set(k, String(v));
+    });
+    const qs = usp.toString();
+    return qs ? `${ROUTES.products}?${qs}` : ROUTES.products;
+  };
