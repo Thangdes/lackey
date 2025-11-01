@@ -142,20 +142,20 @@ export default function OrderLookupPage() {
   return (
     <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
       <div className="mx-auto w-full max-w-4xl">
-        <header className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-semibold">Tra cứu đơn hàng</h1>
-          <p className="mt-1 text-sm text-neutral-600">Nhập mã đơn, số điện thoại hoặc email để xem trạng thái và chi tiết.</p>
+        <header className="mb-8 bg-[#fff100] border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h1 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl lg:text-5xl font-bold tracking-wider uppercase text-black mb-2">Tra cứu đơn hàng</h1>
+          <p className="text-black font-medium text-base md:text-lg">Nhập mã đơn, số điện thoại hoặc email để xem trạng thái và chi tiết.</p>
         </header>
 
-        <section className="rounded-lg bg-white p-4 md:p-6 border border-black/10">
+        <section className="bg-white p-4 md:p-6 border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC]">
           <form
             className="flex flex-col sm:flex-row gap-3 sm:items-center"
             onSubmit={(e) => { e.preventDefault(); if (!loading) onLookup(); }}
           >
             <div className="flex items-center gap-2">
-              <label htmlFor="order-search-type" className="text-sm font-medium">Tìm theo</label>
+              <label htmlFor="order-search-type" className="text-xs font-bold uppercase tracking-wide">Tìm theo</label>
               <Select value={searchType} onValueChange={(val) => { setError(null); setSearchType(val as "code" | "phone" | "email"); }} disabled={loading}>
-                <SelectTrigger id="order-search-type" className="w-40">
+                <SelectTrigger id="order-search-type" className="w-40 border-2 border-black focus:ring-2 focus:ring-[var(--brand-secondary)]">
                   <SelectValue placeholder="Chọn cách tìm" />
                 </SelectTrigger>
                 <SelectContent>
@@ -186,13 +186,13 @@ export default function OrderLookupPage() {
                   type={searchType === "email" ? "email" : "text"}
                   inputMode={searchType === "phone" ? "tel" : (searchType === "email" ? "email" : "text")}
                   aria-invalid={!!error}
-                  className="w-full rounded-md border border-black/15 pr-10 pl-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/20"
+                  className="w-full border-2 border-black pr-10 pl-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--brand-secondary)] font-medium"
                 />
                 {code && (
                   <button
                     type="button"
                     onClick={() => { setCode(""); setError(null); inputRef.current?.focus(); }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 flex items-center justify-center"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-neutral-100 border border-black text-neutral-700 hover:bg-black hover:text-white flex items-center justify-center transition-colors"
                     aria-label="Xoá nội dung"
                   >
                     ×
@@ -203,7 +203,7 @@ export default function OrderLookupPage() {
                 type="submit"
                 aria-busy={loading}
                 disabled={loading}
-                className={`inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white ${loading ? "bg-black/70" : "bg-black hover:bg-black/90"}`}
+                className={`inline-flex items-center justify-center px-6 py-2 text-sm font-bold uppercase tracking-wider text-white border-2 border-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1 ${loading ? "bg-black/70" : "bg-black hover:bg-white hover:text-black"}`}
               >
                 {loading ? "Đang tra cứu..." : "Tra cứu"}
               </button>
@@ -224,12 +224,12 @@ export default function OrderLookupPage() {
             <div className="mt-3 text-sm text-neutral-600">Nhập thông tin để bắt đầu tra cứu.</div>
           )}
           {error && (
-            <div className="mt-3 text-sm text-red-600">{error}</div>
+            <div className="mt-3 px-3 py-2 bg-red-50 border-2 border-red-500 text-sm text-red-700 font-medium">⚠️ {error}</div>
           )}
         </section>
 
         {loading && (
-          <section className="mt-6 md:mt-8 rounded-lg bg-white p-4 md:p-6 border border-black/10 animate-pulse">
+          <section className="mt-6 md:mt-8 bg-white p-4 md:p-6 border-4 border-black animate-pulse">
             <div className="h-5 w-64 bg-black/10 rounded" />
             <div className="mt-2 h-4 w-40 bg-black/10 rounded" />
             <div className="mt-2 h-4 w-48 bg-black/10 rounded" />
@@ -245,11 +245,11 @@ export default function OrderLookupPage() {
         {orders && !loading && orders.length === 1 && (() => {
           const order = orders[0]!;
           return (
-            <section className="mt-6 md:mt-8 rounded-lg bg-white p-4 md:p-6 border border-black/10">
+            <section className="mt-6 md:mt-8 bg-white p-4 md:p-6 border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC]">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <div>
-                  <h2 className="text-lg font-semibold">Đơn hàng #{order.orderCode || order.code || order.id}</h2>
-                  <p className="text-sm text-neutral-600">Trạng thái: <strong className="text-neutral-800">{String(order.status)}</strong></p>
+                  <h2 className="text-xl font-bold uppercase tracking-wide">Đơn hàng #{order.orderCode || order.code || order.id}</h2>
+                  <p className="text-sm text-neutral-600 mt-1">Trạng thái: <span className={`inline-block px-3 py-1 text-xs font-bold uppercase ${statusBadgeClass(order.status)}`}>{String(order.status)}</span></p>
                   {order.createdAt && (
                     <p className="text-sm text-neutral-600">Tạo lúc: {new Date(order.createdAt).toLocaleString()}</p>
                   )}
@@ -292,21 +292,21 @@ export default function OrderLookupPage() {
                         || "/logo/logo.jpg";
                       return (
                         <tr key={it.id} className="align-top">
-                          <td className="py-2 pr-3 border-b border-black/5">
+                          <td className="py-2 pr-3 border-b-2 border-neutral-200">
                             <div className="max-w-[560px] truncate" title={name}>{name}</div>
                           </td>
-                          <td className="py-2 px-3 border-b border-black/5">
-                            <div className="h-12 w-12 relative rounded overflow-hidden bg-neutral-50 ring-1 ring-black/10">
+                          <td className="py-2 px-3 border-b-2 border-neutral-200">
+                            <div className="h-12 w-12 relative overflow-hidden bg-neutral-50 border-2 border-black">
                               <ImageWithFallback src={imgSrc} alt={name} className="object-cover" sizes="48px" />
                             </div>
                           </td>
-                          <td className="py-2 px-3 border-b border-black/5 text-neutral-700">{sku}</td>
-                          <td className="py-2 px-3 border-b border-black/5">{it.quantity}</td>
+                          <td className="py-2 px-3 border-b-2 border-neutral-200 text-neutral-700">{sku}</td>
+                          <td className="py-2 px-3 border-b-2 border-neutral-200">{it.quantity}</td>
                           {hasUnitPrice ? (
-                            <td className="py-2 px-3 border-b border-black/5 text-right">{typeof unitPrice === 'number' && unitPrice > 0 ? formatVND(unitPrice) : '-'}</td>
+                            <td className="py-2 px-3 border-b-2 border-neutral-200 text-right">{typeof unitPrice === 'number' && unitPrice > 0 ? formatVND(unitPrice) : '-'}</td>
                           ) : null}
                           {hasLineTotal ? (
-                            <td className="py-2 pl-3 border-b border-black/5 text-right">{typeof lineTotal === 'number' ? formatVND(lineTotal) : '-'}</td>
+                            <td className="py-2 pl-3 border-b-2 border-neutral-200 text-right font-bold">{typeof lineTotal === 'number' ? formatVND(lineTotal) : '-'}</td>
                           ) : null}
                         </tr>
                       );
@@ -327,7 +327,7 @@ export default function OrderLookupPage() {
                 </div>
                 <div className="sm:text-right space-y-1">
                   <div>Tạm tính: <strong>{formatVND(order.subtotalAmount ?? order.subtotal ?? 0)}</strong></div>
-                  <div>Tổng tiền: <strong className="text-red-700">{formatVND(order.totalAmount ?? order.total ?? 0)}</strong></div>
+                  <div className="text-lg">Tổng tiền: <strong className="text-red-700">{formatVND(order.totalAmount ?? order.total ?? 0)}</strong></div>
                 </div>
               </div>
             </section>
@@ -335,8 +335,8 @@ export default function OrderLookupPage() {
         })()}
 
         {orders && !loading && orders.length > 1 && (
-          <section className="mt-6 md:mt-8 rounded-lg bg-white p-4 md:p-6 border border-black/10">
-            <h2 className="text-lg font-semibold">Tìm thấy {orders.length} đơn hàng</h2>
+          <section className="mt-6 md:mt-8 bg-white p-4 md:p-6 border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC]">
+            <h2 className="text-2xl font-bold uppercase tracking-wide pb-3 border-b-4 border-black">Tìm thấy {orders.length} đơn hàng</h2>
             {(() => {
               const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
               const safePage = Math.min(Math.max(1, page), totalPages);
@@ -360,20 +360,20 @@ export default function OrderLookupPage() {
                       });
                       const hasLineTotal = hasUnitPrice;
                       return (
-                        <div key={order.id} className="rounded-lg border border-black/10 p-3 md:p-4">
+                        <div key={order.id} className="border-2 border-black p-3 md:p-4 bg-neutral-50">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                             <div>
-                              <h3 className="text-base md:text-lg font-semibold">Đơn hàng #{code}</h3>
-                              <div className="mt-0.5 flex items-center gap-2 text-sm text-neutral-600">
+                              <h3 className="text-base md:text-lg font-bold uppercase">Đơn hàng #{code}</h3>
+                              <div className="mt-1 flex items-center gap-2 text-sm text-neutral-600">
                                 <span>Trạng thái:</span>
-                                <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${statusBadgeClass(order.status)}`}>{String(order.status)}</span>
+                                <span className={`text-xs px-3 py-1 whitespace-nowrap font-bold uppercase ${statusBadgeClass(order.status)}`}>{String(order.status)}</span>
                               </div>
                               {order.createdAt && (
                                 <p className="text-sm text-neutral-600">Tạo lúc: {new Date(order.createdAt).toLocaleString()}</p>
                               )}
                             </div>
                             <div className="flex items-center gap-3">
-                              <div className="text-sm font-semibold text-red-700">{formatVND(order.totalAmount ?? order.total ?? 0)}</div>
+                              <div className="text-base md:text-lg font-bold text-red-700">{formatVND(order.totalAmount ?? order.total ?? 0)}</div>
                             </div>
                           </div>
                           <div className="mt-3 overflow-x-auto">
@@ -442,23 +442,23 @@ export default function OrderLookupPage() {
                   </div>
                   {totalPages > 1 && (
                     <div className="mt-4 flex items-center justify-between gap-3 text-sm">
-                      <div className="text-neutral-600">Trang {safePage}/{totalPages}</div>
+                      <div className="px-3 py-1 bg-black text-white font-bold text-xs uppercase">Trang {safePage}/{totalPages}</div>
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          className="px-3 py-1.5 rounded-md border border-black/10 disabled:opacity-50"
+                          className="px-4 py-2 border-2 border-black bg-white font-bold uppercase text-xs hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
                           disabled={safePage <= 1}
                         >
-                          Trước
+                          ← Trước
                         </button>
                         <button
                           type="button"
-                          className="px-3 py-1.5 rounded-md border border-black/10 disabled:opacity-50"
+                          className="px-4 py-2 border-2 border-black bg-white font-bold uppercase text-xs hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                           disabled={safePage >= totalPages}
                         >
-                          Sau
+                          Sau →
                         </button>
                       </div>
                     </div>
@@ -469,9 +469,9 @@ export default function OrderLookupPage() {
           </section>
         )}
 
-        <div className="mt-8 text-sm text-neutral-600">
-          <p>
-            Bạn cần hỗ trợ? Xem thêm tại <Link href={ROUTES.help} className="underline">Trợ giúp</Link> hoặc <Link href={ROUTES.contact} className="underline">Liên hệ</Link>.
+        <div className="mt-8 p-4 bg-white border-2 border-black">
+          <p className="text-sm font-medium text-neutral-800">
+            Bạn cần hỗ trợ? Xem thêm tại <Link href={ROUTES.help} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Trợ giúp</Link> hoặc <Link href={ROUTES.contact} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Liên hệ</Link>.
           </p>
         </div>
       </div>

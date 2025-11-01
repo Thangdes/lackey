@@ -11,30 +11,30 @@ export default function ProfileSidebar({
   onSelect: (next: "account" | "orders") => void;
 }) {
   return (
-    <div className="rounded-xl sm:rounded-2xl border border-black/10 bg-white p-3 sm:p-4 md:p-5 h-fit md:sticky md:top-24 self-start">
-      <h2 className="text-sm sm:text-base font-semibold mb-2 sm:mb-3">Tài khoản</h2>
-      <div className="space-y-1.5 sm:space-y-2">
+    <div className="bg-white border-4 border-black p-4 md:p-5 h-fit md:sticky md:top-24 self-start shadow-[8px_8px_0px_0px_#B5CCBC]">
+      <h2 className="text-base md:text-lg font-bold uppercase tracking-wide mb-3 pb-2 border-b-4 border-black">Tài khoản</h2>
+      <div className="space-y-2">
         <button
           type="button"
           onClick={() => onSelect("account")}
           aria-current={section === "account" ? "page" : undefined}
-          className={`w-full inline-flex items-center gap-1.5 sm:gap-2 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-left ${section === "account" ? "bg-black/5" : "hover:bg-black/5"}`}
+          className={`w-full inline-flex items-center gap-2 px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-left border-2 transition-all ${section === "account" ? "bg-black text-white border-black" : "bg-white text-black border-black hover:bg-black hover:text-white"}`}
         >
-          <UserIcon size={14} className="sm:w-4 sm:h-4" />
+          <UserIcon size={16} className="shrink-0" />
           <span>Tài khoản của tôi</span>
         </button>
         <button
           type="button"
           onClick={() => onSelect("orders")}
           aria-current={section === "orders" ? "page" : undefined}
-          className={`w-full inline-flex items-center gap-1.5 sm:gap-2 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-left ${section === "orders" ? "bg-black/5" : "hover:bg-black/5"}`}
+          className={`w-full inline-flex items-center gap-2 px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-left border-2 transition-all ${section === "orders" ? "bg-black text-white border-black" : "bg-white text-black border-black hover:bg-black hover:text-white"}`}
         >
-          <ShoppingBag size={14} className="sm:w-4 sm:h-4" />
+          <ShoppingBag size={16} className="shrink-0" />
           <span>Đơn mua</span>
         </button>
       </div>
-      <div className="mt-2 sm:mt-3 text-[10px] sm:text-xs text-black/50">
-        <Link href="/" className="hover:underline">Về trang chủ</Link>
+      <div className="mt-4 pt-3 border-t-2 border-black/20">
+        <Link href="/" className="text-xs font-bold uppercase tracking-wide text-black hover:text-[var(--brand-secondary)] transition-colors">← Về trang chủ</Link>
       </div>
     </div>
   );
