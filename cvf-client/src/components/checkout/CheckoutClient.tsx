@@ -28,7 +28,6 @@ import { AddressModal } from "./modals/AddressModal";
 import { ShippingFeeCard } from "./parts/ShippingFeeCard";
 import { OrderSuccessModal } from "./parts/OrderSuccessModal";
 import { SubmitBar } from "./parts/SubmitBar";
-import { CheckoutGuarantees } from "./parts/CheckoutGuarantees";
 import { customerService } from "@/service/customer.service";
 import type { CustomerAddress } from "@/type/customer";
 import type { User } from "@/type/user";
@@ -640,15 +639,25 @@ export default function CheckoutClient() {
 
   return (
     <>  
-    <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 mt-4 sm:mt-8">
-
-      <form onSubmit={handleSubmit} className="relative space-y-5 max-w-3xl mx-auto pb-6">
-        {uiLoading && !orderSuccessOpen && !showVietQR && !bankTfOpen && (
-          <div className="absolute inset-0 z-10 rounded-2xl bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
-          </div>
-        )}
-        <BuyerInfoForm
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* 2 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* LEFT COLUMN - Forms (Mobile: top, Desktop: left) */}
+          <div className="order-1 lg:order-1">
+            <form onSubmit={handleSubmit} className="relative space-y-6">
+              {uiLoading && !orderSuccessOpen && !showVietQR && !bankTfOpen && (
+                <div className="absolute inset-0 z-10 rounded-2xl bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+                </div>
+              )}
+              
+              {/* Contact Section */}
+              <div className="bg-white border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">CONTACT</h2>
+                <BuyerInfoForm
           user={effectiveUser}
           values={{
             fullName: buyer.fullName,
@@ -684,9 +693,10 @@ export default function CheckoutClient() {
             onAltWardChange,
             onAltStreetChange,
           }}
-          canChooseDistrict={canChooseDistrict}
-          districtOptions={hcmDistrictOptions}
-        />
+                  canChooseDistrict={canChooseDistrict}
+                  districtOptions={hcmDistrictOptions}
+                />
+              </div>
 
         {exitModalOpen && (
           <div
@@ -734,21 +744,24 @@ export default function CheckoutClient() {
           </div>
         )}
         
-        <ShippingFeeCard
-          shippingFee={shippingFee}
-          formatVND={formatVND}
-          customerId={customerIdState}
-          savedAddresses={savedAddresses}
-          selectedAddressId={selectedAddressId}
-          onSelectAddress={handleSelectSavedAddress}
-          onOpenAddressModal={openAddressModal}
-          currentAddress={{
-            city: buyer.shipToDifferent ? alt.altCity : buyer.city,
-            district: buyer.shipToDifferent ? alt.altDistrict : buyer.district,
-            ward: buyer.shipToDifferent ? alt.altWard : buyer.ward,
-            street: buyer.shipToDifferent ? alt.altStreet : buyer.street,
-          }}
-        />
+              {/* Shipping Fee */}
+              <div className="bg-white border border-gray-200 p-6">
+                <ShippingFeeCard
+                  shippingFee={shippingFee}
+                  formatVND={formatVND}
+                  customerId={customerIdState}
+                  savedAddresses={savedAddresses}
+                  selectedAddressId={selectedAddressId}
+                  onSelectAddress={handleSelectSavedAddress}
+                  onOpenAddressModal={openAddressModal}
+                  currentAddress={{
+                    city: buyer.shipToDifferent ? alt.altCity : buyer.city,
+                    district: buyer.shipToDifferent ? alt.altDistrict : buyer.district,
+                    ward: buyer.shipToDifferent ? alt.altWard : buyer.ward,
+                    street: buyer.shipToDifferent ? alt.altStreet : buyer.street,
+                  }}
+                />
+              </div>
 
         <AddressModal
           open={addressModalOpen}
@@ -766,70 +779,87 @@ export default function CheckoutClient() {
           onSave={handleAddressSave}
         />
 
-        <PaymentMethods
-          method={method}
-          total={total}
-          onSelect={onSelectMethod}
-          formatVND={formatVND}
-          bankBrandCode={vietQRBank.bankCode?.toUpperCase()}
-          selectingDisabled={checkoutMut.isPending || createPaymentLinkMut.isPending}
-          pending={checkoutMut.isPending || createPaymentLinkMut.isPending}
-        />
+              {/* Payment Methods */}
+              <div className="bg-white border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">PAYMENT</h2>
+                <PaymentMethods
+                  method={method}
+                  total={total}
+                  onSelect={onSelectMethod}
+                  formatVND={formatVND}
+                  bankBrandCode={vietQRBank.bankCode?.toUpperCase()}
+                  selectingDisabled={checkoutMut.isPending || createPaymentLinkMut.isPending}
+                  pending={checkoutMut.isPending || createPaymentLinkMut.isPending}
+                />
+              </div>
 
-        {method === "VIETQR" && showVietQR && vietQRUrl && (
-          <VietQRPanel
-            qrUrl={vietQRUrl}
-            transferNote={vietQRTransferNote}
-            bank={{
-              bankCode: vietQRBank.bankCode,
-              bankName: vietQRBank.bankName,
-              accountNumber: vietQRBank.accountNumber,
-              accountName: vietQRBank.accountName,
-            }}
-            onCopyNote={handleCopyVietQRNote}
-            onCancel={handleCancelVietQR}
-          />
-        )}
+              {method === "VIETQR" && showVietQR && vietQRUrl && (
+                <div className="bg-white border border-gray-200 p-6">
+                  <VietQRPanel
+                    qrUrl={vietQRUrl}
+                    transferNote={vietQRTransferNote}
+                    bank={{
+                      bankCode: vietQRBank.bankCode,
+                      bankName: vietQRBank.bankName,
+                      accountNumber: vietQRBank.accountNumber,
+                      accountName: vietQRBank.accountName,
+                    }}
+                    onCopyNote={handleCopyVietQRNote}
+                    onCancel={handleCancelVietQR}
+                  />
+                </div>
+              )}
 
-        <div className="rounded-2xl border border-black/10 bg-white p-5 space-y-4">
-          <DiscountBox
-            options={options}
-            selectedCode={selectedCode}
-            appliedCode={appliedCode}
-            discountAmount={discountAmount}
-            applyingDiscount={applyingDiscount}
-            itemsLength={items.length}
-            onSelect={onSelect}
-            onClear={onClear}
-            formatVND={formatVND}
-            plain
-          />
-          <div className="h-px bg-black/10" />
-          <OrderSummary
-            items={toLocalCartItem(items)}
-            subtotal={subtotal}
-            shippingFee={effectiveShippingFee}
-            total={total}
-            formatVND={formatVND}
-            globalWarnings={filteredGlobalWarnings}
-            itemWarnings={filteredItemWarnings}
-            discountAmount={appliedCode ? discountAmount : 0}
-            discountCode={appliedCode || undefined}
-            plain
-            showThumbnails={isPhone ? true : (isBelowMd ? false : true)}
-          />
+              {/* Submit Button */}
+              <SubmitBar
+                total={total}
+                formatVND={formatVND}
+                disabled={submitDisabled}
+                buttonText={submitButtonText}
+                loading={preSubmitLoading || checkoutMut.isPending || createPaymentLinkMut.isPending}
+              />
+            </form>
+          </div>
+
+          {/* RIGHT COLUMN - Product Summary (Mobile: bottom, Desktop: right) */}
+          <div className="order-2 lg:order-2">
+            <div className="bg-white border border-gray-200 p-6 lg:sticky lg:top-8">
+              {/* Order Items */}
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">Đơn hàng của bạn</h2>
+              
+              <OrderSummary
+                items={toLocalCartItem(items)}
+                subtotal={subtotal}
+                shippingFee={effectiveShippingFee}
+                total={total}
+                formatVND={formatVND}
+                globalWarnings={filteredGlobalWarnings}
+                itemWarnings={filteredItemWarnings}
+                discountAmount={appliedCode ? discountAmount : 0}
+                discountCode={appliedCode || undefined}
+                plain
+                showThumbnails
+              />
+              
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <DiscountBox
+                  options={options}
+                  selectedCode={selectedCode}
+                  appliedCode={appliedCode}
+                  discountAmount={discountAmount}
+                  applyingDiscount={applyingDiscount}
+                  itemsLength={items.length}
+                  onSelect={onSelect}
+                  onClear={onClear}
+                  formatVND={formatVND}
+                  plain
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <SubmitBar
-          total={total}
-          formatVND={formatVND}
-          disabled={submitDisabled}
-          buttonText={submitButtonText}
-          loading={preSubmitLoading || checkoutMut.isPending || createPaymentLinkMut.isPending}
-        />
-
-        <CheckoutGuarantees />
-    </form>
-  </div>
+      </div>
+    </div>
 
     <BankTransferModal
       open={bankTfOpen}

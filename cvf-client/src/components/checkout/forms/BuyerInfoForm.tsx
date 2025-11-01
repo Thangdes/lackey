@@ -36,16 +36,8 @@ export function BuyerInfoForm({ user, values, onChange, canChooseDistrict, distr
   } = onChange;
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-white p-5">
-      <h2 className="flex items-center gap-2 text-base font-semibold">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/15 bg-black/[0.03]">
-          <User size={14} />
-        </span>
-        {CHECKOUT_TEXT.sectionPaymentInfoTitle}
-      </h2>
-      <p className="mt-1 text-sm text-black/60">{CHECKOUT_TEXT.sectionPaymentInfoDesc}</p>
-
-      <div className="mt-4 grid grid-cols-1 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4">
         <ContactFields
           user={user}
           fullName={fullName}
@@ -58,9 +50,14 @@ export function BuyerInfoForm({ user, values, onChange, canChooseDistrict, distr
         <NotesField notes={notes} onNotesChange={onNotesChange} />
       </div>
 
-      <div className="mt-4">
-        <label className="inline-flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={shipToDifferent} onChange={onShipToDifferentChange} />
+      <div className="pt-4 border-t border-gray-200">
+        <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+          <input 
+            type="checkbox" 
+            checked={shipToDifferent} 
+            onChange={onShipToDifferentChange}
+            className="rounded border-gray-300"
+          />
           {CHECKOUT_TEXT.shipToDifferent}
         </label>
       </div>

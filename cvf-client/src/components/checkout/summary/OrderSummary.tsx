@@ -38,30 +38,31 @@ export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, g
     }
     return items;
   }, [items, collapsible, expanded, collapsedCount]);
+  
   return (
     <Wrapper>
-      {!hideTitle && (
-        <h3 className="flex items-center gap-2 text-base font-semibold">
-          <ReceiptText size={16} aria-hidden className="text-black/80" />
-          {ORDER_SUMMARY.title}
-        </h3>
-      )}
       <WarningList globalWarnings={globalWarnings} itemWarnings={itemWarnings} showBackLink={showBackLink} />
-      <div className="mt-3 space-y-3 text-sm">
+      
+      {/* Product List */}
+      <div className="space-y-4">
         {items.length === 0 && (
-          <div className="text-black/60">{ORDER_SUMMARY.empty}</div>
+          <div className="text-sm text-gray-600">Giỏ hàng trống</div>
         )}
         {visibleItems.map((it) => (
-          showThumbnails
-            ? <CheckoutSummaryItemRow key={it.sku} item={it} formatVND={formatVND} warnings={itemWarnings?.[it.sku]} size={imageSize} />
-            : <OrderItemRow key={it.sku} item={it} formatVND={formatVND} warnings={itemWarnings?.[it.sku]} />
+          <CheckoutSummaryItemRow 
+            key={it.sku} 
+            item={it} 
+            formatVND={formatVND} 
+            warnings={itemWarnings?.[it.sku]} 
+            size={imageSize} 
+          />
         ))}
         {collapsible && items.length > Math.max(0, collapsedCount || 0) && (
           <div className="pt-1">
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
-              className="text-sm font-medium text-black hover:underline"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 hover:underline"
             >
               {expanded ? "Thu gọn" : `Xem tất cả (${items.length})`}
             </button>
@@ -69,21 +70,28 @@ export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, g
         )}
       </div>
 
-      <div className="mt-4 space-y-2 text-sm">
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5"><Package size={14} aria-hidden className="text-black/60" /> {ORDER_SUMMARY.subtotal}</span>
-          <span className="font-semibold text-red-600">{formatVND(subtotal)}</span>
+      {/* Total Summary */}
+      <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-600">Tạm tính</span>
+          <span className="font-medium text-gray-900">{formatVND(subtotal)}</span>
         </div>
+        
         {(discountAmount ?? 0) > 0 && (
-          <div className="flex items-center justify-between text-emerald-700"><span>Giảm giá{discountCode ? ` (${discountCode})` : ""}</span><span className="font-semibold">- {formatVND(discountAmount || 0)}</span></div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Giảm giá{discountCode ? ` (${discountCode})` : ""}</span>
+            <span className="font-medium text-green-600">- {formatVND(discountAmount || 0)}</span>
+          </div>
         )}
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5"><Truck size={14} aria-hidden className="text-black/60" /> {ORDER_SUMMARY.shipping}</span>
-          <span className="font-semibold text-red-600">{formatVND(shippingFee)}</span>
+        
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-600">Phí vận chuyển</span>
+          <span className="font-medium text-gray-900">{formatVND(shippingFee)}</span>
         </div>
-        <div className="flex items-center justify-between border-t border-black/10 pt-2">
-          <span className="inline-flex items-center gap-1.5 font-semibold"><CircleDollarSign size={16} aria-hidden className="text-black/80" /> {ORDER_SUMMARY.total}</span>
-          <span className="font-semibold text-red-700">{formatVND(total)}</span>
+        
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+          <span className="text-base font-semibold text-gray-900 uppercase tracking-wide">Total</span>
+          <span className="text-xl font-bold text-gray-900">VND {formatVND(total)}</span>
         </div>
       </div>
     </Wrapper>
