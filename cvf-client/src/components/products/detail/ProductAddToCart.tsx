@@ -40,12 +40,12 @@ const ProductAddToCart: React.FC<ProductAddToCartProps> = ({
   const showQuantityStepper = mounted && cartQty > 0;
 
   return (
-    <div className="rounded-xl bg-gradient-to-br from-white to-neutral-50 border-2 border-neutral-200 p-4 sm:p-5">
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    <div className="bg-white border-4 border-black p-4 sm:p-5">
+      <div className="flex flex-col gap-3">
         {showQuantityStepper ? (
-          <>
-            <div className="flex-1 flex flex-col gap-1.5">
-              <span className="text-[11px] sm:text-xs font-semibold text-neutral-600">Số lượng</span>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold uppercase text-black">Số lượng:</span>
               <QuantityStepper
                 quantity={cartQty}
                 maxStock={maxStock}
@@ -54,28 +54,45 @@ const ProductAddToCart: React.FC<ProductAddToCartProps> = ({
                 qtyAriaLabel={`Số lượng cho ${productName}`}
                 decreaseLabel="Giảm số lượng"
                 increaseLabel="Tăng số lượng"
-                leftButtonClassName="h-11 sm:h-12 w-11 sm:w-12 rounded-r-none text-base"
-                rightButtonClassName="h-11 sm:h-12 w-11 sm:w-12 rounded-l-none text-base"
-                quantityWidthClassName="w-14 sm:w-16 text-sm sm:text-base font-bold"
+                leftButtonClassName="h-12 w-12 text-base border-2 border-black font-bold"
+                rightButtonClassName="h-12 w-12 text-base border-2 border-black font-bold"
+                quantityWidthClassName="w-16 text-base font-bold border-y-2 border-black"
               />
             </div>
-            <div className="flex-1 flex flex-col gap-1.5">
-              <span className="text-[11px] sm:text-xs font-semibold text-neutral-600">Trong giỏ</span>
-              <div className="h-11 sm:h-12 flex items-center justify-center rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-sm sm:text-base">
-                {cartQty} sản phẩm
-              </div>
+            <div className="p-3 bg-emerald-100 border-2 border-emerald-600">
+              <p className="text-sm font-bold text-emerald-900 text-center">✓ {cartQty} sản phẩm trong giỏ hàng</p>
             </div>
-          </>
+          </div>
         ) : (
-          <button
-            type="button"
-            onClick={onAdd}
-            disabled={adding || outOfStock || !selectedVariant}
-            className={`w-full inline-flex items-center gap-2.5 justify-center rounded-lg px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] transition-all ${adding || outOfStock || !selectedVariant ? "bg-neutral-200 text-neutral-500 cursor-not-allowed" : "bg-[var(--color-cod-gray-900)] text-white hover:bg-[var(--color-cod-gray-800)] shadow-lg hover:shadow-xl focus-visible:ring-[var(--color-cod-gray-900)]/40"}`}
-          >
-            <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
-            {adding ? "Đang thêm…" : "Thêm vào giỏ hàng"}
-          </button>
+          <div className="flex flex-col gap-2">
+            {outOfStock ? (
+              <>
+                <button
+                  type="button"
+                  className="w-full px-6 py-4 bg-white text-black border-2 border-black font-bold uppercase text-sm tracking-wider hover:bg-black hover:text-white transition-all"
+                >
+                  Thông báo khi có hàng
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="w-full px-6 py-4 bg-[#fff100] text-black border-2 border-black font-bold uppercase text-base tracking-wider cursor-not-allowed"
+                >
+                  Hết hàng
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={onAdd}
+                disabled={adding || !selectedVariant}
+                className={`w-full inline-flex items-center gap-3 justify-center px-6 py-4 text-base font-bold uppercase tracking-wider border-2 transition-all ${adding || !selectedVariant ? "bg-neutral-200 text-neutral-500 border-neutral-400 cursor-not-allowed" : "bg-[#fff100] text-black border-black hover:bg-black hover:text-white shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1"}`}
+              >
+                <FiShoppingCart className="h-5 w-5" />
+                {adding ? "Đang thêm..." : "Thêm vào giỏ hàng"}
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
