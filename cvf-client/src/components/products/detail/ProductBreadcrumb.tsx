@@ -15,63 +15,46 @@ const ProductBreadcrumb: React.FC<ProductBreadcrumbProps> = ({ product: p }) => 
   const catName = typeof p.category?.name === 'string' ? p.category?.name : undefined;
 
   return (
-    <nav className="mb-4 sm:mb-5 md:mb-6" aria-label="Breadcrumb">
-      <ol className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm overflow-x-auto scrollbar-none pb-1">
-        <li className="shrink-0">
-          <Link 
-            href={ROUTES.home} 
-            className="text-neutral-600 hover:text-[var(--color-cod-gray-900)] hover:underline transition-colors"
-          >
-            Trang chủ
-          </Link>
-        </li>
+    <nav className="mb-6" aria-label="Breadcrumb">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black flex-wrap">
+        <Link 
+          href={ROUTES.home} 
+          className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors"
+        >
+          Trang chủ
+        </Link>
         
-        <li aria-hidden className="shrink-0">
-          <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-neutral-400" />
-        </li>
+        <span className="text-black font-bold">/</span>
         
-        <li className="shrink-0">
-          <Link 
-            href={ROUTES.products} 
-            className="text-neutral-600 hover:text-[var(--color-cod-gray-900)] hover:underline transition-colors"
-          >
-            Sản phẩm
-          </Link>
-        </li>
+        <Link 
+          href={ROUTES.products} 
+          className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors"
+        >
+          Sản phẩm
+        </Link>
 
         {catSlug && (
           <>
-            <li aria-hidden className="shrink-0">
-              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-neutral-400" />
-            </li>
-            <li className="shrink-0 max-w-[120px] sm:max-w-[180px] md:max-w-none">
-              <Link 
-                href={buildProductsByCategory(catSlug)} 
-                className="text-neutral-600 hover:text-[var(--color-cod-gray-900)] hover:underline transition-colors truncate block"
-                title={catName || "Danh mục"}
-              >
-                {catName || "Danh mục"}
-              </Link>
-            </li>
+            <span className="text-black font-bold">/</span>
+            <Link 
+              href={buildProductsByCategory(catSlug)} 
+              className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors truncate max-w-[150px] md:max-w-none"
+              title={catName || "Danh mục"}
+            >
+              {catName || "Danh mục"}
+            </Link>
           </>
         )}
 
-        <li aria-hidden className="shrink-0">
-          <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-neutral-400" />
-        </li>
+        <span className="text-black font-bold">/</span>
         
-        <li 
-          className="text-[var(--color-cod-gray-900)] font-semibold min-w-0 flex-1"
-          aria-current="page"
+        <span 
+          className="text-sm font-bold uppercase tracking-wide text-black truncate max-w-[200px] md:max-w-none"
+          title={p.name}
         >
-          <span 
-            className="truncate block max-w-full"
-            title={p.name}
-          >
-            {p.name}
-          </span>
-        </li>
-      </ol>
+          {p.name}
+        </span>
+      </div>
     </nav>
   );
 };

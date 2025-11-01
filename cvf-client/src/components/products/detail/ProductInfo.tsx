@@ -54,35 +54,63 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 }) => {
   return (
     <div>
+      {outOfStock && (
+        <div className="mb-3 inline-block px-4 py-1 bg-red-600 border-2 border-black">
+          <span className="text-xs font-bold uppercase tracking-wider text-white">Hết hàng</span>
+        </div>
+      )}
+      
       <h1 
-        className="text-lg sm:text-xl md:text-xl font-bold text-[var(--color-cod-gray-900)] leading-tight tracking-tight line-clamp-3 cursor-default" 
+        className="font-[family-name:var(--font-retro)] text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider text-black leading-tight line-clamp-2 mb-2" 
         title={name}
       >
         {name}
       </h1>
-      <div className="mt-2 sm:mt-2.5 flex items-center gap-2 sm:gap-2.5 text-sm sm:text-base text-neutral-700">
+      {categoryName && (
+        <p className="text-sm font-medium text-neutral-700 mb-3">Danh mục: <span className="font-bold">{categoryName}</span></p>
+      )}
+      
+      <div className="flex items-center gap-2 text-sm text-neutral-700 mb-4">
         <div className="flex items-center gap-0.5" aria-label={`Đánh giá ${ratingValue.toFixed(1)}/5`}>
           {Array.from({ length: 5 }).map((_, i) => (
-            <IoIosStar key={i} className={`h-4 w-4 sm:h-4.5 sm:w-4.5 ${i < fullStars ? "" : "text-neutral-300"}`} />
+            <IoIosStar key={i} className={`h-4 w-4 ${i < fullStars ? "text-[#fff100]" : "text-neutral-300"}`} style={i < fullStars ? {stroke: "#000", strokeWidth: "1px"} : {}} />
           ))}
         </div>
-        <span className="font-semibold">{ratingValue.toFixed(1)}</span>
-        <span className="text-neutral-500">({ratingCount})</span>
+        <span className="font-bold">{ratingValue.toFixed(1)}</span>
+        <span className="text-neutral-600">({ratingCount} đánh giá)</span>
       </div>
-      <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
-        {selectedVariant?.sku ? (
-          <span className="inline-flex items-center rounded-full bg-neutral-100 text-neutral-700 px-2.5 sm:px-3 py-1 sm:py-1.5 ring-1 ring-neutral-200 font-medium">SKU: {selectedVariant.sku}</span>
-        ) : null}
-        {(categoryName || categoryId) ? (
-          <span className="inline-flex items-center rounded-full bg-neutral-100 text-neutral-700 px-2.5 sm:px-3 py-1 sm:py-1.5 ring-1 ring-neutral-200 font-medium">Danh mục: {categoryName || categoryId}</span>
-        ) : null}
-        {outOfStock ? (
-          <span className="inline-flex items-center rounded-full bg-red-50 text-red-700 px-2.5 sm:px-3 py-1 sm:py-1.5 ring-1 ring-red-200 font-semibold">Hết hàng</span>
-        ) : (
-          <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ring-1 font-medium ${totalStock <= 5 ? 'bg-amber-50 text-amber-700 ring-amber-200' : 'bg-emerald-50 text-emerald-700 ring-emerald-200'}`}>
-            <FiPackage className={`h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 ${totalStock <= 5 ? 'text-amber-600' : 'text-emerald-600'}`} />
+      {/* SKU, Stock, and Share buttons in ONE ROW */}
+      <div className="flex flex-wrap items-center gap-2 text-xs mb-4">
+        {selectedVariant?.sku && (
+          <span className="inline-flex items-center bg-white text-black px-3 py-1.5 border-2 border-black font-bold uppercase">SKU: {selectedVariant.sku}</span>
+        )}
+        {!outOfStock && (
+          <span className={`inline-flex items-center px-3 py-1.5 border-2 font-bold uppercase ${totalStock <= 5 ? 'bg-amber-100 text-amber-900 border-amber-600' : 'bg-emerald-100 text-emerald-900 border-emerald-600'}`}>
+            <FiPackage className={`h-3.5 w-3.5 mr-1.5 ${totalStock <= 5 ? 'text-amber-700' : 'text-emerald-700'}`} />
             {totalStock}+ {stockUnit}
           </span>
+        )}
+        {onFavorite && (
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase border-2 border-black bg-white hover:bg-black hover:text-white transition-all"
+            aria-label="Thêm vào yêu thích"
+            onClick={onFavorite}
+          >
+            <FiHeart className="h-4 w-4" />
+            Yêu thích
+          </button>
+        )}
+        {onShare && (
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase border-2 border-black bg-white hover:bg-black hover:text-white transition-all"
+            aria-label="Chia sẻ sản phẩm"
+            onClick={onShare}
+          >
+            <FiShare2 className="h-4 w-4" />
+            Chia sẻ
+          </button>
         )}
       </div>
       {(supplierName || supplierEmail || supplierPhone || supplierAddress || supplierDescription) ? (
@@ -117,26 +145,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           ) : null}
         </div>
       ) : null}
-      <div className="mt-3 md:mt-4 flex items-center gap-2.5">
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 md:px-3 md:py-1.5 text-xs md:text-sm ring-1 ring-neutral-300 hover:bg-neutral-50"
-          aria-label="Thêm vào yêu thích"
-          onClick={onFavorite}
-        >
-          <FiHeart className="h-3.5 w-3.5 md:h-4 md:w-4" />
-          Yêu thích
-        </button>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 md:px-3 md:py-1.5 text-xs md:text-sm ring-1 ring-neutral-300 hover:bg-neutral-50"
-          aria-label="Chia sẻ sản phẩm"
-          onClick={onShare}
-        >
-          <FiShare2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
-          Chia sẻ
-        </button>
-      </div>
     </div>
   );
 }

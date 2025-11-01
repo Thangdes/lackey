@@ -5,7 +5,6 @@ import ProductInfo from "./ProductInfo";
 import ProductPricing from "./ProductPricing";
 import ProductVariantSelector from "./ProductVariantSelector";
 import ProductAddToCart from "./ProductAddToCart";
-import ProductFeatures from "./ProductFeatures";
 import type { ProductVariant } from "@/type/product";
 
 export type ProductDetailInfoColumnProps = {
@@ -62,7 +61,7 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
   onIncrease,
 }) => {
   return (
-    <div className="space-y-3 sm:space-y-4 lg:space-y-5 self-start lg:sticky lg:top-20 w-full max-w-[580px] mx-auto lg:mx-0">
+    <div className="space-y-3 sm:space-y-4 lg:space-y-5 self-start lg:sticky lg:top-20 w-full max-w-[580px] mx-auto lg:mx-0 ">
       <ProductInfo
         name={name}
         ratingValue={ratingValue}
@@ -105,8 +104,6 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
         onDecrease={onDecrease}
         onIncrease={onIncrease}
       />
-
-      <ProductFeatures />
     </div>
   );
 };

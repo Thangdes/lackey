@@ -4,7 +4,7 @@ import ProductClientView from "@/components/products/ProductClientView";
 import { productService } from "@/service/product.service";
 import { getProductSeo } from "@/config/seo";
 import { siteConfig } from "@/constant/site";
- 
+import { MOCK_PRODUCT_DATA } from "./mockProductData";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -13,6 +13,11 @@ type PageProps = {
 export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params;
   if (!slug) return notFound();
+
+  // Mock data for testing UI/UX with slug "test"
+  if (slug === "test") {
+    return <ProductClientView product={MOCK_PRODUCT_DATA} />;
+  }
 
   try {
     const product = await productService.getBySlug(slug);

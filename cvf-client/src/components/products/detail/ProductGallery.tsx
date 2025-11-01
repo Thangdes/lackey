@@ -89,108 +89,82 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
   }, [fullscreen]);
 
   return (
-    <div className="w-full">
-      {/* Main Image Container */}
-      <div 
-        ref={mainRef}
-        className="relative group w-full aspect-square bg-white rounded-xl overflow-hidden border border-neutral-100 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer touch-manipulation"
-        onClick={() => setFullscreen(true)}
-        onMouseEnter={() => setZoomed(true)}
-        onMouseLeave={() => {
-          setZoomed(false);
-          setOrigin({ x: 50, y: 50 });
-        }}
-        onMouseMove={onMouseMove}
-      >
-        <Image
-          src={currentImage}
-          alt={`${name} - Ảnh ${activeImg + 1}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover select-none"
-          priority
-          style={{
-            transform: zoomed ? "scale(1.5)" : "scale(1)",
-            transformOrigin: `${origin.x}% ${origin.y}%`,
-            transition: "transform 200ms ease-out",
-          }}
-          draggable={false}
-        />
-        
-        {/* Sale Badge */}
-        {isSale && (
-          <div className="absolute left-2 sm:left-3 top-2 sm:top-3 inline-flex items-center gap-1 rounded-full bg-[#AE1C2C] text-white px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold shadow-md z-10">
-            {discountPercent ? `-${discountPercent}%` : "SALE"}
-          </div>
-        )}
-
-        {/* Fullscreen Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setFullscreen(true);
-          }}
-          className="absolute right-2 sm:right-3 top-2 sm:top-3 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/50 text-white hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-          aria-label="Xem toàn màn hình"
-        >
-          <IoExpand className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-
-        {/* Zoom Hint - Hidden on mobile */}
-        {zoomed && (
-          <div className="hidden md:flex absolute inset-x-0 bottom-4 items-center justify-center pointer-events-none z-10">
-            <span className="inline-flex items-center rounded-full bg-black/50 text-white px-3 py-1.5 text-xs font-medium shadow-md">
-              🔍 Di chuột để zoom • Click để xem toàn màn hình
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Thumbnails Below */}
-      {displayImages.length > 1 && (
-        <div className="mt-4 sm:mt-5">
-          <div 
-            className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent hover:scrollbar-thumb-neutral-400" 
-            role="tablist" 
-            aria-label="Danh sách ảnh sản phẩm"
-          >
-            {displayImages.map((img, i) => (
+    <div className="w-full " >
+      <div className="flex gap-2 md:gap-3">
+        {displayImages.length > 1 && (
+          <div className="flex flex-col gap-2 md:gap-3 w-20 md:w-24">
+            {displayImages.map((img, idx) => (
               <button
-                key={i}
-                type="button"
-                onClick={() => onChangeActive(i)}
-                className={`
-                  relative flex-none w-[72px] h-[72px] sm:w-20 sm:h-20 md:w-24 md:h-24 overflow-hidden rounded-lg sm:rounded-xl transition-all duration-200
-                  ${i === activeImg 
-                    ? "ring-2 sm:ring-[2.5px] ring-[#AE1C2C] scale-105 shadow-md" 
-                    : "ring-1 ring-neutral-200 hover:ring-neutral-400 hover:scale-[1.03]"
-                  }
-                `}
-                aria-label={`Xem ảnh ${i + 1}`}
-                aria-selected={i === activeImg}
-                role="tab"
+                key={idx}
+                onClick={() => onChangeActive(idx)}
+                className={`relative aspect-square border-2 rounded-md transition-all overflow-hidden ${
+                  idx === activeImg
+                    ? "border-black scale-105 shadow-md"
+                    : "border-neutral-300 hover:border-black hover:scale-105"
+                }`}
               >
                 <Image
                   src={img}
-                  alt={`Thumbnail ${i + 1}`}
+                  alt={`${name} - view ${idx + 1}`}
                   fill
-                  sizes="(max-width: 640px) 72px, (max-width: 768px) 80px, 96px"
                   className="object-cover"
-                  loading="lazy"
+                  sizes="(max-width: 768px) 80px, 96px"
                 />
-                
-                {/* Active Indicator */}
-                {i === activeImg && (
-                  <div className="absolute inset-0 bg-[#AE1C2C]/10 pointer-events-none" />
-                )}
               </button>
             ))}
           </div>
-          
-          {/* Image Counter */}
-          <div className="mt-2.5 text-center text-xs sm:text-sm text-neutral-600 font-medium">
-            Ảnh {activeImg + 1} / {displayImages.length}
+        )}
+
+        <div className="flex-1">
+          <div 
+            ref={mainRef}
+            className="relative group w-full aspect-square bg-white border-4 border-black overflow-hidden shadow-[8px_8px_0px_0px_#B5CCBC] cursor-pointer"
+            onClick={() => setFullscreen(true)}
+            onMouseEnter={() => setZoomed(true)}
+            onMouseLeave={() => {
+              setZoomed(false);
+              setOrigin({ x: 50, y: 50 });
+            }}
+            onMouseMove={onMouseMove}
+          >
+            <Image
+              src={currentImage}
+              alt={name}
+              fill
+              priority
+              className={`object-cover transition-all duration-200 ${
+                zoomed ? "scale-150" : "scale-100"
+              }`}
+              style={zoomed ? { transformOrigin: `${origin.x}% ${origin.y}%` } : undefined}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 900px"
+            />
+            
+            {isSale && discountPercent ? (
+              <div className="absolute top-4 left-4 z-20 bg-red-600 text-white border-2 border-black px-4 py-2 font-bold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
+                -{discountPercent}% OFF
+              </div>
+            ) : null}
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setFullscreen(true);
+              }}
+              className="absolute top-4 right-4 z-20 p-2 bg-white border-2 border-black opacity-0 group-hover:opacity-100 transition-all hover:bg-black hover:text-white"
+              aria-label="Xem ảnh toàn màn hình"
+            >
+              <IoExpand className="h-5 w-5" />
+            </button>
           </div>
+        </div>
+      </div>
+
+      {/* Zoom Hint - Hidden on mobile */}
+      {zoomed && (
+        <div className="hidden md:flex absolute inset-x-0 bottom-4 items-center justify-center pointer-events-none z-10">
+          <span className="inline-flex items-center rounded-full bg-black/50 text-white px-3 py-1.5 text-xs font-medium shadow-md">
+            🔍 Di chuột để zoom • Click để xem toàn màn hình
+          </span>
         </div>
       )}
 
@@ -294,10 +268,10 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
                       onChangeActive(i);
                     }}
                     className={`
-                      relative flex-none w-16 h-16 overflow-hidden rounded-lg transition-all duration-200
+                      relative flex-none w-20 h-20 md:w-24 md:h-24 overflow-hidden rounded-lg transition-all duration-200
                       ${i === activeImg 
-                        ? "ring-2 ring-white scale-110 shadow-lg" 
-                        : "ring-1 ring-white/30 hover:ring-white/60 opacity-60 hover:opacity-100"
+                        ? "ring-3 ring-white scale-110 shadow-lg" 
+                        : "ring-2 ring-white/30 hover:ring-white/60 opacity-60 hover:opacity-100 hover:scale-105"
                       }
                     `}
                     aria-label={`Xem ảnh ${i + 1}`}
@@ -306,7 +280,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
                       src={img}
                       alt={`Thumbnail ${i + 1}`}
                       fill
-                      sizes="64px"
+                      sizes="(max-width: 768px) 80px, 96px"
                       className="object-cover"
                       loading="lazy"
                     />
