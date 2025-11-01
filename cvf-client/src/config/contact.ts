@@ -6,4 +6,4 @@ export const phoneHref = `tel:${supportPhone}`;
 export const zaloHref = "https://zalo.me/84356356497";
 
 // Facebook Messenger page link
-export const facebookHref = "https://www.facebook.com/profile.php?id=61581934494103";
+export const facebookHref = "https://www.facebook.com/lackey.chain";
