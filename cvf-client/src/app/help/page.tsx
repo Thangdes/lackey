@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import { ROUTES } from "@/constant/route";
-import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/constant/site";
 import { HELP_PAGE } from "@/constant/pages/help";
 
@@ -29,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function HelpPage() {
   return (
-    <main className=" px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
+    <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
       <Script id="ld-breadcrumb-help" type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -40,111 +39,166 @@ export default function HelpPage() {
           ],
         })}
       </Script>
-      <Script id="ld-faq-help" type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            ...HELP_PAGE.sections.faq.items.slice(0, 3).map((q: string) => ({
-              "@type": "Question",
-              name: q,
-              acceptedAnswer: { "@type": "Answer", text: q },
-            }))
-          ]
-        })}
-      </Script>
-      <header className="mb-8">
-        <span className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs text-neutral-700">{HELP_PAGE.badge}</span>
-        <h1 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">{HELP_PAGE.title}</h1>
-        <p className="mt-2 text-neutral-700 max-w-2xl">{HELP_PAGE.introPrefix} {siteConfig.name}.</p>
+      <nav aria-label="Breadcrumb" className="mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black">
+          <Link href={ROUTES.home} className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors">Trang chủ</Link>
+          <span className="text-black font-bold">/</span>
+          <span className="text-sm font-bold uppercase tracking-wide text-black">Trợ giúp</span>
+        </div>
+      </nav>
+
+      <header className="mb-10 bg-[#fff100] border-4 border-black p-8 md:p-10 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <div className="inline-block px-4 py-1 bg-black text-white border-2 border-black mb-4">
+          <span className="text-xs font-bold uppercase tracking-wider">{HELP_PAGE.badge}</span>
+        </div>
+        <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider uppercase text-black mb-3">{HELP_PAGE.title}</h1>
+        <p className="text-black font-medium text-lg">{HELP_PAGE.introPrefix} {siteConfig.name}.</p>
       </header>
 
       <div className="space-y-6">
-        <section className="rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-          <h2 className="text-xl font-semibold mb-2">{HELP_PAGE.sections.faq.title}</h2>
-          <ul className="list-disc pl-6 space-y-2 text-neutral-800">
-            <li>{HELP_PAGE.sections.faq.items[0]}</li>
-            <li>
-              {HELP_PAGE.sections.faq.items[1].replace("Chính sách giao hàng", "")}
-              <Link href={ROUTES.shipping} className="text-[#0F5555] hover:underline">{HELP_PAGE.sections.faq.linkTexts.shipping}</Link>.
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{HELP_PAGE.sections.faq.title}</h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">{HELP_PAGE.sections.faq.items[0]}</span>
             </li>
-            <li>
-              {HELP_PAGE.sections.faq.items[2].replace("chính sách đổi trả", "")}
-              <Link href={ROUTES.return} className="text-[#0F5555] hover:underline">{HELP_PAGE.sections.faq.linkTexts.return}</Link>.
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">
+                {HELP_PAGE.sections.faq.items[1].replace("Chính sách giao hàng", "")}
+                <Link href={ROUTES.shipping} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">{HELP_PAGE.sections.faq.linkTexts.shipping}</Link>.
+              </span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">
+                {HELP_PAGE.sections.faq.items[2].replace("chính sách đổi trả", "")}
+                <Link href={ROUTES.return} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">{HELP_PAGE.sections.faq.linkTexts.return}</Link>.
+              </span>
             </li>
           </ul>
         </section>
 
-        <section className="rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-          <h2 className="text-xl font-semibold mb-2">{HELP_PAGE.sections.quickLinks.title}</h2>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="outline"><Link href={ROUTES.shipping}>{HELP_PAGE.sections.quickLinks.links.shipping}</Link></Button>
-            <Button asChild variant="outline"><Link href={ROUTES.return}>{HELP_PAGE.sections.quickLinks.links.return}</Link></Button>
-            <Button asChild variant="outline"><Link href={ROUTES.terms}>{HELP_PAGE.sections.quickLinks.links.terms}</Link></Button>
-            <Button asChild variant="outline"><Link href={ROUTES.privacy}>{HELP_PAGE.sections.quickLinks.links.privacy}</Link></Button>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{HELP_PAGE.sections.quickLinks.title}</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Link href={ROUTES.shipping} className="px-4 py-3 bg-black text-white border-2 border-black font-bold uppercase text-xs text-center tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{HELP_PAGE.sections.quickLinks.links.shipping}</Link>
+            <Link href={ROUTES.return} className="px-4 py-3 bg-black text-white border-2 border-black font-bold uppercase text-xs text-center tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{HELP_PAGE.sections.quickLinks.links.return}</Link>
+            <Link href={ROUTES.terms} className="px-4 py-3 bg-black text-white border-2 border-black font-bold uppercase text-xs text-center tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{HELP_PAGE.sections.quickLinks.links.terms}</Link>
+            <Link href={ROUTES.privacy} className="px-4 py-3 bg-black text-white border-2 border-black font-bold uppercase text-xs text-center tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{HELP_PAGE.sections.quickLinks.links.privacy}</Link>
           </div>
         </section>
 
-        {/* Getting started: Guest vs User */}
-        <section className="rounded-xl border border-black/10 bg-white p-5">
-          <h2 className="text-xl font-semibold">Hướng dẫn sử dụng cho Khách vãng lai và Người dùng</h2>
-          <div className="mt-3 grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-black/10 p-4">
-              <h3 className="font-semibold">Khách vãng lai</h3>
-              <ul className="mt-2 list-disc pl-5 text-sm text-neutral-800 space-y-1">
-                <li>Thêm sản phẩm vào giỏ hàng và tiến hành đặt hàng không cần đăng nhập.</li>
-                <li>Sau khi đặt, lưu <b>mã đơn hàng</b> để tiện tra cứu ở trang <Link href="/orders/lookup" className="underline hover:text-black">Tra cứu đơn hàng</Link>.</li>
-                <li>Nếu bạn tạo tài khoản bằng <b>email đã dùng khi đặt</b>, đơn hàng sẽ được liên kết và hiển thị trong mục <Link href="/orders" className="underline hover:text-black">Đơn hàng của tôi</Link>.</li>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">Hướng dẫn sử dụng cho Khách vãng lai và Người dùng</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="bg-neutral-50 border-2 border-black p-5">
+              <h3 className="text-lg font-bold uppercase tracking-wide mb-3 pb-2 border-b-2 border-black">Khách vãng lai</h3>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">1</span>
+                  <span>Thêm sản phẩm vào giỏ hàng và tiến hành đặt hàng không cần đăng nhập.</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">2</span>
+                  <span>Sau khi đặt, lưu <b>mã đơn hàng</b> để tiện tra cứu ở trang <Link href="/orders/lookup" className="underline font-bold hover:text-[var(--brand-secondary)] transition-colors">Tra cứu đơn hàng</Link>.</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">3</span>
+                  <span>Nếu bạn tạo tài khoản bằng <b>email đã dùng khi đặt</b>, đơn hàng sẽ được liên kết và hiển thị trong mục <Link href="/orders" className="underline font-bold hover:text-[var(--brand-secondary)] transition-colors">Đơn hàng của tôi</Link>.</span>
+                </li>
               </ul>
             </div>
-            <div className="rounded-lg border border-black/10 p-4">
-              <h3 className="font-semibold">Người dùng (đã đăng nhập)</h3>
-              <ul className="mt-2 list-disc pl-5 text-sm text-neutral-800 space-y-1">
-                <li>Giỏ hàng sẽ được đồng bộ với tài khoản của bạn.</li>
-                <li>Xem toàn bộ lịch sử đặt hàng tại <Link href="/orders" className="underline hover:text-black">Đơn hàng của tôi</Link>.</li>
-                <li>Nhận cập nhật trạng thái đơn hàng nhanh chóng qua tài khoản.</li>
+            <div className="bg-neutral-50 border-2 border-black p-5">
+              <h3 className="text-lg font-bold uppercase tracking-wide mb-3 pb-2 border-b-2 border-black">Người dùng (đã đăng nhập)</h3>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">1</span>
+                  <span>Giỏ hàng sẽ được đồng bộ với tài khoản của bạn.</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">2</span>
+                  <span>Xem toàn bộ lịch sử đặt hàng tại <Link href="/orders" className="underline font-bold hover:text-[var(--brand-secondary)] transition-colors">Đơn hàng của tôi</Link>.</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm font-medium text-neutral-800">
+                  <span className="text-[#fff100] bg-black px-2 py-0.5 text-xs font-bold shrink-0">3</span>
+                  <span>Nhận cập nhật trạng thái đơn hàng nhanh chóng qua tài khoản.</span>
+                </li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* Cart & Checkout */}
-        <section className="rounded-xl border border-black/10 bg-white p-5">
-          <h2 className="text-xl font-semibold">Giỏ hàng và Thanh toán</h2>
-          <ul className="mt-2 list-disc pl-6 text-sm text-neutral-800 space-y-1">
-            <li>Thêm/Xóa/Tăng giảm số lượng sản phẩm trong giỏ tại trang <Link href="/cart" className="underline hover:text-black">Giỏ hàng</Link>.</li>
-            <li>Nhập mã ưu đãi (nếu có) tại phần Tóm tắt đơn hàng.</li>
-            <li>Nhấn &quot;Thanh toán&quot; để điền thông tin giao hàng và chọn phương thức thanh toán.</li>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">Giỏ hàng và Thanh toán</h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Thêm/Xóa/Tăng giảm số lượng sản phẩm trong giỏ tại trang <Link href="/cart" className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Giỏ hàng</Link>.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Nhập mã ưu đãi (nếu có) tại phần Tóm tắt đơn hàng.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Nhấn &quot;Thanh toán&quot; để điền thông tin giao hàng và chọn phương thức thanh toán.</span>
+            </li>
           </ul>
         </section>
 
-        {/* Payment (VietQR) */}
-        <section className="rounded-xl border border-black/10 bg-white p-5">
-          <h2 className="text-xl font-semibold">Thanh toán VietQR</h2>
-          <ul className="mt-2 list-disc pl-6 text-sm text-neutral-800 space-y-1">
-            <li>Quét mã VietQR hiển thị trong bước thanh toán để chuyển khoản.</li>
-            <li>Vui lòng ghi <b>mã đơn hàng</b> ở phần nội dung chuyển khoản để dễ đối soát.</li>
-            <li>Thanh toán sẽ được <b>xác nhận thủ công</b> bởi bộ phận hỗ trợ, vì vậy có thể mất thêm thời gian xử lý.</li>
-            <li>Sau khi xác nhận thanh toán, trạng thái đơn hàng sẽ được cập nhật và bạn sẽ nhận thông báo.</li>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">Thanh toán VietQR</h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Quét mã VietQR hiển thị trong bước thanh toán để chuyển khoản.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Vui lòng ghi <b>mã đơn hàng</b> ở phần nội dung chuyển khoản để dễ đối soát.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Thanh toán sẽ được <b>xác nhận thủ công</b> bởi bộ phận hỗ trợ, vì vậy có thể mất thêm thời gian xử lý.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Sau khi xác nhận thanh toán, trạng thái đơn hàng sẽ được cập nhật và bạn sẽ nhận thông báo.</span>
+            </li>
           </ul>
         </section>
 
-        {/* Orders & Tracking */}
-        <section className="rounded-xl border border-black/10 bg-white p-5">
-          <h2 className="text-xl font-semibold">Xem và tra cứu đơn hàng</h2>
-          <ul className="mt-2 list-disc pl-6 text-sm text-neutral-800 space-y-1">
-            <li>Đã đăng nhập: truy cập <Link href="/orders" className="underline hover:text-black">Đơn hàng của tôi</Link> để xem toàn bộ lịch sử.</li>
-            <li>Khách vãng lai: dùng trang <Link href="/orders/lookup" className="underline hover:text-black">Tra cứu đơn hàng</Link> và nhập mã đơn để xem chi tiết.</li>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">Xem và tra cứu đơn hàng</h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Đã đăng nhập: truy cập <Link href="/orders" className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Đơn hàng của tôi</Link> để xem toàn bộ lịch sử.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Khách vãng lai: dùng trang <Link href="/orders/lookup" className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Tra cứu đơn hàng</Link> và nhập mã đơn để xem chi tiết.</span>
+            </li>
           </ul>
         </section>
 
-        {/* Returns & Support */}
-        <section className="rounded-xl border border-black/10 bg-white p-5">
-          <h2 className="text-xl font-semibold">Đổi trả & Hỗ trợ</h2>
-          <ul className="mt-2 list-disc pl-6 text-sm text-neutral-800 space-y-1">
-            <li>Xem <Link href={ROUTES.return} className="underline hover:text-black">Chính sách đổi trả</Link> để biết điều kiện và quy trình.</li>
-            <li>Tra cứu phí/điều kiện giao hàng tại <Link href={ROUTES.shipping} className="underline hover:text-black">Chính sách giao hàng</Link>.</li>
-            <li>Nếu cần hỗ trợ, vui lòng liên hệ qua trang <Link href="/help" className="underline hover:text-black">Trợ giúp</Link> hoặc thông tin liên hệ trên website.</li>
+        <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+          <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">Đổi trả & Hỗ trợ</h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Xem <Link href={ROUTES.return} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Chính sách đổi trả</Link> để biết điều kiện và quy trình.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Tra cứu phí/điều kiện giao hàng tại <Link href={ROUTES.shipping} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Chính sách giao hàng</Link>.</span>
+            </li>
+            <li className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">Nếu cần hỗ trợ, vui lòng liên hệ qua trang <Link href="/contact" className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">Liên hệ</Link> hoặc thông tin liên hệ trên website.</span>
+            </li>
           </ul>
         </section>
       </div>
