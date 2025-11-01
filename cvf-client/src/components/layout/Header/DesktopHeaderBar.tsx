@@ -1,9 +1,9 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useRef, useState, startTransition } from 'react'
-import { User, Bell, HelpCircle, ShoppingBag, LogOut, ChevronRight, Phone, Truck, Undo2, FileText, Shield, Info } from 'lucide-react'
+import { User, Bell, HelpCircle, ShoppingBag, LogOut, ChevronRight, Phone, Truck, Undo2, FileText, Shield, Info, Search } from 'lucide-react'
 import { IoCartOutline } from 'react-icons/io5'
 import Image from 'next/image'
-import SearchInput from './SearchInput'
+import SearchModal from './SearchModal'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { useAuthModalStore } from '@/store/authModal'
 import { Button } from '@/components/ui/button'
@@ -166,47 +166,73 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
   const cartQty = smartCart.totalItems
 
   return (
-    <div className={`flex items-center gap-3 lg:gap-4 xl:gap-6 max-h-11 relative`}>
-      <div className="flex items-center gap-2 lg:gap-3 text-neutral-900 shrink-0">
+    <div className="flex items-center justify-between w-full max-h-14 relative">
+      {/* Logo - Left */}
+      <div className="flex items-center gap-3 shrink-0">
         <Link
           href={ROUTES.home}
-          className="flex items-center flex-shrink-0"
+          className="flex items-center gap-2 group"
           aria-label="LắcKey"
         >
           <Image
             src="/logo/logo.jpg"
             alt="LắcKey"
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-full object-cover"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-full object-cover transition-transform group-hover:scale-105"
             priority
           />
-          <span className="ml-2 font-retro text-xl xl:text-2xl leading-none tracking-[-0.02em] select-none logo-strong whitespace-nowrap text-neutral-900">
-            LacKey
+          <span className="font-[family-name:var(--font-retro)] text-2xl text-neutral-900 whitespace-nowrap tracking-wide">
+            LắcKey
           </span>
         </Link>
-        <div className="ml-1 sm:ml-2 shrink-0 min-w-[120px]">
-          <CategoryDropdown />
-        </div>
       </div>
 
-      <div className="flex-1 min-w-[280px] w-full max-w-[600px] h-full mx-4">
-        <SearchInput open={searchOpen} onOpenChange={setSearchOpen} />
-      </div>
+      {/* Navigation - Center */}
+      <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        <Link href={ROUTES.products} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Tất Cả
+        </Link>
+        <Link href={ROUTES.blog} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Blog
+        </Link>
+        <Link href="/about" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Giới thiệu
+        </Link>
+        <Link href="/contact" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Liên hệ
+        </Link>
+        <Link href={ROUTES.products + '?sale=true'} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Khuyến mãi
+        </Link>
+      </nav>
 
-      <div className="flex-1 flex justify-end items-center gap-2 lg:gap-3 h-full text-neutral-900">
-        <div className="h-full flex items-center">
-          {user ? (
-            <div className="relative" ref={acctRef}>
-              <Button
-                variant="ghost"
-                className="h-9 px-2 md:px-3 rounded-full cursor-pointer text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5 inline-flex items-center gap-2"
-                aria-label="Tài khoản"
-                onClick={() => setAcctOpen((v) => !v)}
-                aria-haspopup="menu"
-                aria-expanded={acctOpen}
-                aria-controls="user-menu"
-                ref={acctBtnRef}
+      {/* Actions - Right */}
+      <div className="flex items-center gap-3 shrink-0">
+        {/* Search Icon */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="w-9 h-9 rounded-full text-neutral-900 hover:bg-black/5"
+          onClick={() => setSearchOpen(!searchOpen)}
+          aria-label="Tìm kiếm"
+        >
+          <Search className="h-5 w-5" />
+        </Button>
+
+        {/* User Account */}
+        {user ? (
+          <div className="relative" ref={acctRef}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-9 h-9 rounded-full text-neutral-900 hover:bg-black/5"
+              aria-label="Tài khoản"
+              onClick={() => setAcctOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={acctOpen}
+              aria-controls="user-menu"
+              ref={acctBtnRef}
                 onKeyDown={(e) => {
                   if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !acctOpen) {
                     e.preventDefault();
@@ -216,10 +242,9 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                     setAcctOpen(false);
                   }
                 }}
-              >
-                <User />
-                <span className="text-sm hidden md:inline">{user?.username || user?.email || 'Tài khoản'}</span>
-              </Button>
+            >
+              <User className="h-5 w-5" />
+            </Button>
               {acctOpen && (
                 <div
                   id="user-menu"
@@ -290,353 +315,36 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                 </div>
               )}
             </div>
-          ) : (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="h-9 px-2 md:px-3 rounded-full cursor-pointer text-neutral-900 hover:text-[var(--color-seagull-300)] hover:bg-black/5"
-                  aria-label="Đăng nhập / Đăng ký"
-                  onClick={handleAuthClick}
-                >
-                  <User className="2xl:mr-2" />
-                  <span className="text-sm hidden md:inline">Đăng nhập / Đăng ký</span>
-                  <span className="sr-only">Đăng nhập / Đăng ký</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-black text-white">
-                Đăng nhập / Đăng ký
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-
-        {!disableLanguage && (
-          <div className="flex items-center gap-2 h-full min-w-20 text-neutral-900">
-            <Select value={lang} onValueChange={handleLangChange}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <SelectTrigger className="rounded-full hover:bg-black/5 border-none shadow-none cursor-pointer hover:py-3 text-neutral-900 hover:text-[var(--brand-secondary)]">
-                    <span className="inline-flex items-center gap-2">
-                      {lang === 'en' && (
-                        <>
-                          <Image src="/images/flags/us.svg" alt="English" width={24} height={16} className="h-4 w-6" />
-                          <span className="text-sm hidden 2xl:inline">English</span>
-                        </>
-                      )}
-                      {lang === 'vi' && (
-                        <>
-                          <Image src="/images/flags/vi.svg" alt="Vietnamese" width={24} height={16} className="h-4 w-6" />
-                          <span className="text-sm hidden 2xl:inline">Tiếng Việt</span>
-                        </>
-                      )}
-                      {lang === 'ja' && (
-                        <>
-                          <Image src="/images/flags/ja.svg" alt="Japanese" width={24} height={16} className="h-4 w-6" />
-                          <span className="text-sm hidden 2xl:inline">日本語</span>
-                        </>
-                      )}
-                      <span className="sr-only">Language</span>
-                    </span>
-                  </SelectTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-black text-white">
-                  {lang === 'en' ? 'English' : lang === 'vi' ? 'Tiếng Việt' : '日本語'}
-                </TooltipContent>
-              </Tooltip>
-              <SelectContent className='bg-white'>
-                <SelectItem value="en">
-                  <span className="inline-flex items-center gap-2">
-                    <Image src="/images/flags/us.svg" alt="English" width={24} height={16} className="h-4 w-6" />
-                    <span>English</span>
-                  </span>
-                </SelectItem>
-                <SelectItem value="vi">
-                  <span className="inline-flex items-center gap-2">
-                    <Image src="/images/flags/vi.svg" alt="Vietnamese" width={24} height={16} className="h-4 w-6" />
-                    <span>Tiếng Việt</span>
-                  </span>
-                </SelectItem>
-                <SelectItem value="ja">
-                  <span className="inline-flex items-center gap-2">
-                    <Image src="/images/flags/ja.svg" alt="Japanese" width={24} height={16} className="h-4 w-6" />
-                    <span>日本語</span>
-                  </span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-9 h-9 rounded-full text-neutral-900 hover:bg-black/5"
+            aria-label="Đăng nhập"
+            onClick={handleAuthClick}
+          >
+            <User className="h-5 w-5" />
+          </Button>
         )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="relative" ref={supportRef}>
-              <Button
-                variant="ghost"
-                className="rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
-                aria-label="Hỗ trợ"
-                title="Hỗ trợ"
-                onClick={() => setSupportOpen((v) => !v)}
-                aria-haspopup="menu"
-                aria-expanded={supportOpen}
-                aria-controls="support-menu"
-                ref={supportBtnRef}
-                onKeyDown={(e) => {
-                  if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !supportOpen) {
-                    e.preventDefault()
-                    setSupportOpen(true)
-                  } else if (e.key === 'Escape' && supportOpen) {
-                    e.preventDefault()
-                    setSupportOpen(false)
-                    supportBtnRef.current?.focus()
-                  }
-                }}
-              >
-                <HelpCircle className="size-5" />
-                <span className="hidden 2xl:inline ml-2 text-sm font-medium">Hỗ trợ</span>
-              </Button>
-              {supportOpen && (
-                <div
-                  id="support-menu"
-                  role="menu"
-                  aria-label="Hỗ trợ & Chính sách"
-                  className="absolute right-0 mt-2 w-72 rounded-xl bg-white text-black shadow-lg ring-1 ring-black/10 py-1"
-                  onKeyDown={(e) => {
-                    const idx = supportItemRefs.current.findIndex((el) => el === document.activeElement)
-                    const len = Math.max(1, supportItemRefs.current.length)
-                    if (e.key === 'ArrowDown') {
-                      e.preventDefault()
-                      const next = (idx + 1) % len
-                      supportItemRefs.current[next]?.focus()
-                    } else if (e.key === 'ArrowUp') {
-                      e.preventDefault()
-                      const prev = (idx - 1 + len) % len
-                      supportItemRefs.current[prev]?.focus()
-                    } else if (e.key === 'Home') {
-                      e.preventDefault()
-                      supportItemRefs.current[0]?.focus()
-                    } else if (e.key === 'End') {
-                      e.preventDefault()
-                      supportItemRefs.current[len - 1]?.focus()
-                    } else if (e.key === 'Escape') {
-                      e.preventDefault()
-                      setSupportOpen(false)
-                      supportBtnRef.current?.focus()
-                    }
-                  }}
-                >
-                  <div className="px-3 py-2 border-b border-neutral-100">
-                    <div className="text-sm font-semibold">Hỗ trợ & Chính sách</div>
-                    <div className="text-xs text-neutral-500">Chúng tôi luôn sẵn sàng giúp bạn</div>
-                  </div>
-                  <ul>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.help} role="menuitem" ref={(el) => { supportItemRefs.current[0] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <HelpCircle className="h-4 w-4" />
-                        <span>Trung tâm trợ giúp</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.contact} role="menuitem" ref={(el) => { supportItemRefs.current[1] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <Phone className="h-4 w-4" />
-                        <span>Liên hệ</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.shipping} role="menuitem" ref={(el) => { supportItemRefs.current[2] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <Truck className="h-4 w-4" />
-                        <span>Vận chuyển</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.return} role="menuitem" ref={(el) => { supportItemRefs.current[3] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <Undo2 className="h-4 w-4" />
-                        <span>Đổi trả</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.terms} role="menuitem" ref={(el) => { supportItemRefs.current[4] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <FileText className="h-4 w-4" />
-                        <span>Điều khoản</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.privacy} role="menuitem" ref={(el) => { supportItemRefs.current[5] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <Shield className="h-4 w-4" />
-                        <span>Quyền riêng tư</span>
-                      </Link>
-                    </li>
-                    <li className="px-2 py-1.5">
-                      <Link href={ROUTES.about} role="menuitem" ref={(el) => { supportItemRefs.current[6] = el }} className="flex items-center gap-2 w-full text-left text-sm px-2 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-lg">
-                        <Info className="h-4 w-4" />
-                        <span>Về chúng tôi</span>
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-black text-white">Hỗ trợ</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
+        {/* Cart */}
+        <Sheet modal={false}>
+          <SheetTrigger asChild>
             <Button
               variant="ghost"
-              className="rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
-              aria-label="Tra cứu đơn hàng"
-              title="Tra cứu đơn hàng"
-              asChild
+              className="relative rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-neutral-900 hover:bg-black/5"
+              aria-label="Giỏ hàng"
             >
-              <Link href={ROUTES.ordersLookup} className="inline-flex">
-                <FileText className="size-5" />
-                <span className="hidden 2xl:inline ml-2 text-sm font-medium">Tra cứu đơn</span>
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-black text-white">Tra cứu đơn hàng</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="relative" ref={notifRef}>
-              <Button
-                variant="ghost"
-                className="rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-white hover:text-[var(--brand-secondary)] hover:bg-white/10"
-                aria-label="Thông báo"
-                title="Thông báo"
-                onClick={() => {
-                  setNotifOpen((v) => !v)
-                  try {
-                    // Mark as seen when opening menu
-                    if (!notifOpen) window.localStorage.setItem('op_notif_last_seen', String(Date.now()))
-                  } catch {}
-                  setHasNewNotif(false)
-                  setNewNotifCount(0)
-                }}
-                aria-haspopup="menu"
-                aria-expanded={notifOpen}
-                aria-controls="notif-menu"
-                ref={notifBtnRef}
-                onKeyDown={(e) => {
-                  if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !notifOpen) {
-                    e.preventDefault()
-                    setNotifOpen(true)
-                  } else if (e.key === 'Escape' && notifOpen) {
-                    e.preventDefault()
-                    setNotifOpen(false)
-                    notifBtnRef.current?.focus()
-                  }
-                }}
-              >
-                <span className="relative flex items-center">
-                  <Bell className="size-5" />
-                  {hasNewNotif && newNotifCount > 0 && (
-                    <span className="absolute -top-2 left-3 inline-flex items-center justify-center bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">{newNotifCount}
-                    </span>
-                  )}
-                </span>
-                <span className="hidden 2xl:inline ml-2 text-sm font-medium">Thông báo</span>
-              </Button>
-              {notifOpen && (
-                <div
-                  id="notif-menu"
-                  role="menu"
-                  aria-label="Thông báo đơn hàng"
-                  className="absolute right-0 mt-2 w-[360px] max-w-[90vw] rounded-lg sm:rounded-xl bg-white text-black shadow-lg ring-1 ring-black/10 py-0.5 sm:py-1"
-                  onKeyDown={(e) => {
-                    const idx = notifItemRefs.current.findIndex((el) => el === document.activeElement)
-                    const len = Math.max(1, notifItemRefs.current.length)
-                    if (e.key === 'ArrowDown') {
-                      e.preventDefault()
-                      const next = (idx + 1) % len
-                      notifItemRefs.current[next]?.focus()
-                    } else if (e.key === 'ArrowUp') {
-                      e.preventDefault()
-                      const prev = (idx - 1 + len) % len
-                      notifItemRefs.current[prev]?.focus()
-                    } else if (e.key === 'Home') {
-                      e.preventDefault()
-                      notifItemRefs.current[0]?.focus()
-                    } else if (e.key === 'End') {
-                      e.preventDefault()
-                      notifItemRefs.current[len - 1]?.focus()
-                    } else if (e.key === 'Escape') {
-                      e.preventDefault()
-                      setNotifOpen(false)
-                      notifBtnRef.current?.focus()
-                    }
-                  }}
-                >
-                  <div className="px-2.5 sm:px-3 py-2 sm:py-2.5 border-b border-neutral-100">
-                    <div className="text-xs sm:text-sm font-semibold truncate">Thông báo</div>
-                    <div className="text-[10px] sm:text-xs text-neutral-500 line-clamp-1">Cập nhật mới nhất về đơn hàng của bạn</div>
-                  </div>
-                  <ul className="max-h-[65vh] sm:max-h-80 overflow-auto">
-                    {(notifOrders?.items ?? []).length === 0 && (
-                      <li className="px-2.5 sm:px-3 py-2.5 sm:py-3 text-xs sm:text-sm text-neutral-500">Chưa có thông báo</li>
-                    )}
-                    {(notifOrders?.items ?? []).map((o, idx) => (
-                      <li key={o.id} className="px-1.5 sm:px-2 py-1">
-                        <Link
-                          href={`/profile?section=orders&tab=all&page=1&limit=10`}
-                          role="menuitem"
-                          ref={(el) => { notifItemRefs.current[idx] = el }}
-                          className="flex items-start gap-1.5 sm:gap-2 w-full text-left px-1.5 sm:px-2 py-2 sm:py-2.5 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-md sm:rounded-lg"
-                        >
-                          <div className="mt-1 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-emerald-500 shrink-0" aria-hidden />
-                          <div className="flex-1 min-w-0 space-y-0.5">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2">
-                              <div className="font-medium text-[11px] sm:text-sm truncate">Đơn {o.code || o.orderCode || o.id}</div>
-                              <div className="text-[10px] sm:text-[11px] text-neutral-500 shrink-0">{o.createdAt ? new Date(o.createdAt).toLocaleString('vi-VN', { month: '2-digit', day: '2-digit' }) : ''}</div>
-                            </div>
-                            <div className="text-[10px] sm:text-[13px] text-neutral-600 truncate">Trạng thái: {statusLabel(o.status)}</div>
-                          </div>
-                          <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-neutral-400 shrink-0 mt-1" />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="px-1.5 sm:px-2 pt-1 pb-1.5 sm:pb-2 border-t border-neutral-100">
-                    <Link
-                      href={`${ROUTES.profile}?section=orders&tab=all&page=1&limit=10`}
-                      className="w-full inline-flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-2 py-1.5 sm:py-2 rounded-md sm:rounded-lg hover:bg-neutral-100 font-medium"
-                    >
-                      Xem tất cả đơn hàng
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-black text-white">Thông báo</TooltipContent>
-        </Tooltip>
-
-        <Sheet modal={false}>
-          <Tooltip>
-            <SheetTrigger asChild>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                className="relative rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-neutral-900 hover:text-[var(--color-seagull-300)] hover:bg-black/5"
-                  aria-label="Giỏ hàng"
-                  title="Giỏ hàng"
-                >
-                  <span className="relative flex items-center">
-                    <IoCartOutline className="h-7 w-7" />
-                    <span className="absolute -top-2 left-3 inline-flex items-center justify-center bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">
-                      {cartQty}
-                    </span>
+              <span className="relative flex items-center">
+                <ShoppingBag className="h-5 w-5" />
+                {cartQty > 0 && (
+                  <span className="absolute -top-2 left-3 inline-flex items-center justify-center bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">
+                    {cartQty}
                   </span>
-                  <span className="sr-only">Số sản phẩm trong giỏ: {cartQty}</span>
-                </Button>
-              </TooltipTrigger>
-            </SheetTrigger>
-            <TooltipContent side="bottom" className="bg-black text-white">
-              Giỏ hàng
-            </TooltipContent>
-          </Tooltip>
+                )}
+              </span>
+            </Button>
+          </SheetTrigger>
           <SheetContent side="right" className="w-full sm:max-w-lg">
             <SheetHeader className="pb-3">
               <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
@@ -660,6 +368,12 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         onClick={onHiddenAdminTap}
         className="absolute top-0 -right-8 w-6 h-6 opacity-0 active:opacity-100 focus:opacity-100 select-none"
         tabIndex={-1}
+      />
+      
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={searchOpen} 
+        onClose={() => setSearchOpen(false)} 
       />
     </div>
   )
