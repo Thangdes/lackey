@@ -6,9 +6,47 @@ import Image from "next/image";
 import { useCategoryList } from "@/hook/useCategory";
 import type { Category } from "@/service/category.service";
 import { ROUTES } from "@/constant/route";
-import { DEFAULT_CATEGORY_IMAGE } from "@/constant/image";
-import { FaTag } from "react-icons/fa";
-import SectionHeader from "@/components/common/SectionHeader";
+import { ArrowRight } from "lucide-react";
+
+// Mock categories cho demo
+const MOCK_CATEGORIES: Category[] = [
+  {
+    id: "1",
+    name: "Anime",
+    slug: "anime",
+    thumbnailUrl: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400",
+  },
+  {
+    id: "2",
+    name: "Kpop",
+    slug: "kpop",
+    thumbnailUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400",
+  },
+  {
+    id: "3",
+    name: "Game",
+    slug: "game",
+    thumbnailUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400",
+  },
+  {
+    id: "4",
+    name: "Cartoon",
+    slug: "cartoon",
+    thumbnailUrl: "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400",
+  },
+  {
+    id: "5",
+    name: "Custom",
+    slug: "custom",
+    thumbnailUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+  },
+  {
+    id: "6",
+    name: "LED",
+    slug: "led",
+    thumbnailUrl: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+  },
+];
 
 type Props = {
   title?: string;
@@ -22,38 +60,30 @@ type Props = {
 
 const CategoriesGrid: React.FC<Props> = ({
   title = "Danh mục nổi bật",
-  subtitle = "Khám phá các danh mục phổ biến",
+  subtitle,
   viewAllHref = ROUTES.products,
   viewAllText = "Xem tất cả",
+  showDescription = false,
   mobileLayout = "grid",
   fallbackCategories,
 }) => {
-  const { data, isLoading, isError } = useCategoryList();
-  const categories: Category[] = Array.isArray(data) ? data : [];
+  const { data, isLoading } = useCategoryList();
+  const categories: Category[] = Array.isArray(data) && data.length > 0 ? data : MOCK_CATEGORIES;
 
   if (isLoading) {
     return (
-      <section aria-label="Categories" className="py-8 md:py-12">
+      <section className="w-full bg-white py-16 md:py-20">
         <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-          <SectionHeader
-            title={
-              <>
-                <FaTag className="h-5 w-5 text-[var(--color-cod-gray-900)]" aria-hidden="true" />
-                <h2 className="text-lg md:text-xl font-semibold text-[var(--color-cod-gray-900)]">
-                  <span className="inline-block h-5 w-40 rounded bg-neutral-200 align-middle" aria-hidden="true" />
-                  <span className="sr-only">{title}</span>
-                </h2>
-              </>
-            }
-            subtitle={<span className="inline-block h-4 w-64 rounded bg-neutral-200" aria-hidden="true" />}
-            align="left"
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="mb-8 md:mb-12">
+            <div className="h-12 w-64 bg-gray-200 animate-pulse mb-3" />
+            <div className="h-4 w-96 bg-gray-100 animate-pulse" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-xl overflow-hidden bg-[#FFFFFF] ring-1 ring-black/5">
-                <div className="relative w-full aspect-square bg-neutral-100 animate-pulse" />
-                <div className="p-2">
-                  <div className="h-4 w-24 rounded bg-neutral-200" />
+              <div key={i} className="border border-gray-200 overflow-hidden">
+                <div className="aspect-square bg-gray-200 animate-pulse" />
+                <div className="p-3 bg-white">
+                  <div className="h-4 w-20 bg-gray-200 animate-pulse" />
                 </div>
               </div>
             ))}
@@ -63,130 +93,62 @@ const CategoriesGrid: React.FC<Props> = ({
     );
   }
 
-  const renderItems: Category[] = (isError || categories.length === 0)
-    ? (fallbackCategories || [])
-    : categories;
+  const renderItems: Category[] = categories.slice(0, 6);
   if (renderItems.length === 0) return null;
 
   return (
-    <section aria-label="Categories" className="py-8 md:py-12">
+    <section className="w-full bg-white py-16 md:py-20">
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        <SectionHeader
-          title={
-            <>
-              <FaTag className="h-5 w-5 text-[var(--color-cod-gray-900)]" aria-hidden="true" />
-              <h2 className="text-lg md:text-xl font-semibold text-[var(--color-cod-gray-900)]">{title}</h2>
-            </>
-          }
-          subtitle={subtitle}
-          ctaHref={viewAllHref}
-          ctaText={viewAllText}
-          align="left"
-        />
-        {mobileLayout === "carousel" ? (
-          <>
-            <div>
-              <div className="no-scrollbar overflow-x-auto md:overflow-visible">
-                <div className="flex gap-3 md:hidden">
-                  {renderItems.map((c) => {
-                    const img = c.thumbnailUrl || DEFAULT_CATEGORY_IMAGE;
-                    return (
-                      <Link
-                        key={c.id}
-                        href={{ pathname: ROUTES.products, query: { category: c.slug } }}
-                        className="group w-44 shrink-0 overflow-hidden rounded-xl bg-[#FFFFFF] ring-1 ring-black/5 hover:ring-black/10 hover:shadow-lg transition-all duration-200 will-change-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cod-gray-900)]/20"
-                        aria-label={`Xem sản phẩm trong danh mục ${c.name}`}
-                      >
-                        <div className="relative w-full aspect-square">
-                          <Image
-                            src={img}
-                            alt={c.name}
-                            fill
-                            sizes="(max-width: 640px) 44vw, 176px"
-                            className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
-                            priority={false}
-                          />
-                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent opacity-95 group-hover:opacity-100 transition-opacity" />
-                          <div className="absolute inset-x-2 bottom-2 flex items-center justify-center">
-                            <span className="inline-flex max-w-full items-center justify-center rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-[var(--color-cod-gray-900)] shadow-sm ring-1 ring-black/10 backdrop-blur-[2px] truncate transition-all duration-200 group-hover:scale-105 group-hover:shadow-md" title={c.name}>
-                              <FaTag className="mr-1 h-3 w-3 text-neutral-500" />
-                              <span className="truncate">{c.name}{(() => { const cc = c as Category & { productCount?: number; count?: number; productsCount?: number }; const n = cc.productCount ?? cc.count ?? cc.productsCount; return typeof n === 'number' && n > 0 ? ` • ${n}` : ""; })()}</span>
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
+        <div className="mb-8 md:mb-12">
+          <h2 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl lg:text-5xl text-neutral-900 mb-3 tracking-wider uppercase">
+            {title}
+          </h2>
+          {subtitle && (
+            <p className="text-base md:text-lg text-neutral-600 max-w-2xl">
+              {subtitle}
+            </p>
+          )}
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-8">
+          {renderItems.map((c) => (
+            <Link
+              key={c.id}
+              href={{ pathname: ROUTES.products, query: { category: c.slug } }}
+              className="group bg-white border border-transparent hover:border-black transition-all overflow-hidden"
+            >
+              <div className="relative aspect-square bg-gray-200 overflow-hidden">
+                {c.thumbnailUrl ? (
+                  <Image
+                    src={c.thumbnailUrl}
+                    alt={c.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200" />
+                )}
               </div>
-            </div>
-            {/* Desktop grid */}
-            <div className="hidden md:grid grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {renderItems.map((c) => {
-                const img = c.thumbnailUrl || DEFAULT_CATEGORY_IMAGE;
-                return (
-                  <Link
-                    key={c.id}
-                    href={{ pathname: ROUTES.products, query: { category: c.slug } }}
-                    className="group overflow-hidden rounded-xl bg-[#FFFFFF] ring-1 ring-black/5 hover:ring-black/10 hover:shadow-lg transition-all duration-200 will-change-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cod-gray-900)]/20"
-                    aria-label={`Xem sản phẩm trong danh mục ${c.name}`}
-                  >
-                    <div className="relative w-full aspect-square">
-                      <Image
-                        src={img}
-                        alt={c.name}
-                        fill
-                        sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                        className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
-                        priority={false}
-                      />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent opacity-95 group-hover:opacity-100 transition-opacity" />
-                      <div className="absolute inset-x-3 bottom-3 flex items-center justify-center">
-                        <span className="inline-flex max-w-full items-center justify-center rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-[var(--color-cod-gray-900)] shadow-sm ring-1 ring-black/10 backdrop-blur-[2px] truncate transition-all duration-200 group-hover:scale-105 group-hover:shadow-md" title={c.name}>
-                          <FaTag className="mr-1 h-3.5 w-3.5 text-neutral-500" />
-                          <span className="truncate">{c.name}{(() => { const cc = c as Category & { productCount?: number; count?: number; productsCount?: number }; const n = cc.productCount ?? cc.count ?? cc.productsCount; return typeof n === 'number' && n > 0 ? ` • ${n}` : ""; })()}</span>
-                        </span>
-                      </div>
-                    </div>
-                    {/* No description block for cleaner look */}
-                  </Link>
-                );
-              })}
-            </div>
-          </>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {renderItems.map((c) => {
-              const img = c.thumbnailUrl || DEFAULT_CATEGORY_IMAGE;
-              return (
-                <Link
-                  key={c.id}
-                  href={{ pathname: ROUTES.products, query: { category: c.slug } }}
-                  className="group overflow-hidden rounded-xl bg-[#FFFFFF] ring-1 ring-black/5 hover:ring-black/10 hover:shadow-lg transition-all duration-200 will-change-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cod-gray-900)]/20"
-                  aria-label={`Xem sản phẩm trong danh mục ${c.name}`}
-                >
-                  <div className="relative w-full aspect-square">
-                    <Image
-                      src={img}
-                      alt={c.name}
-                      fill
-                      sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, (max-width: 1280px) 22vw, 16vw"
-                      className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
-                      priority={false}
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent opacity-95 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute inset-x-2 bottom-2 flex items-center justify-center">
-                      <span className="inline-flex max-w-full items-center justify-center rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-[var(--color-cod-gray-900)] shadow-sm ring-1 ring-black/10 backdrop-blur-[2px] truncate transition-all duration-200 group-hover:scale-105 group-hover:shadow-md" title={c.name}>
-                        <FaTag className="mr-1 h-3 w-3 text-neutral-500" />
-                        <span className="truncate">{c.name}{(() => { const cc = c as Category & { productCount?: number; count?: number; productsCount?: number }; const n = cc.productCount ?? cc.count ?? cc.productsCount; return typeof n === 'number' && n > 0 ? ` • ${n}` : ""; })()}</span>
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+              
+              <div className="p-3 bg-white border-t border-gray-200 group-hover:bg-black group-hover:text-white transition-colors">
+                <h3 className="text-sm md:text-base font-bold text-center uppercase truncate">
+                  {c.name}
+                </h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* View All Button */}
+        <div className="text-center">
+          <Link
+            href={viewAllHref}
+            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-black bg-white text-black hover:bg-black hover:text-white font-bold text-sm uppercase tracking-wider transition-all"
+          >
+            {viewAllText}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

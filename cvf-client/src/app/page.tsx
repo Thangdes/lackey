@@ -7,6 +7,13 @@ import ProductCarousel from "@/components/home/ProductCarousel";
 import TestimonialsLoader from "@/components/home/TestimonialsLoader";
 import BlogTeasers from "@/components/home/BlogTeasers";
 import PromoStripLoader from "@/components/home/PromoStripLoader";
+import BestSellers from "@/components/home/BestSellers";
+import TopCollections from "@/components/home/TopCollections";
+import MarqueeBanner from "@/components/home/MarqueeBanner";
+import RetroSaleBanner from "@/components/home/RetroSaleBanner";
+import RetroValueProps from "@/components/home/RetroValueProps";
+import CustomKeychainCTA from "@/components/home/CustomKeychainCTA";
+import RetroFAQ from "@/components/home/RetroFAQ";
 
 export const metadata: Metadata = {
   title: siteConfig.default.title,
@@ -35,31 +42,71 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div>
-      {/* <BannerLoader />
+      <BannerLoader />
       <PromoStripLoader />
-      <ProductCarousel
-        title="Bán chạy"
-        pageSize={21}
+      
+      <RetroValueProps 
+        title="VÌ SAO CHỌN LẮC KEY?"
+        subtitle="Móc khóa chất lượng cao - Thiết kế độc đáo - Giao hàng nhanh"
+        items={[
+          {
+            icon: "🎨",
+            title: "CUSTOM THEO Ý TƯỞNG",
+            description: "Thiết kế móc khóa theo hình ảnh, nhân vật yêu thích của bạn. In sắc nét, chất liệu cao cấp.",
+            ctaHref: "/products?custom=true",
+            ctaLabel: "Đặt custom ngay",
+          },
+          {
+            icon: "⚡",
+            title: "GIAO HÀNG SIÊU TỐC",
+            description: "Giao hàng toàn quốc 1-3 ngày. Đóng gói cẩn thận, an toàn tuyệt đối.",
+            ctaHref: "/about/shipping",
+            ctaLabel: "Xem chi tiết",
+          },
+          {
+            icon: "💯",
+            title: "CHẤT LƯỢNG CAO CẤP",
+            description: "Acrylic trong suốt, bền đẹp. In offset chất lượng cao, không phai màu theo thời gian.",
+            ctaHref: "/about/quality",
+            ctaLabel: "Cam kết",
+          },
+          {
+            icon: "🔄",
+            title: "ĐỔI TRẢ DỄ DÀNG",
+            description: "Đổi trả trong 7 ngày. Hoàn tiền 100% nếu có lỗi từ nhà sản xuất.",
+            ctaHref: "/return",
+            ctaLabel: "Chính sách",
+          },
+        ]}
       />
-      <ProductCarousel
-        title="Ưu đãi hàng đầu"
-        pageSize={21}
-        sort="rating"
-      />
+      
+      <BestSellers />
+      
+      <CustomKeychainCTA />
+      
+      <MarqueeBanner />
+            
+      <TopCollections />
+      <RetroSaleBanner />
+    
       <ClientOnly>
         <CategoriesGrid
           title="Danh mục nổi bật"
-          viewAllText="Xem tất cả"
-          mobileLayout="carousel"
+          subtitle="Khám phá bộ sưu tập móc khóa đa dạng từ Anime, Kpop đến Game. Tìm món đồ yêu thích của bạn!"
+          viewAllText="Xem tất cả danh mục"
+          mobileLayout="grid"
           showDescription
         />
-      </ClientOnly> */}
-      {/* <ValueProps /> */}
-      {/* <BrandCarousel /> */}
-      {/* Testimonials from CMS (site-content/testimonials). Fallback to ensure >= 4 */}
-      {/* <TestimonialsLoader /> */}
+      </ClientOnly>
+      
+      <TestimonialsLoader />
+      
+      <RetroFAQ 
+        title="CÂU HỎI THƯỜNG GẶP"
+        subtitle="Giải đáp mọi thắc mắc của bạn về móc khóa LắcKey"
+      />
+      
       {/* <BlogTeasers /> */}
-      {/* <Newsletter /> */}
     </div>
   )
 }
