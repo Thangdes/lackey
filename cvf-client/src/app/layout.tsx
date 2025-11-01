@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { defaultMetadata } from "@/config/seo";
 import { siteConfig } from "@/constant/site";
@@ -12,6 +13,7 @@ import AuthModal from "@/components/auth/AuthModal";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import CartBootstrap from "@/components/providers/CartBootstrap";
 import TopProgress from "@/components/progress/TopProgress";
+import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
 import { Suspense } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +23,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const fcRodancy = localFont({
+  src: "../font/FC-Rodancy.otf",
+  variable: "--font-retro",
+  display: "swap",
 });
 
 export const metadata: Metadata = defaultMetadata;
@@ -73,7 +81,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F3F5F8]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fcRodancy.variable} antialiased bg-white`}
         suppressHydrationWarning
       >
         <Suspense fallback={null}>
@@ -87,6 +95,7 @@ export default function RootLayout({
                 <GoogleAnalytics gaId="G-CL7D21ZY78" />
               </LayoutChrome>
               <AuthModal />
+              <ChristmasPopup />
               <CartBootstrap />
               <Toaster richColors position="top-right" duration={3000}/>
             </TooltipProvider>
