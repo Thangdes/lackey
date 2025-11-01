@@ -6,7 +6,8 @@ import { IoCartOutline } from 'react-icons/io5'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import CartMiniClient from '@/components/cart/CartMiniClient'
-import SearchInput from './SearchInput'
+import SearchModal from './SearchModal'
+import { Search } from 'lucide-react'
 import { useSmartCart } from '@/hook/useCart'
 import { Menu, User as UserIcon, ClipboardList, ShoppingCart as ShoppingCartIcon, LayoutGrid, HelpCircle, Phone, Truck, Undo2, FileText, Shield, Info, ChevronDown, ChevronRight, Clock, Eye, Star, Flame, Sparkles, Bell } from 'lucide-react'
 import { ROUTES } from '@/constant/route'
@@ -24,6 +25,7 @@ const MobileHeaderBar: React.FC = () => {
   const { data: user } = useAuthProfile()
   const openAuth = useAuthModalStore((s) => s.openWith)
 
+  const [searchOpen, setSearchOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
   const notifRef = useRef<HTMLDivElement | null>(null)
   const notifBtnRef = useRef<HTMLButtonElement | null>(null)
@@ -72,18 +74,25 @@ const MobileHeaderBar: React.FC = () => {
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
-                className="rounded-full p-2 text-white hover:text-[var(--brand-secondary)] hover:bg-white/10"
+                className="rounded-full p-2 text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
                 aria-label="Menu"
                 title="Menu"
               >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[82vw] max-w-sm">
-              <SheetHeader className="pb-3">
-                <SheetTitle className="text-base sm:text-lg truncate">Menu</SheetTitle>
-              </SheetHeader>
-              <MenuContent />
+            <SheetContent side="left" className="w-[85vw] max-w-sm bg-[#FFF8E7] p-0">
+              <div className="h-full flex flex-col">
+                <div className="px-4 py-4 bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black">
+                  <SheetTitle className="text-xl font-[family-name:var(--font-retro)] text-white uppercase tracking-wide flex items-center gap-2">
+                    <Menu className="h-5 w-5" />
+                    Menu
+                  </SheetTitle>
+                </div>
+                <div className="flex-1 overflow-y-auto px-3 py-4">
+                  <MenuContent />
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
@@ -91,18 +100,18 @@ const MobileHeaderBar: React.FC = () => {
         <div className="flex-1 flex justify-center">
           <Link
             href="/"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 group"
             aria-label="LắcKey"
           >
             <Image
               src="/logo/logo.jpg"
               alt="LắcKey"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-full object-cover"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-full object-cover transition-transform group-hover:scale-105"
               priority
             />
-            <span className="font-gumicons text-lg leading-none tracking-[-0.02em] select-none logo-strong text-white">
+            <span className="font-[family-name:var(--font-retro)] text-xl text-neutral-900 tracking-wide">
               LắcKey
             </span>
           </Link>
@@ -112,7 +121,7 @@ const MobileHeaderBar: React.FC = () => {
           {user ? (
             <Link
               href={ROUTES.profile}
-              className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-white hover:text-[var(--brand-secondary)] hover:bg-white/10 max-w-[140px]"
+              className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5 max-w-[140px]"
               aria-label="Hồ sơ của tôi"
               title={user?.username || user?.email || 'Hồ sơ của tôi'}
             >
@@ -122,7 +131,7 @@ const MobileHeaderBar: React.FC = () => {
           ) : (
             <Button
               variant="ghost"
-              className="rounded-full p-2 text-white hover:text-[var(--brand-secondary)] hover:bg-white/10"
+              className="rounded-full p-2 text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
               aria-label="Đăng nhập / Đăng ký"
               title="Đăng nhập / Đăng ký"
               onClick={() => openAuth('signin')}
@@ -135,7 +144,7 @@ const MobileHeaderBar: React.FC = () => {
             <Button
               ref={notifBtnRef}
               variant="ghost"
-              className="relative rounded-full cursor-pointer px-2 py-2 shadow-none border-none text-white hover:text-[var(--brand-secondary)] hover:bg-white/10"
+              className="relative rounded-full cursor-pointer px-2 py-2 shadow-none border-none text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
               aria-label="Thông báo"
               title="Thông báo"
               onClick={() => {
@@ -240,7 +249,7 @@ const MobileHeaderBar: React.FC = () => {
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative rounded-full cursor-pointer px-2 py-2 shadow-none border-none text-white hover:text-[var(--brand-secondary)] hover:bg-white/10"
+                className="relative rounded-full cursor-pointer px-2 py-2 shadow-none border-none text-neutral-900 hover:text-[var(--brand-secondary)] hover:bg-black/5"
                 aria-label="Giỏ hàng"
                 title="Giỏ hàng"
               >
@@ -271,13 +280,20 @@ const MobileHeaderBar: React.FC = () => {
       </div>
 
       <div className="w-full">
-        <SearchInput
-          containerClassName="w-full"
-          inputClassName="h-9"
-          buttonPaddingClass="px-2.5 py-1.5"
-          iconSizeClass="h-4 w-4"
-        />
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="w-full h-10 px-4 flex items-center gap-2 border-2 border-black bg-white text-left"
+        >
+          <Search className="w-4 h-4 text-gray-400" />
+          <span className="text-sm text-gray-500">Tìm kiếm móc khóa...</span>
+        </button>
       </div>
+      
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={searchOpen} 
+        onClose={() => setSearchOpen(false)} 
+      />
     </div>
   )
 }
@@ -315,14 +331,14 @@ const MenuContent: React.FC = () => {
   const topCats = useMemo(() => cats, [cats])
 
   return (
-    <nav className="mt-3 space-y-3 text-sm">
-      <Section title="Tài khoản">
+    <nav className="space-y-3 text-sm">
+      <Section title="Tài khoản" icon={<UserIcon className="h-4 w-4" />}>
         <MenuLink href={ROUTES.profile} icon={<UserIcon className="h-4 w-4 text-neutral-600" />}>Đăng nhập / Hồ sơ</MenuLink>
         <MenuLink href={ROUTES.orders} icon={<ClipboardList className="h-4 w-4 text-neutral-600" />}>Đơn hàng của tôi</MenuLink>
         <MenuLink href={ROUTES.cart} icon={<ShoppingCartIcon className="h-4 w-4 text-neutral-600" />}>Giỏ hàng</MenuLink>
       </Section>
 
-      <Section title="Danh mục" defaultOpen>
+      <Section title="Danh mục" icon={<LayoutGrid className="h-4 w-4" />} defaultOpen>
         {loading && <div className="px-2 py-1.5 text-neutral-500">Đang tải...</div>}
         {error && <div className="px-2 py-1.5 text-red-500">{error}</div>}
         {!loading && !error && (
@@ -348,7 +364,7 @@ const MenuContent: React.FC = () => {
         </div>
       </Section>
 
-      <Section title="Đã xem gần đây">
+      <Section title="Đã xem gần đây" icon={<Clock className="h-4 w-4" />}>
         {recentCats.length === 0 && recentProducts.length === 0 && (
           <div className="px-2 py-1.5 text-neutral-500">Chưa có mục nào</div>
         )}
@@ -400,7 +416,7 @@ const MenuContent: React.FC = () => {
         )}
       </Section>
 
-      <Section title="Bộ sưu tập nổi bật">
+      <Section title="Bộ sưu tập nổi bật" icon={<Star className="h-4 w-4" />}>
         <div className="grid grid-cols-2 gap-1 px-1">
           <CollectionLink label="Flash Sale" icon={<Flame className="h-4 w-4 text-neutral-700" />} params={{ sale: 'true' }} />
           <CollectionLink label="Bán chạy" icon={<Star className="h-4 w-4 text-neutral-700" />} params={{ sort: 'popular' }} />
@@ -409,7 +425,7 @@ const MenuContent: React.FC = () => {
         </div>
       </Section>
 
-      <Section title="Hỗ trợ & Chính sách">
+      <Section title="Hỗ trợ & Chính sách" icon={<HelpCircle className="h-4 w-4" />}>
         <MenuLink href={ROUTES.help} icon={<HelpCircle className="h-4 w-4 text-neutral-600" />}>Trung tâm trợ giúp</MenuLink>
         <MenuLink href={ROUTES.contact} icon={<Phone className="h-4 w-4 text-neutral-600" />}>Liên hệ</MenuLink>
         <MenuLink href={ROUTES.shipping} icon={<Truck className="h-4 w-4 text-neutral-600" />}>Vận chuyển</MenuLink>
@@ -422,21 +438,24 @@ const MenuContent: React.FC = () => {
   )
 }
 
-const Section: React.FC<{ title: string; defaultOpen?: boolean; children: React.ReactNode }> = ({ title, defaultOpen = false, children }) => {
+const Section: React.FC<{ title: string; icon?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }> = ({ title, icon, defaultOpen = false, children }) => {
   const [open, setOpen] = useState<boolean>(defaultOpen)
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white">
+    <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
       <button
         type="button"
-        className="w-full flex items-center justify-between px-3 py-2 font-semibold text-black hover:bg-neutral-50"
+        className="w-full flex items-center justify-between px-3 py-2.5 font-bold text-black bg-white hover:bg-[#FFF8E7] transition-colors border-b-2 border-black"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
-        <span>{title}</span>
-        <ChevronDown className={`h-4 w-4 text-neutral-600 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <span className="flex items-center gap-2 text-sm uppercase tracking-wide">
+          {icon}
+          {title}
+        </span>
+        <ChevronDown className={`h-4 w-4 text-black transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
-      <div className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="px-2 pb-3">
+      <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-[600px]' : 'max-h-0'}`}>
+        <div className="px-2 py-3 bg-white">
           {children}
         </div>
       </div>
@@ -445,19 +464,19 @@ const Section: React.FC<{ title: string; defaultOpen?: boolean; children: React.
 }
 
 const MenuLink: React.FC<{ href: import('next/link').LinkProps['href']; icon?: React.ReactNode; children: React.ReactNode }> = ({ href, icon, children }) => (
-  <Link href={href} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-100 text-black">
-    {icon && <span aria-hidden>{icon}</span>}
-    <span className="truncate">{children}</span>
+  <Link href={href} className="flex items-center gap-2.5 px-3 py-2 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] text-black transition-all group">
+    {icon && <span aria-hidden className="text-[#AE1C2C] group-hover:scale-110 transition-transform">{icon}</span>}
+    <span className="truncate text-sm font-medium">{children}</span>
   </Link>
 )
 
 const CollectionLink: React.FC<{ label: string; icon: React.ReactNode; params: Record<string, string> }> = ({ label, icon, params }) => (
   <Link
     href={buildProductsWithParams(params)}
-    className="flex items-center gap-2 px-2 py-2 rounded border border-neutral-200 hover:bg-neutral-100 text-black"
+    className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white border-2 border-black hover:bg-[#AE1C2C] hover:text-white text-black transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] group"
   >
-    <span aria-hidden>{icon}</span>
-    <span className="truncate text-[13px] font-medium">{label}</span>
+    <span aria-hidden className="group-hover:scale-110 transition-transform">{icon}</span>
+    <span className="truncate text-xs font-bold uppercase tracking-wide">{label}</span>
   </Link>
 )
 

@@ -14,9 +14,10 @@ const LayoutChrome: React.FC<React.PropsWithChildren> = ({ children }) => {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
   const isSupplier = pathname?.startsWith("/supplier");
+  const isCheckout = pathname?.startsWith("/checkout");
 
 
-  if (isAdmin || isSupplier) {
+  if (isAdmin || isSupplier || isCheckout) {
     return <>{children}</>;
   }
 
@@ -24,8 +25,8 @@ const LayoutChrome: React.FC<React.PropsWithChildren> = ({ children }) => {
     <>
       <Header />
       <div className="">{children}</div>
-      {/* <ChatWidget /> */}
-      {/* <Footer /> */}
+      <ChatWidget />
+      <Footer />
     </>
   );
 };
