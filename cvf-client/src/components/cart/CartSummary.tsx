@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FiClipboard, FiTruck, FiTag, FiDollarSign, FiBox, FiMapPin } from "react-icons/fi";
-import { DiscountBox } from "@/components/checkout/summary/DiscountBox";
 import { CART_UI } from "@/constant/ui";
 import { ROUTES } from "@/constant/route";
-import TrustBadges from "./parts/TrustBadges";
 
 export type CartSummaryProps = {
   subtotal: number;
@@ -52,120 +49,42 @@ export function CartSummary(props: CartSummaryProps) {
   } = props;
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-white p-5">
-      <h3 className="flex items-center gap-2 text-base font-semibold">
-        <FiClipboard className="shrink-0" /> {CART_UI.summary}
-      </h3>
-      <div className="mt-3 flex items-center justify-between text-sm" aria-live="polite">
-        <span className="inline-flex items-center gap-1.5"><FiBox />{CART_UI.subtotal}</span>
-        <span className="font-semibold">{formatVND(subtotal)}</span>
-      </div>
-
-      <div className="mt-3 text-sm">
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-1.5 text-black/70" htmlFor="shipping-fee">
-            <FiTruck /> {CART_UI.shipping}
-          </label>
-          <span id="shipping-fee" className="font-semibold">
-            {shippingLoading ? (
-              <span className="text-black/50">Đang tính...</span>
-            ) : effectiveShipping === 0 ? (
-              "Miễn phí"
-            ) : (
-              formatVND(effectiveShipping)
-            )}
-          </span>
-        </div>
-        
-        {/* Address display and change button */}
-        {currentAddress && (
-          <div className="mt-2 flex items-start justify-between gap-2">
-            <div className="flex-1 text-xs text-black/60">
-              <div className="flex items-center gap-1">
-                <FiMapPin className="shrink-0" />
-                <span>Giao đến:</span>
-              </div>
-              <div className="mt-0.5 pl-4">
-                {currentAddress.ward}, {currentAddress.district}, {currentAddress.city}
-              </div>
-            </div>
-            {onChangeAddress && (
-              <button
-                onClick={onChangeAddress}
-                className="shrink-0 text-xs text-[#AE1C2C] hover:underline"
-                type="button"
-              >
-                Thay đổi
-              </button>
-            )}
-          </div>
-        )}
-        
-        {/* No address message */}
-        {!currentAddress && !shippingLoading && (
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 text-xs text-amber-600">
-              <FiMapPin className="shrink-0" />
-              <span>Chưa có địa chỉ giao hàng</span>
-            </div>
-            {onChangeAddress && (
-              <button
-                onClick={onChangeAddress}
-                className="text-xs text-[#AE1C2C] hover:underline"
-                type="button"
-              >
-                Chọn địa chỉ
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-3 text-sm">
-        <DiscountBox
-          options={options}
-          selectedCode={selectedCode || ""}
-          appliedCode={appliedCode}
-          discountAmount={discountAmount}
-          applyingDiscount={applyingDiscount}
-          itemsLength={itemsLength}
-          onSelect={onSelect}
-          onClear={onClearDiscount}
-          formatVND={formatVND}
-        />
-        {appliedCode ? (
-          <div className="mt-2 text-xs text-emerald-700" aria-live="polite">
-            Đã tiết kiệm {formatVND(discountAmount)} với mã <b>{appliedCode}</b>
-          </div>
-        ) : null}
-      </div>
-
-      {typeof savings === 'number' && savings > 0 && (
-        <div className="mt-3 flex items-center justify-between text-sm">
-          <span className="inline-flex items-center gap-1.5"><FiTag />Tiết kiệm</span>
-          <span className="font-semibold text-[--color-pomegranate-700]">- {formatVND(savings)}</span>
-        </div>
-      )}
-
-      <div className="mt-3 flex items-center justify-between text-sm">
-        <span className="inline-flex items.center gap-1.5"><FiTag />{CART_UI.discount}</span>
-        <span className="font-semibold text-[--color-pomegranate-700]">
-          - {formatVND(appliedCode ? discountAmount : 0)}
+    <div className="bg-white">
+      {/* Total */}
+      <div className="flex items-center justify-between py-8 border-b border-gray-200" aria-live="polite">
+        <span className="text-base font-semibold text-gray-900 uppercase tracking-wide">
+          Total
+        </span>
+        <span className="text-2xl font-bold text-gray-900">
+          {formatVND(total)}
         </span>
       </div>
-      <div className="mt-3 flex items-center justify-between text-sm border-t border-black/10 pt-3" aria-live="polite">
-        <span className="font-semibold inline-flex items-center gap-1.5"><FiDollarSign />{CART_UI.total}</span>
-        <span className="text-xl font-semibold text-[#AE1C2C] px-2 py-1 rounded">{formatVND(total)}</span>
-      </div>
 
-      <div className="mt-4 space-y-2">
+      {/* Note */}
+      <p className="text-sm text-gray-600 text-right mt-4 mb-6">
+        Taxes included. Discounts and shipping calculated at checkout.
+      </p>
+
+      {/* Checkout Buttons */}
+      <div className="space-y-3">
         <Link
           href={ROUTES.checkout ?? "/checkout"}
-          className="inline-flex w-full items-center justify-center rounded-lg border border-black bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/30"
+          className="block w-full py-3.5 bg-black text-white text-center text-sm font-semibold hover:bg-gray-800 transition-colors"
         >
-          {CART_UI.checkout}
+          Go to Checkout
         </Link>
-        <TrustBadges />
+        
+        {/* Shop Pay Button */}
+        <button
+          type="button"
+          className="w-full py-3.5 bg-[#5a31f4] text-white text-center text-sm font-semibold hover:bg-[#4c28d4] transition-colors flex items-center justify-center gap-2"
+        >
+          <svg width="50" height="20" viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M49.5 10C49.5 15.2467 45.2467 19.5 40 19.5C34.7533 19.5 30.5 15.2467 30.5 10C30.5 4.75329 34.7533 0.5 40 0.5C45.2467 0.5 49.5 4.75329 49.5 10Z" fill="white" stroke="white"/>
+            <path d="M19.5 10C19.5 15.2467 15.2467 19.5 10 19.5C4.75329 19.5 0.5 15.2467 0.5 10C0.5 4.75329 4.75329 0.5 10 0.5C15.2467 0.5 19.5 4.75329 19.5 10Z" fill="white" stroke="white"/>
+          </svg>
+          <span>Pay</span>
+        </button>
       </div>
     </div>
   );

@@ -9,11 +9,18 @@ import { formatVND } from "@/utils/format";
 import { ROUTES } from "@/constant/route";
 import { productService } from "@/service/product.service";
 import { CartItemRow } from "./CartItemRow";
-import { Button } from "@/components/ui/button";
+import { Truck } from "lucide-react";
 
-export default function CartMiniClient({ hideMiniAction, highlightSku: forceHighlightSku }: { hideMiniAction?: boolean; highlightSku?: string; }) {
+export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMiniAction }: { highlightSku?: string; hideMiniAction?: boolean; }) {
   const cart = useSmartCart();
   const items = (cart.items as SmartCartItem[]);
+  
+  // Free shipping threshold (500,000 VND)
+  const FREE_SHIPPING_THRESHOLD = 500000;
+  const subtotal = cart.totals?.subtotal ?? 0;
+  const progress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const hasFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
 
   const [highlightSku, setHighlightSku] = useState<string | null>(null);
 
@@ -97,36 +104,105 @@ export default function CartMiniClient({ hideMiniAction, highlightSku: forceHigh
 
   if (items.length === 0) {
     return (
-      <div className="p-4 text-sm text-neutral-600">Giỏ hàng của bạn đang trống.</div>
+      <div className="flex flex-col items-center justify-center py-16 px-6">
+        <div className="text-center">
+          <p className="text-base text-gray-600 mb-4">Giỏ hàng của bạn đang trống</p>
+          <Link
+            href={ROUTES.products}
+            className="inline-block px-6 py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+          >
+            Tiếp tục mua sắm
+          </Link>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[90vh] border-none flex-1">
-      <div className="flex-1 overflow-y-auto overscroll-contain flex flex-col gap-3 divide-y divide-black/10 border-t border-black/10">
-        {items.map((it) => (
-          <div key={it.sku} className="py-3">
+    <div className="flex flex-col h-full">
+      {/* Free Shipping Progress */}
+      <div className="px-6 py-4 bg-gray-50">
+        {hasFreeShipping ? (
+          <div className="flex items-center gap-2 text-sm font-medium text-green-600">
+            <Truck className="w-4 h-4" />
+            <span>Bạn đã được miễn phí ship!</span>
+          </div>
+        ) : (
+          <div>
+            <p className="text-xs text-gray-600 mb-2">
+              Thêm <span className="font-semibold text-gray-900">{formatVND(remaining)}</span> để được miễn phí ship
+            </p>
+            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Cart Items */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="space-y-4">
+          {items.map((it) => (
             <CartItemRow
+              key={it.sku}
               item={it}
               highlight={highlightSku === it.sku}
               maxStock={stockMap.get(it.sku)}
               onChangeQty={onChangeQty}
               onRemove={onRemove}
               formatVND={formatVND}
-              mode={"mini"}
+              mode="mini"
             />
-          </div>
-        ))}
-      </div>
-      {!hideMiniAction && (
-        <div className="mt-auto pt-4 border-t border-black/10 py-2 px-4">
-          <Button asChild className="w-full rounded-lg">
-            <Link href={ROUTES.cart}>
-              Xem giỏ hàng
-            </Link>
-          </Button>
+          ))}
         </div>
-      )}
+      </div>
+
+      {/* Recommendations Placeholder */}
+      <div className="px-6 py-4 bg-gray-50 border-y border-gray-200">
+        <h3 className="text-sm font-semibold text-gray-900 text-center mb-2">
+          SẢN PHẨM LIÊN QUAN
+        </h3>
+        <p className="text-xs text-gray-600 text-center">
+          Thêm sản phẩm vào giỏ để xem gợi ý
+        </p>
+      </div>
+
+      {/* Bottom Summary & Checkout */}
+      <div className="px-6 py-4 border-t border-gray-200 bg-white">
+        {/* Total */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-base font-semibold text-gray-900 uppercase">
+            TỔNG CỘNG
+          </span>
+          <span className="text-lg font-bold text-gray-900">
+            {formatVND(subtotal)}
+          </span>
+        </div>
+        <p className="text-xs text-gray-600 mb-4">
+          Thuế và phí ship sẽ được tính khi thanh toán
+        </p>
+        
+        {/* Checkout Button */}
+        <Link
+          href={ROUTES.checkout}
+          className="block w-full py-3 bg-[#fff100] hover:bg-[#ffed00] border-2 border-black text-black text-center text-sm font-bold uppercase tracking-wide transition-colors"
+        >
+          THANH TOÁN NGAY
+        </Link>
+        
+        {/* View Cart Link */}
+        {!hideMiniAction && (
+          <Link
+            href={ROUTES.cart}
+            className="block w-full py-3 mt-2 text-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Xem giỏ hàng
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
