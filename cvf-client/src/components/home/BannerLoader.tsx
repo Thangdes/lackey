@@ -1,10 +1,7 @@
 "use client";
 
-import Banner from "@/components/home/Banner";
-import { useBanners } from "@/hook/useSiteContent";
+import HeroBanner from "@/components/home/HeroBanner";
 
 export default function BannerLoader() {
-  const { data } = useBanners();
-  const items = data ?? [];
-  return <Banner items={items} disableFallback />;
+  return <HeroBanner />;
 }

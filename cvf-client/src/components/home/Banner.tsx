@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type BannerItem = {
   imageUrl: string
@@ -137,10 +138,8 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
       const { step, visible } = compute()
       setStepPercent(step)
       setVisibleCount(visible)
-      // Mark layout ready and only then re-enable transitions
       if (!layoutReady) {
         setLayoutReady(true)
-        // ensure transform changes don't animate on first layout
         setTransitioning(false)
         const track = trackRef.current
         if (track) void track.offsetHeight
@@ -152,7 +151,6 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
     return () => window.removeEventListener('resize', apply)
   }, [layoutReady])
 
-  // Memoized navigation function (placed before effects that use it)
   const navigate = useCallback((delta: number) => {
     if (navLockRef.current) return
     if (!transitioning) return
@@ -295,9 +293,9 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
   }, [index])
 
   return (
-    <section aria-label="Banner trang chủ" className="relative w-full">
-      <div ref={containerRef} className="relative w-full overflow-hidden group bg-neutral-900">
-        <div className="relative h-[260px] md:h-[420px] lg:h-[500px] min-[1920px]:h-[640px] bg-neutral-900">
+    <section aria-label="Banner trang chủ" className="relative w-full bg-gradient-to-b from-gray-50 to-white">
+      <div ref={containerRef} className="relative w-full overflow-hidden group bg-black/95">
+        <div className="relative h-[280px] md:h-[450px] lg:h-[520px] min-[1920px]:h-[680px] bg-black/95">
           {readyToShow ? (
             <div
               ref={trackRef}
@@ -342,7 +340,8 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
                           Không tải được hình
                         </div>
                       )}
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
                     </Link>
                   ) : (
                     <div className="relative h-full">
@@ -371,7 +370,8 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
                           Không tải được hình
                         </div>
                       )}
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
                     </div>
                   )}
                 </div>
@@ -384,8 +384,8 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
                   key={`ph-${i}`}
                   className="shrink-0 grow-0 basis-full md:basis-1/2 lg:basis-[40%] min-w-0 relative h-full"
                 >
-                  <div className="absolute inset-0 bg-neutral-800 animate-pulse" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/15 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 via-neutral-700 to-neutral-800 animate-pulse" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
                 </div>
               ))}
             </div>
@@ -395,19 +395,43 @@ const Banner: React.FC<Props> = ({ items, autoPlayMs = 0, arrowDelayMs = 300, di
         <button
           type="button"
           aria-label="Banner trước"
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/40 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto md:pointer-events-none md:group-hover:pointer-events-auto"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-[#AE1C2C] hover:bg-white hover:scale-110 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto md:opacity-0 md:group-hover:opacity-100 border-2 border-[#AE1C2C]/20"
           onClick={() => navigate(-1)}
         >
-          ‹
+          <ChevronLeft className="w-6 h-6" strokeWidth={2.5} />
         </button>
         <button
           type="button"
           aria-label="Banner tiếp theo"
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/40 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto md:pointer-events-none md:group-hover:pointer-events-auto"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-[#AE1C2C] hover:bg-white hover:scale-110 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto md:opacity-0 md:group-hover:opacity-100 border-2 border-[#AE1C2C]/20"
           onClick={() => navigate(1)}
         >
-          ›
+          <ChevronRight className="w-6 h-6" strokeWidth={2.5} />
         </button>
+        
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {slides.map((_, i) => {
+            const active = i === ((index % slides.length) + slides.length) % slides.length;
+            return (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Đi tới slide ${i + 1}`}
+                className={[
+                  'transition-all duration-300',
+                  active 
+                    ? 'w-8 h-2 bg-white rounded-full shadow-lg' 
+                    : 'w-2 h-2 bg-white/60 hover:bg-white/80 rounded-full hover:scale-125'
+                ].join(' ')}
+                onClick={() => {
+                  if (timerRef.current) window.clearTimeout(timerRef.current);
+                  setTransitioning(true);
+                  setIndex(i);
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
     </section>
   )
