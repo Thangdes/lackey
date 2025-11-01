@@ -22,6 +22,7 @@ import ProductDetailGalleryColumn from "@/components/products/detail/ProductDeta
 import ProductDetailInfoColumn from "@/components/products/detail/ProductDetailInfoColumn";
 import ProductTabsSection from "@/components/products/detail/ProductTabsSection";
 import ProductRelatedSection from "@/components/products/detail/ProductRelatedSection";
+import ProductCTASection from "@/components/products/detail/ProductCTASection";
 
 export type ProductClientViewProps = {
   product: Product;
@@ -146,7 +147,6 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
   const currentSku = selectedVariant?.sku || selectedVariant?.id;
   const cartItem = useMemo(() => (cart.items || []).find((it) => it.sku === currentSku), [cart.items, currentSku]);
   
-  // Fix hydration mismatch: use state to prevent SSR/client mismatch
   const [cartQty, setCartQty] = useState(0);
   useEffect(() => {
     setCartQty(cartItem?.quantity ?? 0);
@@ -275,11 +275,11 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
   }, [selectedVariant?.id, selectedVariant?.sku, pathname, router, searchParams]);
 
   return (
-    <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-3 sm:py-4 md:py-6 lg:py-8 pb-24 sm:pb-28 md:pb-10">
+    <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 pb-24 sm:pb-28 md:pb-10">
       <ProductToast message={toastMsg} />
       <ProductSEO product={p} images={images} selectedVariant={selectedVariant} price={price} compareAt={compareAt} isSale={isSale} discountPercent={discountPercent} />
       <ProductBreadcrumb product={p} />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-8 xl:gap-10 items-start">
         <ProductDetailGalleryColumn
           name={p.name}
           images={images}
@@ -343,6 +343,8 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
       ) : (
         <ProductRelatedSection related={related} loading={false} categorySlug={p.category?.slug ?? null} />
       )}
+
+      <ProductCTASection />
 
       <ProductMobileBar
         price={price}
