@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import { ROUTES } from "@/constant/route";
-import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/constant/site";
 import { TERMS_PAGE } from "@/constant/pages/terms";
 
@@ -29,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className=" px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
+    <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
       <Script id="ld-breadcrumb-terms" type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -49,52 +48,77 @@ export default function TermsPage() {
           description: TERMS_PAGE.metadata.description,
         })}
       </Script>
-      <header className="mb-8">
-        <span className="inline-flex items-center rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs text-neutral-700">{TERMS_PAGE.badge}</span>
-        <h1 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">{TERMS_PAGE.title}</h1>
-        <p className="mt-2 text-neutral-700 max-w-2xl">{TERMS_PAGE.metadata.description}</p>
-        <p className="mt-1 text-sm text-neutral-600">{TERMS_PAGE.lastUpdatedPrefix} 2025-09-03</p>
+      <nav aria-label="Breadcrumb" className="mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black">
+          <Link href={ROUTES.home} className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors">Trang chủ</Link>
+          <span className="text-black font-bold">/</span>
+          <span className="text-sm font-bold uppercase tracking-wide text-black">Điều khoản</span>
+        </div>
+      </nav>
+
+      <header className="mb-10 bg-[#fff100] border-4 border-black p-8 md:p-10 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <div className="inline-block px-4 py-1 bg-black text-white border-2 border-black mb-4">
+          <span className="text-xs font-bold uppercase tracking-wider">{TERMS_PAGE.badge}</span>
+        </div>
+        <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider uppercase text-black mb-3">{TERMS_PAGE.title}</h1>
+        <p className="text-black font-medium text-lg mb-2">{TERMS_PAGE.metadata.description}</p>
+        <p className="inline-block px-3 py-1 bg-black text-[#fff100] text-xs font-bold uppercase">{TERMS_PAGE.lastUpdatedPrefix} 2025-09-03</p>
       </header>
 
-      <section className="mb-6 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[0].title}</h2>
-        <p className="text-neutral-800">{TERMS_PAGE.sections[0].body}</p>
+      <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[0].title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">{TERMS_PAGE.sections[0].body}</p>
+        </div>
       </section>
 
-      <section className="mb-6 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[1].title}</h2>
-        <ul className="list-disc pl-6 space-y-2 text-neutral-800">
-          {TERMS_PAGE.sections[1].items?.map((i) => (<li key={i}>{i}</li>))}
+      <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[1].title}</h2>
+        <ul className="space-y-3">
+          {TERMS_PAGE.sections[1].items?.map((i) => (
+            <li key={i} className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">{i}</span>
+            </li>
+          ))}
         </ul>
       </section>
 
-      <section className="mb-6 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[2].title}</h2>
-        <p className="text-neutral-800">{TERMS_PAGE.sections[2].body}</p>
+      <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[2].title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">{TERMS_PAGE.sections[2].body}</p>
+        </div>
       </section>
 
-      <section className="mb-6 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[3].title}</h2>
-        <p className="text-neutral-800">
-          Chính sách giao hàng được mô tả tại <Link href={ROUTES.shipping} className="text-[#0F5555] hover:underline">{TERMS_PAGE.sections[3].linkText}</Link>.
-        </p>
+      <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[3].title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">
+            Chính sách giao hàng được mô tả tại <Link href={ROUTES.shipping} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">{TERMS_PAGE.sections[3].linkText}</Link>.
+          </p>
+        </div>
       </section>
 
-      <section className="mb-6 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[4].title}</h2>
-        <p className="text-neutral-800">
-          Vui lòng xem chi tiết <Link href={ROUTES.return} className="text-[#0F5555] hover:underline">{TERMS_PAGE.sections[4].linkText}</Link>.
-        </p>
+      <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[4].title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">
+            Vui lòng xem chi tiết <Link href={ROUTES.return} className="font-bold text-black underline hover:text-[var(--brand-secondary)] transition-colors">{TERMS_PAGE.sections[4].linkText}</Link>.
+          </p>
+        </div>
       </section>
 
-      <section className="mb-8 rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5">
-        <h2 className="text-xl font-semibold mb-2">{TERMS_PAGE.sections[5].title}</h2>
-        <p className="text-neutral-800">{TERMS_PAGE.sections[5].body}</p>
+      <section className="mb-8 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{TERMS_PAGE.sections[5].title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">{TERMS_PAGE.sections[5].body}</p>
+        </div>
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <Button asChild variant="outline"><Link href={ROUTES.privacy}>{TERMS_PAGE.links.privacy}</Link></Button>
-        <Button asChild><Link href={ROUTES.products}>{TERMS_PAGE.links.products}</Link></Button>
+        <Link href={ROUTES.privacy} className="px-6 py-3 bg-white text-black border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{TERMS_PAGE.links.privacy}</Link>
+        <Link href={ROUTES.products} className="px-6 py-3 bg-black text-white border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{TERMS_PAGE.links.products} →</Link>
       </div>
     </main>
   );
