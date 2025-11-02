@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import CartMiniClient from "./CartMiniClient";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { X } from "lucide-react";

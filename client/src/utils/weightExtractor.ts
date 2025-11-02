@@ -93,10 +93,11 @@ export function extractCartItemWeight(item: {
 
 
 export function logWeightExtraction(
-  item: { sku?: string; variantName?: string; productName?: string },
-  result: WeightExtractionResult,
-  quantity: number
+  _item: { sku?: string; variantName?: string; productName?: string },
+  _result: WeightExtractionResult,
+  _quantity: number
 ): void {
+  // Empty function - parameters prefixed with _ to indicate unused
 }
 
 export const WEIGHT_EXTRACTION_EXAMPLES = {

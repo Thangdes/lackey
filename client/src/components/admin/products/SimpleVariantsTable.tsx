@@ -22,7 +22,7 @@ export default function SimpleVariantsTable({ variants, onDelete, VND }: SimpleV
   if (variants.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        Chưa có biến thể nào. Nhấn "+ Thêm biến thể" để thêm.
+        Chưa có biến thể nào. Nhấn &quot;+ Thêm biến thể&quot; để thêm.
       </p>
     );
   }

@@ -1,5 +1,5 @@
 import { productService } from "@/service/product.service";
-import type { Product, ProductVariant } from "@/type/product";
+import type { ProductVariant } from "@/type/product";
 import { showErrorToast, showSuccessToast } from "@/components/toast/AppToast";
 
 const LOW_THRESHOLD = 5;

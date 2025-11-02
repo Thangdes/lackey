@@ -20,6 +20,7 @@ export function GallerySection() {
               className="aspect-square bg-white border-4 border-black overflow-hidden hover:-translate-y-2 transition-all"
               style={{ boxShadow: "8px 8px 0px 0px rgba(0,0,0,1)" }}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={img} alt={`Custom keychain ${index + 1}`} className="w-full h-full object-cover" />
             </div>
           ))}

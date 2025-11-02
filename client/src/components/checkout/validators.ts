@@ -22,7 +22,7 @@ export function validate(params: {
   const {
     fullName,
     user,
-    email,
+    // email, // Unused - will use default email if empty
     phone,
     city,
     street,
@@ -63,7 +63,7 @@ export function validateForVietQR(params: {
   ward?: string;
   street?: string;
 }): string | null {
-  const { fullName, phone, email, user, city, district, ward, street } = params;
+  const { fullName, phone, user, city, district, ward, street } = params;
   if (!fullName.trim()) return CHECKOUT_ERROR.fullNameRequired;
   if (!phone.trim()) return CHECKOUT_ERROR.phoneRequired;
   

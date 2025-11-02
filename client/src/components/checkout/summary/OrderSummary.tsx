@@ -2,9 +2,9 @@
 
 import type { LocalCartItem as TLocalCartItem } from "@/type/checkout";
 import React, { useMemo, useState } from "react";
-import { ReceiptText, Package, Truck, CircleDollarSign } from "lucide-react";
-import { ORDER_SUMMARY } from "@/constant/checkout";
-import { OrderItemRow } from "./OrderItemRow";
+// import { ReceiptText, Package, Truck, CircleDollarSign } from "lucide-react"; // Unused for now
+// import { ORDER_SUMMARY } from "@/constant/checkout"; // Unused for now
+// import { OrderItemRow } from "./OrderItemRow"; // Unused for now
 import { WarningList } from "./WarningList";
 import { CheckoutSummaryItemRow } from "./CheckoutSummaryItemRow";
 
@@ -27,7 +27,7 @@ type Props = {
   showBackLink?: boolean;
 };
 
-export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, globalWarnings, itemWarnings, discountAmount, discountCode, plain, hideTitle, showThumbnails, imageSize = "sm", collapsible, collapsedCount = 2, showBackLink = true }: Props) => {
+export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, globalWarnings, itemWarnings, discountAmount, discountCode, plain, imageSize = "sm", collapsible, collapsedCount = 2, showBackLink = true }: Props) => {
   const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     plain ? <>{children}</> : <div className="rounded-2xl border border-black/10 bg-white p-5">{children}</div>
   );

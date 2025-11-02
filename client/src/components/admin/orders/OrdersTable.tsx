@@ -8,7 +8,6 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
 } from "@/components/ui/table"
 import { Inbox } from "lucide-react"
 import OrderRow from "./OrderRow"

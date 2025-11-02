@@ -36,7 +36,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   fullStars,
   ratingCount,
   selectedVariant,
-  categoryId,
+  // categoryId, // Unused for now
   categoryName,
   supplierId,
   supplierName,

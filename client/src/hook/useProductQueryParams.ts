@@ -113,7 +113,7 @@ export function useProductQueryParams(): UseProductQueryParamsState {
       lastWrittenQsRef.current = nextQs;
       router.replace(nextQs ? `${pathname}?${nextQs}` : pathname, { scroll: false });
     }
-  }, [sort, selectedCategories, selectedBrands, selectedOffers, pathname, router, q, hydrated]);
+  }, [sort, selectedCategories, selectedBrands, selectedOffers, pathname, router, q, hydrated, searchParams]);
 
   useEffect(() => {
     const current = searchParams?.toString() || "";
@@ -151,7 +151,7 @@ export function useProductQueryParams(): UseProductQueryParamsState {
     if (!arraysEqual(urlOffers, selectedOffers)) {
       setSelectedOffers(urlOffers);
     }
-  }, [searchParams, sort, q, selectedBrands, selectedOffers]);
+  }, [searchParams, sort, q, selectedBrands, selectedOffers, selectedCategories]);
 
   return {
     sort,

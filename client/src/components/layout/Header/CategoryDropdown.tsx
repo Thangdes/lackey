@@ -106,6 +106,7 @@ const { data, isLoading } = useHeaderTopCategories();
                       onClick={() => setOpen(false)}
                     >
                       {c.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={c.thumbnailUrl} alt="" className="h-9 w-9 rounded-full object-cover ring-1 ring-black/10" />
                       ) : (
                         <span className="h-9 w-9 rounded-full bg-neutral-100 flex items-center justify-center ring-1 ring-black/10">

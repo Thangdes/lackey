@@ -29,16 +29,16 @@ export type ProductsFilterSidebarProps = {
 const ProductsFilterSidebar: React.FC<ProductsFilterSidebarProps> = ({
   className = "",
   show = true,
-  sort,
-  onChangeSort,
-  OFFER_OPTIONS,
+  // sort, // Unused for now
+  // onChangeSort, // Unused for now
+  // OFFER_OPTIONS, // Unused for now
   BRAND_OPTIONS,
   CATEGORY_OPTIONS,
   selectedBrands,
-  selectedDietary,
+  // selectedDietary, // Unused for now
   selectedCategories,
   toggleBrand,
-  toggleDietary,
+  // toggleDietary, // Unused for now
   toggleCategory,
 }) => {
   const toId = (prefix: string, val: string) =>

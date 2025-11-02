@@ -62,7 +62,7 @@ export default function ReturnPage() {
       <section className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
         <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{RETURN_PAGE.sections.conditions.title}</h2>
         <ul className="space-y-3">
-          {RETURN_PAGE.sections.conditions.items.map((i, idx) => (
+          {RETURN_PAGE.sections.conditions.items.map((i) => (
             <li key={i} className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
               <span className="text-xl shrink-0">•</span>
               <span className="font-medium text-neutral-800">{i}</span>
@@ -86,7 +86,7 @@ export default function ReturnPage() {
       <section className="mb-8 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
         <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{RETURN_PAGE.sections.shippingFee.title}</h2>
         <ul className="space-y-3 mb-4">
-          {RETURN_PAGE.sections.shippingFee.items.map((i, idx) => (
+          {RETURN_PAGE.sections.shippingFee.items.map((i) => (
             <li key={i} className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
               <span className="text-xl shrink-0">•</span>
               <span className="font-medium text-neutral-800">{i}</span>

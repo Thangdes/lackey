@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import type { PaymentMethod as Method } from "@/type/checkout";
-import { PAYMENT_UI } from "@/constant/checkout";
+// import { PAYMENT_UI } from "@/constant/checkout"; // Unused for now
 import { getOrderedEntries } from "./PaymentLogos";
 
 type Props = {
@@ -15,7 +14,7 @@ type Props = {
   pending?: boolean;
 };
 
-export const PaymentMethods = ({ method, total, onSelect, formatVND, bankBrandCode, selectingDisabled, pending }: Props) => {
+export const PaymentMethods = ({ method, total, onSelect, formatVND, selectingDisabled, pending }: Props) => {
   const meta: Record<Method, { label: string; desc: string; enabled: boolean }> = {
     COD: { 
       label: "Thanh toán tiền mặt khi nhận hàng", 

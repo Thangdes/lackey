@@ -364,9 +364,9 @@ export default function CheckoutClient() {
       const message = err instanceof Error ? err.message : "Không thể khởi tạo VietQR";
       showErrorToast({ title: "Lỗi VietQR", message });
     }
-  }, [buyer, alt, user, appliedCode, shippingFee, preSubmitChecks, checkoutMut, createPaymentLinkMut.isPending, afterOrderCreated, submitLocked, setMethod]);
+  }, [buyer, alt, appliedCode, shippingFee, preSubmitChecks, checkoutMut, createPaymentLinkMut.isPending, afterOrderCreated, submitLocked, setMethod]);
 
-  const { isPhone, isBelowMd } = useViewportFlags();
+  // const { isPhone, isBelowMd } = useViewportFlags(); // Unused for now
 
   const effectiveUser: (User & { customer?: { id?: string } }) | { email: string } | null =
     user || (customerIdState ? { email: "authed@placeholder" } : null);

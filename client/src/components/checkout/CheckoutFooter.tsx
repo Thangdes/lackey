@@ -16,7 +16,7 @@ export default function CheckoutFooter() {
     <footer className="border-t border-gray-200 bg-white py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          {links.map((link, index) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}

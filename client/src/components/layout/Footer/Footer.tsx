@@ -24,7 +24,7 @@ const Footer = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             showSuccessToast({ title: "Thành công", message: "Đăng ký thành công! Cảm ơn bạn đã theo dõi." });
             setEmail("");
-        } catch (error) {
+        } catch {
             showErrorToast({ title: "Lỗi", message: "Có lỗi xảy ra. Vui lòng thử lại." });
         } finally {
             setLoading(false);
