@@ -237,7 +237,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
       <Input
         placeholder={placeholder}
-        className={`flex w-full rounded-full border-2 border-black bg-white/80 backdrop-blur-[2px] pl-8 md:pl-4 pr-12 sm:pr-14 text-sm placeholder:text-gray-500 placeholder:font-medium shadow-xs hover:border-black focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none transition-[colors,box-shadow] ${inputClassName} text-black`}
+        className={`flex w-full rounded-full border-2 border-black bg-white/80 backdrop-blur-[2px] pl-8 md:pl-4 pr-10 sm:pr-12 md:pr-14 text-xs sm:text-sm md:text-sm h-9 sm:h-10 md:h-11 placeholder:text-gray-500 placeholder:font-medium shadow-xs hover:border-black focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none transition-[colors,box-shadow] ${inputClassName} text-black`}
         aria-label="Tìm kiếm"
         onFocus={handleInputFocus}
         onClick={handleInputClick}
@@ -249,27 +249,27 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <button
         type="button"
         aria-label="Thực hiện tìm kiếm"
-        className={`absolute right-0.5 sm:right-1 top-0.5 sm:top-1 bottom-0.5 sm:bottom-1 inline-flex items-center justify-center rounded-full bg-black text-white shadow-md hover:shadow-lg hover:bg-black/90 active:bg-black/95 active:scale-[0.98] focus-visible:outline-none transition-transform ${buttonPaddingClass}`}
+        className="absolute right-0.5 sm:right-1 top-0.5 sm:top-1 bottom-0.5 sm:bottom-1 inline-flex items-center justify-center rounded-full bg-black text-white shadow-md hover:shadow-lg hover:bg-black/90 active:bg-black/95 active:scale-[0.98] focus-visible:outline-none transition-transform px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2"
         onClick={handleSearchButtonClick}
       >
-        <Search className={`${iconSizeClass} font-extrabold text-white`} />
+        <Search className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 font-extrabold text-white" />
       </button>
 
       {open && (
         <div
           role="dialog"
           aria-label="Gợi ý tìm kiếm"
-          className="absolute left-0 right-0 top-full mt-1 z-50 overflow-hidden rounded-2xl border border-black bg-white shadow-lg transition-all duration-150 ease-out origin-top animate-in max-w-full"
+          className="absolute left-0 right-0 top-full mt-1 z-[1000] overflow-hidden rounded-2xl border border-black bg-white shadow-lg transition-all duration-150 ease-out origin-top animate-in max-w-full"
         >
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
+          <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
             {query.trim().length === 0 ? (
-              <p className="text-xs font-semibold text-neutral-500">Khám phá ngay</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-neutral-500">Khám phá ngay</p>
             ) : (
-              <p className="text-xs font-semibold text-neutral-500">Gợi ý cho “{query}”</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-neutral-500">Gợi ý cho "{query}"</p>
             )}
             {query.trim().length > 0 && (
               <button
-                className="text-xs text-neutral-500 hover:text-neutral-700"
+                className="text-[10px] sm:text-xs text-neutral-500 hover:text-neutral-700"
                 onClick={handleClearClick}
               >
                 Xoá
@@ -277,11 +277,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
             )}
           </div>
 
-          <div className="max-h-80 overflow-auto py-1">
+          <div className="max-h-64 sm:max-h-80 overflow-auto py-1">
             {query.trim().length === 0 && (
               <>
-                <div className="px-4 py-2">
-                  <p className="text-[11px] uppercase tracking-wide text-neutral-400 font-semibold">Gần đây</p>
+                <div className="px-3 sm:px-4 py-1.5 sm:py-2">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-wide text-neutral-400 font-semibold">Gần đây</p>
                 </div>
                 <ul className="py-0">
                   {recentSearches.map((label, idx) => (
@@ -290,19 +290,19 @@ const SearchInput: React.FC<SearchInputProps> = ({
                       ref={setItemRefByDataset}
                       data-index={idx}
                       data-label={label}
-                      className={`px-4 py-2 text-sm cursor-pointer flex items-center gap-2 ${highlightedIndex === idx ? 'bg-neutral-50' : 'hover:bg-neutral-50'} text-neutral-800`}
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm cursor-pointer flex items-center gap-2 ${highlightedIndex === idx ? 'bg-neutral-50' : 'hover:bg-neutral-50'} text-neutral-800`}
                       onMouseEnter={handleItemMouseEnter}
                       onMouseLeave={handleItemMouseLeave}
                       onClick={handleItemClick}
                     >
-                      <Clock className="size-4 text-neutral-400" />
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-400" />
                       <span className="line-clamp-1">{label}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="px-4 pt-3 pb-2">
-                  <p className="text-[11px] uppercase tracking-wide text-neutral-400 font-semibold">Phổ biến</p>
+                <div className="px-3 sm:px-4 pt-2 sm:pt-3 pb-1.5 sm:pb-2">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-wide text-neutral-400 font-semibold">Phổ biến</p>
                 </div>
                 <ul className="py-0">
                   {popularSearches.map((label, idx) => (
@@ -311,12 +311,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
                       ref={setItemRefByDataset}
                       data-index={recentSearches.length + idx}
                       data-label={label}
-                      className={`px-4 py-2 text-sm cursor-pointer flex items-center gap-2 ${highlightedIndex === (recentSearches.length + idx) ? 'bg-neutral-50' : 'hover:bg-neutral-50'} text-neutral-800`}
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm cursor-pointer flex items-center gap-2 ${highlightedIndex === (recentSearches.length + idx) ? 'bg-neutral-50' : 'hover:bg-neutral-50'} text-neutral-800`}
                       onMouseEnter={handleItemMouseEnter}
                       onMouseLeave={handleItemMouseLeave}
                       onClick={handleItemClick}
                     >
-                      <TrendingUp className="size-4 text-neutral-400" />
+                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-400" />
                       <span className="line-clamp-1">{label}</span>
                     </li>
                   ))}
@@ -326,35 +326,35 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
             {query.trim().length > 0 && (
               <div className="py-0">
-                <div className="px-4 py-2">
-                  <p className="text-[11px] uppercase tracking-wide text-neutral-400 font-semibold">Sản phẩm</p>
+                <div className="px-3 sm:px-4 py-1.5 sm:py-2">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-wide text-neutral-400 font-semibold">Sản phẩm</p>
                 </div>
                 <ul>
                   {loading && (
-                    <li className="px-4 py-3 text-sm text-neutral-500">Đang tải...</li>
+                    <li className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-neutral-500">Đang tải...</li>
                   )}
                   {error && !loading && (
-                    <li className="px-4 py-3 text-sm text-red-500">{error}</li>
+                    <li className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-red-500">{error}</li>
                   )}
                   {!loading && !error && results.length === 0 && (
-                    <li className="px-4 py-6 text-sm text-neutral-500">Không có sản phẩm phù hợp</li>
+                    <li className="px-3 sm:px-4 py-4 sm:py-6 text-xs sm:text-sm text-neutral-500">Không có sản phẩm phù hợp</li>
                   )}
                   {!loading && !error && results.map((p, i) => (
-                    <li key={p.id} className={`px-4 py-2 text-sm cursor-pointer ${highlightedResult === i ? 'bg-neutral-50' : ''}`}>
+                    <li key={p.id} className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm cursor-pointer ${highlightedResult === i ? 'bg-neutral-50' : ''}`}>
                       <Link
                         ref={(el) => { resultRefs.current[i] = el }}
                         href={buildProductDetailPath(p.slug || p.id)}
-                        className={`flex items-center gap-3 text-black hover:bg-neutral-50 rounded-md px-2 py-1.5 ${p.inStock === false ? 'opacity-60' : ''}`}
+                        className={`flex items-center gap-2 sm:gap-3 text-black hover:bg-neutral-50 rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 ${p.inStock === false ? 'opacity-60' : ''}`}
                         onMouseEnter={() => setHighlightedResult(i)}
                       >
                         {p.thumbnailUrl ? (
-                          <Image src={p.thumbnailUrl} alt={p.name} width={40} height={40} className="h-10 w-10 rounded object-cover bg-neutral-100" />
+                          <Image src={p.thumbnailUrl} alt={p.name} width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10 rounded object-cover bg-neutral-100" />
                         ) : (
-                          <div className="h-10 w-10 rounded bg-neutral-100" />
+                          <div className="h-8 w-8 sm:h-10 sm:w-10 rounded bg-neutral-100" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="line-clamp-2 font-medium">{p.name}</div>
-                          <div className="mt-0.5 text-[12px] text-neutral-600">
+                          <div className="line-clamp-2 font-medium text-xs sm:text-sm">{p.name}</div>
+                          <div className="mt-0.5 text-[10px] sm:text-[12px] text-neutral-600">
                             {(() => {
                               const minEff = typeof p.minEffectivePrice === 'number' ? p.minEffectivePrice : undefined
                               const vcount = (p as unknown as { variantCount?: unknown })?.variantCount
@@ -395,10 +395,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
                     </li>
                   ))}
                 </ul>
-                <div className="px-4 pt-2 pb-3">
+                <div className="px-3 sm:px-4 pt-1.5 sm:pt-2 pb-2 sm:pb-3">
                   <button
                     type="button"
-                    className="w-full text-left text-[13px] text-black hover:underline"
+                    className="w-full text-left text-[11px] sm:text-[13px] text-black hover:underline"
                     onClick={() => {
                       const v = query.trim(); if (!v) return; setOpenSafe(false); pushRecent(v); router.push(buildProductsWithParams({ q: v }))
                     }}
@@ -410,10 +410,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-between px-4 py-2 border-t border-neutral-100 bg-white/70">
-            <p className="text-xs text-neutral-500">Nhấn Enter để tìm “{query || '...'}”</p>
+          <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 border-t border-neutral-100 bg-white/70">
+            <p className="text-[10px] sm:text-xs text-neutral-500">Nhấn Enter để tìm "{query || '...'}"</p>
             <button
-              className="text-xs font-medium text-black hover:underline"
+              className="text-[10px] sm:text-xs font-medium text-black hover:underline"
               onClick={handleSearchButtonClick}
             >
               Xem tất cả kết quả

@@ -49,7 +49,8 @@ export default function ProductsFilterBar({
 }: FilterBarProps) {
   return (
     <div className="flex items-center justify-between border-b border-black py-4 bg-white">
-      <div className="flex items-center gap-3">
+      {/* Desktop Filters - Hidden on mobile */}
+      <div className="hidden md:flex items-center gap-3">
         <span className="text-sm font-medium text-neutral-900">Filter:</span>
         
         <Select value={selectedSize} onValueChange={onSizeChange}>
@@ -93,9 +94,14 @@ export default function ProductsFilterBar({
         </Select>
       </div>
 
-      {/* Product Count */}
-      <div className="text-sm text-neutral-600">
+      {/* Product Count - Hidden on mobile */}
+      <div className="hidden md:block text-sm text-neutral-600">
         {productCount} {productCount === 1 ? "product" : "products"}
+      </div>
+      
+      {/* Mobile Product Count - Visible only on mobile */}
+      <div className="md:hidden text-sm text-neutral-600">
+        {productCount} sản phẩm
       </div>
     </div>
   );

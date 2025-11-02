@@ -82,7 +82,7 @@ export default function CustomKeychainCTA() {
                 </Link>
 
                 <Link
-                  href="/products?custom=true"
+                  href="/custom-keychain"
                   className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-black hover:bg-black hover:text-white border-4 border-black font-bold text-lg uppercase tracking-wide transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1.5 hover:translate-y-1.5"
                 >
                   <span>XEM MẪU</span>

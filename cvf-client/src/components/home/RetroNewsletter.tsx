@@ -49,7 +49,6 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
 
   return (
     <section className="relative w-full bg-[#fff100] py-12 md:py-20 overflow-hidden">
-      {/* Retro Pattern Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
           backgroundImage: `
@@ -59,37 +58,30 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
         }} />
       </div>
 
-      {/* Container */}
       <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <div className="max-w-5xl mx-auto">
           
-          {/* Content Wrapper */}
           <div className="bg-white border-4 border-black p-8 md:p-12 lg:p-16 shadow-[12px_12px_0px_0px_rgba(34,144,144,1)]">
             
-            {/* Icon + Badge */}
             <div className="flex justify-center mb-6 md:mb-8">
               <div className="relative">
                 <div className="w-20 h-20 md:w-24 md:h-24 bg-[#fff100] border-4 border-black rounded-full flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
                   <Mail className="w-10 h-10 md:w-12 md:h-12 text-black" />
                 </div>
-                {/* Floating Gift Badge */}
                 <div className="absolute -top-2 -right-2 bg-black text-[#fff100] px-2 py-1 border-2 border-[#fff100] rotate-12">
                   <Gift className="w-4 h-4" />
                 </div>
               </div>
             </div>
 
-            {/* Title */}
             <h2 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl lg:text-5xl font-bold uppercase text-black text-center mb-4 tracking-wider">
               {title}
             </h2>
 
-            {/* Subtitle */}
             <p className="text-base md:text-lg text-black/80 text-center mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
               {subtitle}
             </p>
 
-            {/* Benefits Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 md:mb-10">
               {[
                 { icon: "🎁", text: "Giảm giá độc quyền" },
@@ -111,10 +103,8 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
               ))}
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
               <div className="flex flex-col sm:flex-row gap-4">
-                {/* Email Input */}
                 <div className="flex-1">
                   <label htmlFor="newsletter-email" className="sr-only">
                     Email
@@ -132,7 +122,6 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
                   />
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={submitting}
@@ -152,7 +141,6 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
                 </button>
               </div>
 
-              {/* Success Message */}
               {message && (
                 <div className="mt-4 p-4 bg-green-100 border-4 border-green-600 flex items-start gap-3">
                   <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
@@ -163,7 +151,6 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
                 </div>
               )}
 
-              {/* Error Message */}
               {error && (
                 <div id="newsletter-error" className="mt-4 p-4 bg-red-100 border-4 border-red-600 flex items-start gap-3">
                   <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
@@ -175,13 +162,11 @@ const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
               )}
             </form>
 
-            {/* Privacy Note */}
             <p className="mt-6 text-xs md:text-sm text-black/60 text-center">
               🔒 Chúng tôi cam kết bảo mật thông tin của bạn. Không spam!
             </p>
           </div>
 
-          {/* Decorative Elements */}
           <div className="mt-8 flex justify-center gap-4">
             <div className="w-2 h-2 bg-black rotate-45" />
             <div className="w-2 h-2 bg-black rotate-45" />

@@ -12,7 +12,7 @@ const ChatWidget: React.FC = () => {
   return (
     <>
       {/* Chat Widget Container */}
-      <div className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end gap-3 pb-[env(safe-area-inset-bottom)] mb-16 md:mb-0">
+      <div className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-30 flex flex-col items-end gap-3 pb-[env(safe-area-inset-bottom)] mb-16 md:mb-0">
         
         {/* Expandable Contact Buttons */}
         <div className={`flex flex-col items-end gap-3 transition-all duration-300 ease-out ${isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>

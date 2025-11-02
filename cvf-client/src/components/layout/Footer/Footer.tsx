@@ -122,7 +122,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="mt-12 pt-8 ">
+                <div className="mt-12 pt-8 relative">
                     <h3 className="text-lg font-bold mb-4 tracking-wide">KẾT NỐI</h3>
                     <div className="flex gap-4">
                         <Link href="#" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
