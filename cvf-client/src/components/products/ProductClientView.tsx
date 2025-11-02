@@ -86,17 +86,14 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
 
   const handleAddToCart = async () => {
     if (!selectedVariant) {
-      console.warn("[ADD_TO_CART] blocked: no selectedVariant");
       return;
     }
     if (adding) {
-      console.warn("[ADD_TO_CART] blocked: already adding in progress");
       return;
     }
     const cap = typeof maxStock === "number" && maxStock > 0 ? maxStock : Infinity;
     const remain = cap - cartQty;
     if (remain <= 0) {
-      console.warn("[ADD_TO_CART] blocked: remain <= 0", { cap, cartQty, remain });
       setToastMsg("Bạn đã đạt số lượng tối đa còn trong kho cho phiên bản này.");
       setTimeout(() => setToastMsg(null), 2500);
       return;
@@ -104,9 +101,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
     const toAdd = Math.min(1, remain);
     try {
       setAdding(true);
-      console.log("[ADD_TO_CART] start", { variantId: selectedVariant.id, quantity: toAdd });
       const res = await addToCart.mutateAsync({ productVariantId: selectedVariant.id, quantity: toAdd });
-      console.log("[ADD_TO_CART] success", res);
       // Only show toast when adding from 0 -> 1 in cart
       if ((cartQty || 0) <= 0) {
         showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: toAdd });
@@ -120,7 +115,6 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         showErrorToast({ title: "Cần đăng nhập", message: "Bạn cần đăng nhập để thêm vào giỏ." });
         try { openAuth('signin'); } catch {}
       } else {
-        console.error("[ADD_TO_CART] error", e);
         setToastMsg("Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
       }
       setTimeout(() => setToastMsg(null), 2500);

@@ -97,13 +97,6 @@ export function logWeightExtraction(
   result: WeightExtractionResult,
   quantity: number
 ): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[WEIGHT_DEBUG] Item: ${item.variantName || item.productName}`);
-    console.log(`[WEIGHT_DEBUG] - SKU: ${item.sku || 'N/A'}`);
-    console.log(`[WEIGHT_DEBUG] - Weight: ${result.weight}g (source: ${result.source}${result.extractedText ? `, extracted: "${result.extractedText}"` : ''})`);
-    console.log(`[WEIGHT_DEBUG] - Quantity: ${quantity}`);
-    console.log(`[WEIGHT_DEBUG] - Item total: ${result.weight * quantity}g`);
-  }
 }
 
 export const WEIGHT_EXTRACTION_EXAMPLES = {

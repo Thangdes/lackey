@@ -69,19 +69,6 @@ export function useCheckoutSubmit(params: UseCheckoutSubmitParams) {
     } catch {}
     const payload: CheckoutPayload = buildPayload(method, effBuyer, alt, appliedCode, shippingFee);
     
-    // Debug logging for email specifically
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CHECKOUT_EMAIL_DEBUG] Final checkout email details:', {
-        originalEmail: buyer.email,
-        effectiveBuyerEmail: effBuyer.email,
-        payloadEmail: payload.email,
-        fullName: payload.fullName,
-        phone: payload.phone,
-        method: method
-      });
-    }
-    
-    try { console.debug("[checkout] submitting payload:", payload); } catch {}
     try {
       const created: OrderDetail = await checkoutMut.mutateAsync(payload);
       await afterOrderCreated(created, method);
