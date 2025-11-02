@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react";
-import { Phone, Facebook, MessageCircle, X, ChevronUp } from "lucide-react";
+import { Phone, Facebook, MessageCircle, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { phoneHref, zaloHref, facebookHref } from "@/config/contact";

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CART_UI } from "@/constant/ui";
+// import { CART_UI } from "@/constant/ui"; // Unused for now
 import { ROUTES } from "@/constant/route";
 
 export type CartSummaryProps = {
@@ -30,22 +30,8 @@ export type CartSummaryProps = {
 
 export function CartSummary(props: CartSummaryProps) {
   const {
-    subtotal,
-    effectiveShipping,
     total,
-    itemsLength,
-    options,
-    selectedCode,
-    appliedCode,
-    discountAmount,
-    applyingDiscount,
-    onSelect,
-    onClearDiscount,
     formatVND,
-    savings,
-    shippingLoading,
-    currentAddress,
-    onChangeAddress,
   } = props;
 
   return (

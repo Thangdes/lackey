@@ -43,8 +43,6 @@ type SearchInputProps = {
 
 const SearchInput: React.FC<SearchInputProps> = ({
   placeholder = 'Tìm kiếm sản phẩm, thương hiệu, danh mục... ',
-  buttonPaddingClass = 'px-4 py-2',
-  iconSizeClass = 'text-2xl',
   containerClassName = '',
   inputClassName = '',
   open: openProp,
@@ -265,7 +263,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
             {query.trim().length === 0 ? (
               <p className="text-[10px] sm:text-xs font-semibold text-neutral-500">Khám phá ngay</p>
             ) : (
-              <p className="text-[10px] sm:text-xs font-semibold text-neutral-500">Gợi ý cho "{query}"</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-neutral-500">Gợi ý cho &quot;{query}&quot;</p>
             )}
             {query.trim().length > 0 && (
               <button
@@ -411,7 +409,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           </div>
 
           <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 sm:py-2 border-t border-neutral-100 bg-white/70">
-            <p className="text-[10px] sm:text-xs text-neutral-500">Nhấn Enter để tìm "{query || '...'}"</p>
+            <p className="text-[10px] sm:text-xs text-neutral-500">Nhấn Enter để tìm &quot;{query || '...'}&quot;</p>
             <button
               className="text-[10px] sm:text-xs font-medium text-black hover:underline"
               onClick={handleSearchButtonClick}

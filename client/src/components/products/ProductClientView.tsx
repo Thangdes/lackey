@@ -101,7 +101,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
     const toAdd = Math.min(1, remain);
     try {
       setAdding(true);
-      const res = await addToCart.mutateAsync({ productVariantId: selectedVariant.id, quantity: toAdd });
+      await addToCart.mutateAsync({ productVariantId: selectedVariant.id, quantity: toAdd });
       // Only show toast when adding from 0 -> 1 in cart
       if ((cartQty || 0) <= 0) {
         showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: toAdd });

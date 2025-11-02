@@ -1,13 +1,13 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useRef, useState, startTransition } from 'react'
-import { User, Bell, HelpCircle, ShoppingBag, LogOut, ChevronRight, Phone, Truck, Undo2, FileText, Shield, Info, Search } from 'lucide-react'
-import { IoCartOutline } from 'react-icons/io5'
+import { User, ShoppingBag, LogOut, Search } from 'lucide-react'
+// import { IoCartOutline } from 'react-icons/io5'; // Unused for now
 import Image from 'next/image'
 import SearchModal from './SearchModal'
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+// import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'; // Unused for now
 import { useAuthModalStore } from '@/store/authModal'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+// import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'; // Unused for now
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import CartMiniClient from '@/components/cart/CartMiniClient'
 import Link from 'next/link'
@@ -16,8 +16,8 @@ import { ROUTES } from '@/constant/route'
 import { useSmartCart } from '@/hook/useCart'
 import { useAuthProfile, useLogout } from '@/hook/useAuth'
 import { useMyOrdersPaginated } from '@/hook/useOrder'
-import { statusLabel } from '@/constant/order-status'
-import CategoryDropdown from './CategoryDropdown'
+// import { statusLabel } from '@/constant/order-status'; // Unused for now
+// import CategoryDropdown from './CategoryDropdown'; // Unused for now
 
 
 type DesktopHeaderBarProps = {
@@ -27,7 +27,7 @@ type DesktopHeaderBarProps = {
 
 const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onOpenChange }) => {
   const router = useRouter()
-  const [lang, setLang] = useState<'en' | 'vi' | 'ja'>('vi')
+  // const [lang, setLang] = useState<'en' | 'vi' | 'ja'>('vi'); // Unused for now
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = openProp !== undefined
   const searchOpen = isControlled ? (openProp as boolean) : internalOpen
@@ -37,9 +37,9 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
     else setInternalOpen(next)
   }, [isControlled, onOpenChange, searchOpen])
 
-  const handleLangChange = useCallback((v: string) => {
-    setLang(v as 'en' | 'vi' | 'ja')
-  }, [])
+  // const handleLangChange = useCallback((v: string) => {
+  //   setLang(v as 'en' | 'vi' | 'ja')
+  // }, []); // Unused for now
 
   const openAuth = useAuthModalStore((s) => s.openWith)
   const handleAuthClick = useCallback(() => openAuth('signin'), [openAuth])
@@ -52,12 +52,12 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
 
   const [notifOpen, setNotifOpen] = useState(false)
   const notifRef = useRef<HTMLDivElement | null>(null)
-  const notifBtnRef = useRef<HTMLButtonElement | null>(null)
+  // const notifBtnRef = useRef<HTMLButtonElement | null>(null); // Unused for now
   const notifItemRefs = useRef<Array<HTMLAnchorElement | HTMLButtonElement | null>>([])
 
   const [supportOpen, setSupportOpen] = useState(false)
   const supportRef = useRef<HTMLDivElement | null>(null)
-  const supportBtnRef = useRef<HTMLButtonElement | null>(null)
+  // const supportBtnRef = useRef<HTMLButtonElement | null>(null); // Unused for now
   const supportItemRefs = useRef<Array<HTMLAnchorElement | HTMLButtonElement | null>>([])
 
   const { data: notifOrders } = useMyOrdersPaginated({ page: 1, limit: 5 })
@@ -70,9 +70,9 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
     if (times.length === 0) return null
     return Math.max(...times)
   }, [notifOrders])
-  const [hasNewNotif, setHasNewNotif] = useState(false)
-  const [newNotifCount, setNewNotifCount] = useState<number>(0)
-  const [adminTapCount, setAdminTapCount] = useState(0) 
+  const [hasNewNotif, setHasNewNotif] = useState(false);
+  const [newNotifCount, setNewNotifCount] = useState<number>(0);
+  const [adminTapCount, setAdminTapCount] = useState(0); // Used in onHiddenAdminTap callback 
   const adminTapTimerRef = useRef<number | null>(null)
   const triggerAdminNav = useCallback(() => {
     try {
@@ -161,7 +161,7 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
     }
   }, [supportOpen])
 
-  const disableLanguage = '1'
+  // const disableLanguage = '1'; // Unused for now
   const smartCart = useSmartCart()
   const cartQty = smartCart.totalItems
 

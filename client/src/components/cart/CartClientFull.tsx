@@ -87,12 +87,10 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
   const {
     shippingFee,
     loading: shippingLoading,
-    hasAddress,
     currentAddress,
     addressModalOpen,
     openAddressModal,
     closeAddressModal,
-    customerId,
     refreshAddresses,
   } = useCartShippingFee(items, subtotal);
   const [highlightSku, setHighlightSku] = useState<string | null>(null);
@@ -222,7 +220,8 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
           city: payload.city,
         }),
       );
-    } catch (error) {
+    } catch {
+      // Silently handle error
     }
     
     await refreshAddresses();

@@ -45,14 +45,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   desktopPerRow,
 }) => {
   const [added, setAdded] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  // const [mounted, setMounted] = useState(false); // Unused for now
   const addMutation = useAddToCart();
   const cart = useSmartCart();
   const router = useRouter();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
 
   const img = p.thumbnailUrl || p.images?.[0] || "/logo/logo.jpg";
   const v0 = (p.variants && p.variants[0]) || undefined;
@@ -105,7 +105,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: 1 });
         }
       }
-    } catch (e) {
+    } catch {
       showErrorToast({ title: "Không thể thêm vào giỏ", message: "Vui lòng thử lại sau." });
     } finally {
       setAdded(true);
@@ -125,7 +125,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         try { window.dispatchEvent(new CustomEvent("cart:changed")); } catch {}
       }
       router.push("/checkout");
-    } catch (e) {
+    } catch {
       showErrorToast({ title: "Không thể tiếp tục thanh toán", message: "Vui lòng thử lại sau." });
     }
   };

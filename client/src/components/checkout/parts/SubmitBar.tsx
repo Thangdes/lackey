@@ -10,7 +10,7 @@ export type SubmitBarProps = {
   loading?: boolean;
 };
 
-export function SubmitBar({ total, formatVND, disabled, buttonText, loading = false }: SubmitBarProps) {
+export function SubmitBar({ disabled, buttonText, loading = false }: SubmitBarProps) {
   return (
     <button
       type="submit"

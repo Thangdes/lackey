@@ -63,9 +63,9 @@ const CategoriesGrid: React.FC<Props> = ({
   subtitle,
   viewAllHref = ROUTES.products,
   viewAllText = "Xem tất cả",
-  showDescription = false,
-  mobileLayout = "grid",
-  fallbackCategories,
+  // showDescription = false, // Unused for now
+  // mobileLayout = "grid", // Unused for now
+  // fallbackCategories, // Unused for now
 }) => {
   const { data, isLoading } = useCategoryList();
   const categories: Category[] = Array.isArray(data) && data.length > 0 ? data : MOCK_CATEGORIES;

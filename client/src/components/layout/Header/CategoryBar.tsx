@@ -4,8 +4,8 @@ import Link from "next/link";
 import { categoryService, type Category } from "@/service/category.service";
 import { ROUTES } from "@/constant/route";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useAuthProfile } from "@/hook/useAuth";
-import { useAuthModalStore } from "@/store/authModal";
+// import { useAuthProfile } from "@/hook/useAuth"; // Unused for now
+// import { useAuthModalStore } from "@/store/authModal"; // Unused for now
 
 export type CategoryBarProps = {
   showIcons?: boolean;
