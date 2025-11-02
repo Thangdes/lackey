@@ -17,6 +17,7 @@ export const ROUTES = {
     return: "/return",
     guide: "/guide",
     blog: "/blog",
+    customKeychain: "/custom-keychain",
   } as const;
   
   export type RouteKey = keyof typeof ROUTES;

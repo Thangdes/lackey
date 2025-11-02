@@ -53,7 +53,7 @@ export default function Home() {
             icon: "🎨",
             title: "CUSTOM THEO Ý TƯỞNG",
             description: "Thiết kế móc khóa theo hình ảnh, nhân vật yêu thích của bạn. In sắc nét, chất liệu cao cấp.",
-            ctaHref: "/products?custom=true",
+            ctaHref: "/custom-keychain",
             ctaLabel: "Đặt custom ngay",
           },
           {
