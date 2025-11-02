@@ -51,9 +51,6 @@ export function GHNAddressSelector({
 
     const province = provinces.find(p => p.ProvinceName === city);
     if (province && province.ProvinceID !== selectedProvinceId) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[ADDRESS_FIXED] Setting province ID: ${province.ProvinceID} for ${city}`);
-      }
       setSelectedProvinceId(province.ProvinceID);
     }
   }, [city, provinces, selectedProvinceId]);
@@ -66,34 +63,22 @@ export function GHNAddressSelector({
 
     const districtObj = districts.find(d => d.DistrictName === district);
     if (districtObj && districtObj.DistrictID !== selectedDistrictId) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[ADDRESS_FIXED] Setting district ID: ${districtObj.DistrictID} for ${district}`);
-      }
       setSelectedDistrictId(districtObj.DistrictID);
     }
   }, [district, districts, selectedDistrictId]);
 
   const handleCityChange = (cityName: string) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[ADDRESS_SELECTOR] User selected city: ${cityName}`);
-    }
     onCityChange(cityName);
     onDistrictChange("");
     onWardChange("");
   };
 
   const handleDistrictChange = (districtName: string) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[ADDRESS_SELECTOR] User selected district: ${districtName}`);
-    }
     onDistrictChange(districtName);
     onWardChange("");
   };
 
   const handleWardChange = (wardName: string) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[ADDRESS_SELECTOR] User selected ward: ${wardName}`);
-    }
     onWardChange(wardName);
   };
 

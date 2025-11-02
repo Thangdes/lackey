@@ -51,10 +51,6 @@ export function useCartShippingFee(items: SmartCartItem[], subtotal: number): Us
       return total + (item.quantity * itemWeight);
     }, 0);
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[WEIGHT_DEBUG] Total cart weight: ${calculatedWeight}g (${items.length} unique items)`);
-    }
-
     return calculatedWeight;
   }, [items]);
 

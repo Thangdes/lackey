@@ -54,10 +54,6 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
     
     // Only sync when modal transitions from closed to open
     if (wasClosedNowOpen && !syncedRef.current) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[ADDRESS_MODAL] Syncing initial values on modal open:', initial);
-      }
-      
       setFullName(initial?.fullName || "");
       setPhone(initial?.phone || "");
       setCity(initial?.city || "Tp. Hồ Chí Minh");
@@ -133,21 +129,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
               const err = validate;
               if (err) { 
                 setError(err); 
-                if (process.env.NODE_ENV === 'development') {
-                  console.log('[ADDRESS_MODAL] Validation error:', err);
-                }
                 return; 
-              }
-              
-              if (process.env.NODE_ENV === 'development') {
-                console.log('[ADDRESS_MODAL] Saving address:', {
-                  fullName,
-                  phone,
-                  city,
-                  district,
-                  ward,
-                  street,
-                });
               }
               
               await onSave({ fullName, phone, city, district, ward, street, isDefault });

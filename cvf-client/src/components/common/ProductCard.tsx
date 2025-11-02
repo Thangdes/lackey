@@ -88,7 +88,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const handleAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (outOfStock) {
-      console.warn("[CARD_ADD] blocked: outOfStock", { productId: p.id });
       return;
     }
     try {
@@ -98,23 +97,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const firstInStock = Array.isArray(p.variants) ? p.variants.find(v => (v.stockQuantity ?? 0) > 0) : undefined;
         const variantId = firstInStock?.id || p.variants?.[0]?.id;
         if (!variantId) {
-          console.warn("[CARD_ADD] no variantId available for product", p.id);
           return;
         }
-        console.log("[CARD_ADD] start", { productId: p.id, variantId });
-        const res = await addMutation.mutateAsync({ productVariantId: variantId, quantity: 1 });
+        await addMutation.mutateAsync({ productVariantId: variantId, quantity: 1 });
         try { window.dispatchEvent(new CustomEvent("cart:changed")); } catch {}
-        try {
-          if (process.env.NODE_ENV !== 'production') {
-            console.log("[CARD_ADD] success", res?.totals || {});
-          }
-        } catch {}
         if (!existingItem || (existingItem.quantity || 0) <= 0) {
           showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: 1 });
         }
       }
     } catch (e) {
-      console.error("[CARD_ADD] error", e);
       showErrorToast({ title: "Không thể thêm vào giỏ", message: "Vui lòng thử lại sau." });
     } finally {
       setAdded(true);
@@ -135,7 +126,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       }
       router.push("/checkout");
     } catch (e) {
-      console.error("[CARD_BUY_NOW] error", e);
       showErrorToast({ title: "Không thể tiếp tục thanh toán", message: "Vui lòng thử lại sau." });
     }
   };

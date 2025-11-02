@@ -109,19 +109,6 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
     setShowDebug(next);
     try { if (typeof window !== 'undefined') window.localStorage.setItem('debugCart', next ? '1' : '0'); } catch {}
   }, [showDebug]);
-  useEffect(() => {
-    if (!isDev) return;
-    try {
-      const itemCount = items.length;
-      const totalQty = items.reduce((sum, item) => sum + item.quantity, 0);
-      console.log('[CART_DEBUG][FULL]', { 
-        itemCount, 
-        totalQty, 
-        subtotal: cart.totals?.subtotal,
-        hasError: !!cart.error 
-      });
-    } catch {}
-  }, [isDev, items, cart.totals, cart.error]);
 
   const [stockMap, setStockMap] = useState<Map<string, number>>(new Map());
   const productIdsKey = useMemo(() => {
@@ -161,11 +148,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
     const next = Math.max(0, Math.min(upper, Math.floor(qty)));
     const item = items.find((it) => it.sku === sku);
     if (!item) {
-      console.warn('[CART_FULL] onChangeQty: item not found for sku', sku);
       return;
-    }
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CART_FULL] onChangeQty', { sku, cur: item.quantity, next });
     }
     if (item.itemId) {
       cart.updateQty(item.itemId, next);
@@ -186,17 +169,6 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
   }, [onChangeQty]);
 
   const [freeShipThreshold] = useState<number>(0); 
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[SHIPPING_DEBUG]', {
-      subtotal,
-      freeShipThreshold,
-      rawShippingFee: shippingFee,
-      isFreeShipping: freeShipThreshold > 0 && subtotal >= freeShipThreshold,
-      effectiveShipping: (freeShipThreshold > 0 && subtotal >= freeShipThreshold) ? 0 : shippingFee
-    });
-  }
-  
   const effectiveShipping = (freeShipThreshold > 0 && subtotal >= freeShipThreshold) ? 0 : shippingFee;
   const total = useMemo(() => Math.max(0, (cart.totals?.totalAfterDiscount ?? 0) + effectiveShipping), [cart.totals?.totalAfterDiscount, effectiveShipping]);
 
@@ -251,7 +223,6 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
         }),
       );
     } catch (error) {
-      console.warn('[CART] Failed to save address to localStorage:', error);
     }
     
     await refreshAddresses();

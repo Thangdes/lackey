@@ -35,20 +35,11 @@ export function buildPayload(
     
     // If user provided email, use it
     if (cleanEmail && cleanEmail.length > 0) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[EMAIL_DEBUG] Using provided email:', cleanEmail);
-      }
       return cleanEmail;
     }
     
     // Generate personalized temporary email based on name and phone
     const tempEmail = generatePersonalizedTempEmail(fullName, phone);
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[EMAIL_DEBUG] Generated temp email:', tempEmail, {
-        fullName,
-        phone: phone ? `${phone.substring(0, 3)}***` : undefined
-      });
-    }
     return tempEmail;
   };
 
@@ -69,17 +60,9 @@ export function buildPayload(
       shippingFee,
     };
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[PAYLOAD_DEBUG] VietQR Order Payload:', {
-        city: payload.city,
-        district: payload.district,
-        ward: payload.ward,
-        street: payload.street,
-      });
-    }
-
     return payload;
   }
+
   const payload = {
     fullName: toValue(buyer.fullName),
     email: getEmailWithTempGeneration(buyer.email, buyer.fullName, buyer.phone),
@@ -95,16 +78,6 @@ export function buildPayload(
     discountCode: appliedCode || undefined,
     shippingFee,
   };
-
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[PAYLOAD_DEBUG] COD/Bank Order Payload:', {
-      shipToDifferent: buyer.shipToDifferent,
-      city: payload.city,
-      district: payload.district,
-      ward: payload.ward,
-      street: payload.street,
-    });
-  }
 
   return payload;
 }
