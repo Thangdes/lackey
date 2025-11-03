@@ -79,66 +79,68 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
-      <div className="w-full max-w-lg rounded-xl sm:rounded-2xl border border-black/10 bg-white p-4 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <h4 className="text-base sm:text-lg font-semibold truncate">Địa chỉ giao hàng</h4>
-          <button onClick={onClose} className="shrink-0 rounded-full p-2 text-black/60 hover:bg-black/5" aria-label="Đóng">
-            <X size={18} className="sm:w-4 sm:h-4" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-4">
+      <div className="w-full max-w-lg border-4 border-black bg-white shadow-[12px_12px_0px_0px_#B5CCBC]">
+        <div className="bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <h4 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider">Địa chỉ giao hàng</h4>
+          <button onClick={onClose} className="shrink-0 w-8 h-8 flex items-center justify-center border-2 border-white bg-white text-black hover:bg-black hover:text-white transition-all" aria-label="Đóng">
+            <X size={16} />
           </button>
         </div>
+        <div className="p-4 sm:p-6">
 
-        <div className="mt-3 sm:mt-4 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 text-sm">
-          <div>
-            <label className="mb-1 block text-sm text-black/70">{CHECKOUT_TEXT.labels.fullName}</label>
-            <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/10" />
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 text-sm">
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.fullName}</label>
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all" />
+            </div>
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.phone}</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all" />
+            </div>
+
+            <GHNAddressSelector
+              city={city}
+              district={district}
+              ward={ward}
+              street={street}
+              onCityChange={(cityName) => setCity(cityName)}
+              onDistrictChange={(districtName) => setDistrict(districtName)}
+              onWardChange={(wardName) => setWard(wardName)}
+              onStreetChange={(e) => setStreet(e.target.value)}
+              className="sm:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-2"
+            />
           </div>
-          <div>
-            <label className="mb-1 block text-sm text-black/70">{CHECKOUT_TEXT.labels.phone}</label>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/10" />
+
+          <div className="mt-4 p-3 bg-[#FFF8E7] border-2 border-black">
+            <label className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-medium cursor-pointer">
+              <input type="checkbox" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="w-4 h-4 border-2 border-black" />
+              <span className="font-bold">Đặt làm địa chỉ mặc định</span>
+            </label>
           </div>
 
-          <GHNAddressSelector
-            city={city}
-            district={district}
-            ward={ward}
-            street={street}
-            onCityChange={(cityName) => setCity(cityName)}
-            onDistrictChange={(districtName) => setDistrict(districtName)}
-            onWardChange={(wardName) => setWard(wardName)}
-            onStreetChange={(e) => setStreet(e.target.value)}
-            className="sm:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-2"
-          />
-        </div>
+          {error && (
+            <div className="mt-4 border-2 border-[#AE1C2C] bg-red-50 p-3 text-sm font-medium text-[#AE1C2C]">{error}</div>
+          )}
 
-        <div className="mt-2 sm:mt-3">
-          <label className="inline-flex items-center gap-2 text-xs sm:text-sm">
-            <input type="checkbox" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="w-4 h-4" />
-            Đặt làm địa chỉ mặc định
-          </label>
-        </div>
-
-        {error && (
-          <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">{error}</div>
-        )}
-
-        <div className="mt-3 sm:mt-4 flex items-center justify-end gap-2">
-          <button onClick={onClose} className="rounded-full border border-black/15 bg-white px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium hover:bg-black/5">Hủy</button>
-          <button
-            onClick={async () => {
-              const err = validate;
-              if (err) { 
-                setError(err); 
-                return; 
-              }
-              
-              await onSave({ fullName, phone, city, district, ward, street, isDefault });
-            }}
-            disabled={!!validate || saving}
-            className="rounded-full bg-black px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-black/90 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {saving ? "Đang lưu..." : "Lưu địa chỉ"}
-          </button>
+          <div className="mt-5 sm:mt-6 flex items-center justify-end gap-2 sm:gap-3">
+            <button onClick={onClose} className="border-2 border-black bg-white px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-all">Hủy</button>
+            <button
+              onClick={async () => {
+                const err = validate;
+                if (err) { 
+                  setError(err); 
+                  return; 
+                }
+                
+                await onSave({ fullName, phone, city, district, ward, street, isDefault });
+              }}
+              disabled={!!validate || saving}
+              className="border-2 border-black bg-black px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wide text-white hover:bg-[#AE1C2C] hover:border-[#AE1C2C] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1"
+            >
+              {saving ? "Đang lưu..." : "Lưu địa chỉ"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
