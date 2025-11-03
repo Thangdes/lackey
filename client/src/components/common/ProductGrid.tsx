@@ -51,21 +51,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     }
   };
 
-  // const queryKey = useMemo(() => {
-  //   try {
-  //     return JSON.stringify({
-  //       category: query?.category ?? null,
-  //       categoryId: query?.categoryId ?? null,
-  //       categoryIds: Array.isArray(query?.categoryIds) ? query?.categoryIds : [],
-  //       supplierIds: Array.isArray(query?.supplierIds) ? query?.supplierIds : [],
-  //       q: query?.q ?? null,
-  //       sort: query?.sort ?? null,
-  //     });
-  //   } catch {
-  //     return String(Math.random());
-  //   }
-  // }, [query?.category, query?.categoryId, query?.categoryIds, query?.supplierIds, query?.q, query?.sort]);
-
   const uniqueById = (arr: Product[]) => {
     const seen = new Set<string>();
     const out: Product[] = [];

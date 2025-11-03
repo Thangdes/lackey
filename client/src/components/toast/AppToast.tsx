@@ -3,15 +3,7 @@
 import React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-
-export type AppToastOptions = {
-  title?: string;
-  message?: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  duration?: number;
-  position?: "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center";
-};
+import type { AppToastOptions } from "@/type/toast";
 
 function BaseToast({
   title,

@@ -4,7 +4,6 @@ import Link from "next/link";
 import React from "react";
 import type { Product } from "@/type/product";
 import { ROUTES, buildProductsByCategory } from "@/constant/route";
-// import { ChevronRight } from "lucide-react"; // Unused for now
 
 export type ProductBreadcrumbProps = {
   product: Product;

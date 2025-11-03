@@ -22,7 +22,6 @@ export function validate(params: {
   const {
     fullName,
     user,
-    // email, // Unused - will use default email if empty
     phone,
     city,
     street,
