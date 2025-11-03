@@ -92,6 +92,7 @@ export function extractCartItemWeight(item: {
 }
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function logWeightExtraction(
   _item: { sku?: string; variantName?: string; productName?: string },
   _result: WeightExtractionResult,
