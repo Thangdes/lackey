@@ -198,7 +198,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     return () => observer.disconnect();
   }, [enableInfinite, initialProducts, hasMore, loadingMore, limit, effectivePageSize, infinite, scrollRootRef]);
 
-  // removed unused helper prevLength()
 
   return (
     <section className={className} aria-label={title ?? "Danh sách sản phẩm"}>

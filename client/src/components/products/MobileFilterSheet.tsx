@@ -18,28 +18,33 @@ type MobileFilterSheetProps = {
   productCount?: number;
 };
 
-const SIZES = [
-  { value: "all", label: "Tất cả kích cỡ" },
-  { value: "s", label: "S" },
-  { value: "m", label: "M" },
-  { value: "l", label: "L" },
-  { value: "xl", label: "XL" },
+const MATERIALS = [
+  { value: "all", label: "Tất cả chất liệu" },
+  { value: "acrylic", label: "Acrylic" },
+  { value: "metal", label: "Kim loại" },
+  { value: "leather", label: "Da" },
+  { value: "wood", label: "Gỗ" },
+  { value: "rubber", label: "Nhựa" },
 ];
 
-const TYPES = [
-  { value: "all", label: "Tất cả loại" },
+const STYLES = [
+  { value: "all", label: "Tất cả phong cách" },
   { value: "anime", label: "Anime" },
   { value: "kpop", label: "Kpop" },
   { value: "cartoon", label: "Cartoon" },
-  { value: "custom", label: "Custom" },
+  { value: "minimalist", label: "Tối giản" },
+  { value: "cute", label: "Dễ thương" },
+  { value: "custom", label: "Tùy chỉnh" },
 ];
 
 const COLORS = [
-  { value: "all", label: "Tất cả màu" },
+  { value: "all", label: "Tất cả màu sắc" },
   { value: "black", label: "Đen" },
   { value: "white", label: "Trắng" },
   { value: "red", label: "Đỏ" },
-  { value: "blue", label: "Xanh dương" },
+  { value: "blue", label: "Xanh" },
+  { value: "yellow", label: "Vàng" },
+  { value: "pink", label: "Hồng" },
   { value: "multi", label: "Nhiều màu" },
 ];
 
@@ -66,25 +71,23 @@ export default function MobileFilterSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col">
-        {/* Header */}
-        <SheetHeader className="shrink-0 border-b border-gray-200">
+      <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col bg-[#f5f1e8] rounded-none">
+        <SheetHeader className="shrink-0 border-b-2 border-[#2d2d2d]">
           <div className="flex items-center justify-between px-4 py-4">
-            <SheetTitle className="text-left flex items-center gap-2">
+            <SheetTitle className="text-left flex items-center gap-2 font-mono tracking-wider text-[#2d2d2d] uppercase">
               <FiFilter className="w-5 h-5" />
               Bộ lọc
             </SheetTitle>
             <button
               onClick={() => onOpenChange(false)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-[#2d2d2d]/10 border border-[#2d2d2d] transition-colors"
             >
               <FiX className="w-5 h-5" />
             </button>
           </div>
           
-          {/* Product Count and Clear */}
           <div className="flex items-center justify-between px-4 pb-3">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm font-mono text-[#2d2d2d]/70">
               {productCount} sản phẩm
             </span>
             {activeFiltersCount > 0 && (
@@ -92,7 +95,7 @@ export default function MobileFilterSheet({
                 variant="ghost"
                 size="sm"
                 onClick={handleClearAll}
-                className="text-[#AE1C2C] hover:text-[#AE1C2C]/80 h-8"
+                className="text-[#2d2d2d] hover:bg-[#2d2d2d]/10 h-8 font-mono border border-[#2d2d2d] rounded-none"
               >
                 Xóa tất cả ({activeFiltersCount})
               </Button>
@@ -100,57 +103,53 @@ export default function MobileFilterSheet({
           </div>
         </SheetHeader>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto px-4 py-6">
           <div className="space-y-6">
-            {/* Size Filter */}
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-900 block">
-                Kích cỡ
+              <label className="text-sm font-mono tracking-wider text-[#2d2d2d] block uppercase">
+                Chất liệu
               </label>
               <Select value={selectedSize} onValueChange={onSizeChange}>
-                <SelectTrigger className="w-full border-gray-300 bg-white">
-                  <SelectValue placeholder="Chọn kích cỡ" />
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
+                  <SelectValue placeholder="Chọn chất liệu" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {SIZES.map((size) => (
-                    <SelectItem key={size.value} value={size.value}>
-                      {size.label}
+                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+                  {MATERIALS.map((material) => (
+                    <SelectItem key={material.value} value={material.value}>
+                      {material.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Type Filter */}
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-900 block">
-                Loại sản phẩm
+              <label className="text-sm font-mono tracking-wider text-[#2d2d2d] block uppercase">
+                Phong cách
               </label>
               <Select value={selectedType} onValueChange={onTypeChange}>
-                <SelectTrigger className="w-full border-gray-300 bg-white">
-                  <SelectValue placeholder="Chọn loại sản phẩm" />
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
+                  <SelectValue placeholder="Chọn phong cách" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
+                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+                  {STYLES.map((style) => (
+                    <SelectItem key={style.value} value={style.value}>
+                      {style.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Color Filter */}
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-900 block">
+              <label className="text-sm font-mono tracking-wider text-[#2d2d2d] block uppercase">
                 Màu sắc
               </label>
               <Select value={selectedColor} onValueChange={onColorChange}>
-                <SelectTrigger className="w-full border-gray-300 bg-white">
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
                   <SelectValue placeholder="Chọn màu sắc" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
+                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
                   {COLORS.map((color) => (
                     <SelectItem key={color.value} value={color.value}>
                       {color.label}
@@ -161,15 +160,13 @@ export default function MobileFilterSheet({
             </div>
           </div>
 
-          {/* Bottom spacing for safe scrolling */}
           <div className="h-4" />
         </div>
 
-        {/* Fixed Bottom Action Button */}
-        <div className="shrink-0 border-t border-gray-200 p-4 bg-white">
+        <div className="shrink-0 border-t-2 border-[#2d2d2d] p-4 bg-[#f5f1e8]">
           <Button
             onClick={() => onOpenChange(false)}
-            className="w-full bg-[#AE1C2C] hover:bg-[#AE1C2C]/90 text-white h-12 rounded-lg font-semibold"
+            className="w-full bg-[#2d2d2d] hover:bg-[#2d2d2d]/90 text-[#f5f1e8] h-12 rounded-none font-mono tracking-wider uppercase"
           >
             Áp dụng bộ lọc
           </Button>

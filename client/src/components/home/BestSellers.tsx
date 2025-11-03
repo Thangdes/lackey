@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Star, ShoppingBag, Heart } from "lucide-react";
 import { ROUTES } from "@/constant/route";
 
-// Mock data cho Best Sellers
 const BEST_SELLERS = [
   {
     id: "1",
@@ -200,7 +199,7 @@ export default function BestSellers() {
 
         <div className="text-center">
           <button
-            className="bg-[#fff100] text-black hover:bg-[#fcf299] hover:text-black border-2 border-black font-bold px-8 py-4 text-sm md:text-base transition-all uppercase tracking-wider"
+            className="bg-[#fff100] text-black hover:bg-[#fcf299] hover:text-black border-2 border-black font-bold px-8 py-4 text-sm md:text-base transition-all uppercase tracking-wider rounded-none"
           >
             <Link href={ROUTES.products + "?bestseller=true"}>
               Xem tất cả sản phẩm bán chạy 
