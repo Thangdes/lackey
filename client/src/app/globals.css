@@ -391,3 +391,51 @@ html body[data-scroll-locked] {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+[data-sonner-toast] {
+  padding: 16px !important;
+}
+
+[data-sonner-toast] [data-icon] {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 8px !important;
+}
+
+[data-sonner-toast][data-type="success"] [data-icon] {
+  color: #B5CCBC !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-icon] {
+  color: #E3B1B4 !important;
+}
+
+[data-sonner-toast][data-type="warning"] [data-icon] {
+  color: #f59e0b !important;
+}
+
+[data-sonner-toast][data-type="info"] [data-icon] {
+  color: #5A5E63 !important;
+}
+
+[data-sonner-toast] [data-content] {
+  gap: 4px !important;
+}
+
+[data-sonner-toast] [data-button] {
+  transition: all 0.2s ease !important;
+}
+
+[data-sonner-toast] [data-close-button] {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  border-color: #5A5E63 !important;
+  background: white !important;
+  color: #5A5E63 !important;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.1) !important;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  box-shadow: none !important;
+  transform: translate(2px, 2px) !important;
+}
