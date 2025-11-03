@@ -4,9 +4,6 @@ import Link from "next/link";
 import { categoryService, type Category } from "@/service/category.service";
 import { ROUTES } from "@/constant/route";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-// import { useAuthProfile } from "@/hook/useAuth"; // Unused for now
-// import { useAuthModalStore } from "@/store/authModal"; // Unused for now
-
 export type CategoryBarProps = {
   showIcons?: boolean;
   wrapSmall?: boolean;
@@ -95,7 +92,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({
   if (cats.length === 0) return null;
 
   return (
-    <div className="w-full border-b-4 border-black bg-white">
+    <div className="w-full bg-white">
       <div className="mx-auto w-full max-w-screen-2xl px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <nav className="relative py-3" aria-label="Danh mục">
           <button
@@ -103,7 +100,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({
             aria-label="Scroll categories left"
             onClick={() => scrollByAmount("left")}
             disabled={!canLeft}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden md:inline-flex h-8 w-8 items-center justify-center bg-black text-white border-2 border-black hover:bg-[#fff100] hover:text-black transition-all shadow-[2px_2px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 ${!canLeft ? "opacity-30 cursor-not-allowed" : ""}`}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden md:inline-flex h-8 w-8 items-center justify-center bg-black text-white border-2 border-black hover:bg-[#fff100] hover:text-black transition-all shadow-[2px_2px_0px_0px_#B5CCBC] hover:shadow-none  ${!canLeft ? "opacity-30 cursor-not-allowed" : ""}`}
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -155,7 +152,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({
             aria-label="Scroll categories right"
             onClick={() => scrollByAmount("right")}
             disabled={!canRight}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden md:inline-flex h-8 w-8 items-center justify-center bg-black text-white border-2 border-black hover:bg-[#fff100] hover:text-black transition-all shadow-[2px_2px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 ${!canRight ? "opacity-30 cursor-not-allowed" : ""}`}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden md:inline-flex h-8 w-8 items-center justify-center bg-black text-white border-2 border-black hover:bg-[#fff100] hover:text-black transition-all shadow-[2px_2px_0px_0px_#B5CCBC] hover:shadow-none  ${!canRight ? "opacity-30 cursor-not-allowed" : ""}`}
           >
             <ChevronRight className="h-5 w-5" />
           </button>
