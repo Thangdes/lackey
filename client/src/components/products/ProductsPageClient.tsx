@@ -20,14 +20,12 @@ const ProductsPageClient: React.FC = () => {
     selectedCategories,
   } = useProductQueryParams();
 
-  // Count active filters for mobile badge
   const activeFiltersCount = [selectedSize, selectedType, selectedColor].filter(
     (val) => val !== "all"
   ).length;
 
   return (
-    <div className="min-h-screen bg-white px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-      {/* Desktop Filter Bar */}
+    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
       <ProductsFilterBar
         productCount={0}
         selectedSize={selectedSize}
@@ -38,22 +36,20 @@ const ProductsPageClient: React.FC = () => {
         onColorChange={setSelectedColor}
       />
       
-      {/* Mobile Filter Button - Visible only on mobile (Bottom-Left) */}
       <div className="md:hidden fixed bottom-6 left-4 z-40">
         <Button
           onClick={() => setMobileFilterOpen(true)}
-          className="bg-[#AE1C2C] hover:bg-[#AE1C2C]/90 text-white shadow-lg rounded-full w-14 h-14 p-0 flex items-center justify-center relative"
+          className="bg-[#2d2d2d] hover:bg-[#2d2d2d]/90 text-[#f5f1e8] shadow-lg border-2 border-[#2d2d2d] rounded-none w-14 h-14 p-0 flex items-center justify-center relative"
         >
           <FiFilter className="w-6 h-6" />
           {activeFiltersCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-[#AE1C2C] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 bg-[#f5f1e8] text-[#2d2d2d] text-xs font-mono font-bold border border-[#2d2d2d] w-5 h-5 flex items-center justify-center">
               {activeFiltersCount}
             </span>
           )}
         </Button>
       </div>
       
-      {/* Mobile Filter Sheet */}
       <MobileFilterSheet
         open={mobileFilterOpen}
         onOpenChange={setMobileFilterOpen}
@@ -66,7 +62,6 @@ const ProductsPageClient: React.FC = () => {
         productCount={0}
       />
 
-      {/* Product Grid */}
       <div className="py-8 pb-20 md:pb-8">
         <ProductGrid
           query={{

@@ -13,29 +13,34 @@ export type FilterBarProps = {
   onColorChange?: (value: string) => void;
 };
 
-const SIZES = [
-  { value: "all", label: "All Sizes" },
-  { value: "s", label: "S" },
-  { value: "m", label: "M" },
-  { value: "l", label: "L" },
-  { value: "xl", label: "XL" },
+const MATERIALS = [
+  { value: "all", label: "Tất cả chất liệu" },
+  { value: "acrylic", label: "Acrylic" },
+  { value: "metal", label: "Kim loại" },
+  { value: "leather", label: "Da" },
+  { value: "wood", label: "Gỗ" },
+  { value: "rubber", label: "Nhựa" },
 ];
 
-const TYPES = [
-  { value: "all", label: "All Types" },
+const STYLES = [
+  { value: "all", label: "Tất cả phong cách" },
   { value: "anime", label: "Anime" },
   { value: "kpop", label: "Kpop" },
   { value: "cartoon", label: "Cartoon" },
-  { value: "custom", label: "Custom" },
+  { value: "minimalist", label: "Tối giản" },
+  { value: "cute", label: "Dễ thương" },
+  { value: "custom", label: "Tùy chỉnh" },
 ];
 
 const COLORS = [
-  { value: "all", label: "All Colors" },
-  { value: "black", label: "Black" },
-  { value: "white", label: "White" },
-  { value: "red", label: "Red" },
-  { value: "blue", label: "Blue" },
-  { value: "multi", label: "Multicolor" },
+  { value: "all", label: "Tất cả màu sắc" },
+  { value: "black", label: "Đen" },
+  { value: "white", label: "Trắng" },
+  { value: "red", label: "Đỏ" },
+  { value: "blue", label: "Xanh" },
+  { value: "yellow", label: "Vàng" },
+  { value: "pink", label: "Hồng" },
+  { value: "multi", label: "Nhiều màu" },
 ];
 
 export default function ProductsFilterBar({
@@ -48,43 +53,41 @@ export default function ProductsFilterBar({
   onColorChange,
 }: FilterBarProps) {
   return (
-    <div className="flex items-center justify-between border-b border-black py-4 bg-white">
-      {/* Desktop Filters - Hidden on mobile */}
+    <div className="flex items-center justify-between border-b-2 border-[#2d2d2d] py-4 bg-[#f5f1e8]">
       <div className="hidden md:flex items-center gap-3">
-        <span className="text-sm font-medium text-neutral-900">Filter:</span>
+        <span className="text-sm font-mono tracking-wider text-[#2d2d2d] uppercase">Filter:</span>
         
         <Select value={selectedSize} onValueChange={onSizeChange}>
-          <SelectTrigger className="w-[140px] border-black bg-white text-sm">
-            <SelectValue placeholder="Size" />
+          <SelectTrigger className="w-[210px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
+            <SelectValue placeholder="Chất liệu" />
           </SelectTrigger>
-          <SelectContent className="bg-white">
-            {SIZES.map((size) => (
-              <SelectItem key={size.value} value={size.value} className="text-sm">
-                {size.label}
+          <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+            {MATERIALS.map((material) => (
+              <SelectItem key={material.value} value={material.value} className="text-sm">
+                {material.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Select value={selectedType} onValueChange={onTypeChange}>
-          <SelectTrigger className="w-[160px] border-black bg-white text-sm">
-            <SelectValue placeholder="Product type" />
+          <SelectTrigger className="w-[220px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
+            <SelectValue placeholder="Phong cách" />
           </SelectTrigger>
-          <SelectContent className="bg-white">
-            {TYPES.map((type) => (
-              <SelectItem key={type.value} value={type.value} className="text-sm">
-                {type.label}
+          <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+            {STYLES.map((style) => (
+              <SelectItem key={style.value} value={style.value} className="text-sm">
+                {style.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        {/* Color Filter */}
         <Select value={selectedColor} onValueChange={onColorChange}>
-          <SelectTrigger className="w-[140px] border-black bg-white text-sm">
-            <SelectValue placeholder="Color" />
+          <SelectTrigger className="w-[200px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
+            <SelectValue placeholder="Màu sắc" />
           </SelectTrigger>
-          <SelectContent className="bg-white">
+          <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
             {COLORS.map((color) => (
               <SelectItem key={color.value} value={color.value} className="text-sm">
                 {color.label}
@@ -94,13 +97,11 @@ export default function ProductsFilterBar({
         </Select>
       </div>
 
-      {/* Product Count - Hidden on mobile */}
-      <div className="hidden md:block text-sm text-neutral-600">
+      <div className="hidden md:block text-sm font-mono text-[#2d2d2d]/70">
         {productCount} {productCount === 1 ? "product" : "products"}
       </div>
       
-      {/* Mobile Product Count - Visible only on mobile */}
-      <div className="md:hidden text-sm text-neutral-600">
+      <div className="md:hidden text-sm font-mono text-[#2d2d2d]/70">
         {productCount} sản phẩm
       </div>
     </div>
