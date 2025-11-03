@@ -68,177 +68,161 @@ export function CartItemRow({ item: it, highlight, maxStock, onChangeQty, onRemo
     startXRef.current = null;
   };
 
-  // Mini cart mode - compact sidebar layout
   if (mode === 'mini') {
     return (
       <div
         id={`cart-item-${it.sku}`}
-        className={`flex gap-4 pb-4 border-b border-gray-200 last:border-b-0 ${highlight ? "bg-amber-50" : ""}`}
+        className={`flex items-center gap-3 pb-4 border-b border-gray-200 last:border-b-0 ${highlight ? "bg-amber-50" : ""}`}
       >
-        {/* Product Image */}
         <CartItemMedia item={it} size="sm" />
         
-        {/* Product Info */}
         <div className="flex-1 min-w-0">
           <Link
             href={buildProductDetailPath(it.productSlug || it.productId || "")}
-            className="text-sm font-medium text-gray-900 hover:text-gray-700 line-clamp-2 mb-1"
+            className="text-sm font-bold text-gray-900 hover:text-gray-700 line-clamp-1 block"
           >
             {it.productName}
           </Link>
           
           {it.variantName && (
-            <p className="text-xs text-gray-600 mb-2">
+            <p className="text-xs text-gray-600 mt-0.5 line-clamp-1">
               {it.variantName}
             </p>
           )}
           
-          <p className="text-sm font-semibold text-gray-900 mb-3">
+          <p className="text-sm font-bold text-gray-900 mt-1">
             {formatVND(it.price)}
           </p>
-          
-          {/* Quantity Controls + Remove */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center border border-gray-300">
-              <button
-                onClick={() => {
-                  if (it.quantity <= 1) { onRemove(it.sku); return; }
-                  onChangeQty(it.sku, it.quantity - 1);
-                }}
-                disabled={decLoading || it.canDecrease === false}
-                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                aria-label="Decrease quantity"
-              >
-                −
-              </button>
-              <span className="w-10 text-center text-sm font-medium text-gray-900">
-                {it.quantity}
-              </span>
-              <button
-                onClick={() => onChangeQty(it.sku, it.quantity + 1)}
-                disabled={incLoading || it.canIncrease === false}
-                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                aria-label="Increase quantity"
-              >
-                +
-              </button>
-            </div>
-            
-            <button
-              onClick={() => onRemove(it.sku)}
-              className="p-1.5 hover:bg-gray-100 rounded transition-colors"
-              aria-label="Remove item"
-            >
-              <Trash2 size={16} className="text-gray-500 hover:text-red-600" />
-            </button>
-          </div>
-          
-          {rowError && (
-            <p className="mt-1 text-xs text-red-600">{rowError}</p>
-          )}
-        </div>
-      </div>
-    );
-  }
-  
-  // Minimal mode for clean table layout
-  if (mode === 'minimal') {
-    return (
-      <div
-        id={`cart-item-${it.sku}`}
-        className={
-          `grid grid-cols-1 md:grid-cols-12 gap-4 py-6 border-b border-gray-200 last:border-b-0 ` +
-          (highlight ? "bg-amber-50" : "bg-white")
-        }
-      >
-        {/* Product Column - 6 cols */}
-        <div className="md:col-span-6 flex gap-4">
-          <CartItemMedia item={it} size="md" />
-          <div className="flex-1 min-w-0">
-            <Link
-              href={buildProductDetailPath(it.productSlug || it.productId || "")}
-              className="text-base font-medium text-gray-900 hover:text-gray-700 hover:underline line-clamp-2"
-            >
-              {it.productName}
-            </Link>
-            {it.variantName && (
-              <p className="mt-1 text-sm text-gray-600">
-                {it.variantName}
-              </p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">
-              {formatVND(it.price)}
-            </p>
-            {typeof it.compareAt === 'number' && typeof it.price === 'number' && it.compareAt > it.price && (
-              <p className="mt-1 text-xs text-gray-500 line-through">
-                {formatVND(it.compareAt)}
-              </p>
-            )}
-            {/* Remove button - Mobile */}
-            <button
-              onClick={() => onRemove(it.sku)}
-              className="mt-2 md:hidden inline-flex items-center gap-1 text-sm text-gray-500 hover:text-red-600 transition-colors"
-              aria-label={`Remove ${it.productName}`}
-            >
-              <Trash2 size={14} />
-              Remove
-            </button>
-          </div>
         </div>
 
-        {/* Quantity Column - 3 cols */}
-        <div className="md:col-span-3 flex flex-col items-start md:items-center justify-center">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <div className="flex items-center border-2 border-gray-300 rounded-none bg-white">
             <button
               onClick={() => {
                 if (it.quantity <= 1) { onRemove(it.sku); return; }
                 onChangeQty(it.sku, it.quantity - 1);
               }}
               disabled={decLoading || it.canDecrease === false}
-              className="w-8 h-8 border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center text-gray-700 font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base font-bold"
               aria-label="Decrease quantity"
             >
               −
             </button>
-            <span className="w-12 text-center font-medium text-gray-900">
+            <span className="w-10 text-center text-sm font-bold text-gray-900 border-x-2 border-gray-300">
               {it.quantity}
             </span>
             <button
               onClick={() => onChangeQty(it.sku, it.quantity + 1)}
               disabled={incLoading || it.canIncrease === false}
-              className="w-8 h-8 border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center text-gray-700 font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base font-bold"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+          
+          <button
+            onClick={() => onRemove(it.sku)}
+            className="p-1 hover:bg-gray-100 rounded-none transition-colors"
+            aria-label="Remove item"
+          >
+            <Trash2 size={14} className="text-gray-500 hover:text-red-600" />
+          </button>
+        </div>
+
+        {rowError && (
+          <p className="absolute bottom-1 left-0 right-0 text-[10px] text-red-600 text-center">{rowError}</p>
+        )}
+      </div>
+    );
+  }
+  
+  if (mode === 'minimal') {
+    return (
+      <div
+        id={`cart-item-${it.sku}`}
+        className={
+          `flex items-center gap-3 sm:gap-4 py-4 sm:py-5 border-b border-gray-200 last:border-b-0 ` +
+          (highlight ? "bg-amber-50" : "bg-white")
+        }
+      >
+        <CartItemMedia item={it} size="md" />
+        <div className="flex-1 min-w-0">
+          <Link
+            href={buildProductDetailPath(it.productSlug || it.productId || "")}
+            className="text-sm sm:text-base font-medium text-gray-900 hover:text-gray-700 hover:underline line-clamp-2 block mb-1"
+          >
+            {it.productName}
+          </Link>
+          {it.variantName && (
+            <p className="text-xs sm:text-sm text-gray-600 mb-1">
+              {it.variantName}
+            </p>
+          )}
+          <p className="text-sm sm:text-base font-semibold text-gray-900">
+            {formatVND(it.price)}
+          </p>
+          {typeof it.compareAt === 'number' && typeof it.price === 'number' && it.compareAt > it.price && (
+            <p className="text-xs text-gray-500 line-through">
+              {formatVND(it.compareAt)}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col items-center gap-1 shrink-0">
+          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm">
+            <button
+              onClick={() => {
+                if (it.quantity <= 1) { onRemove(it.sku); return; }
+                onChangeQty(it.sku, it.quantity - 1);
+              }}
+              disabled={decLoading || it.canDecrease === false}
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg font-semibold"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <span className="w-10 sm:w-12 text-center text-sm sm:text-base font-bold text-gray-900 border-x border-gray-300">
+              {it.quantity}
+            </span>
+            <button
+              onClick={() => onChangeQty(it.sku, it.quantity + 1)}
+              disabled={incLoading || it.canIncrease === false}
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-gray-700 hover:bg-amber-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg font-semibold"
               aria-label="Increase quantity"
             >
               +
             </button>
           </div>
           {rowError && (
-            <p className="mt-1 text-xs text-red-600">{rowError}</p>
+            <p className="text-[10px] text-red-600 text-center whitespace-nowrap">{rowError}</p>
           )}
         </div>
-
-        {/* Total Column - 3 cols */}
-        <div className="md:col-span-3 flex flex-col md:items-end justify-center">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-medium text-gray-500 md:hidden">Total:</span>
-            <span className="text-lg font-semibold text-gray-900">
-              {formatVND(it.lineTotal)}
-            </span>
-          </div>
-          {/* Remove button - Desktop */}
+        <div className="hidden sm:flex flex-col items-end gap-2 shrink-0 min-w-[100px]">
+          <span className="text-base font-bold text-gray-900">
+            {formatVND(it.lineTotal)}
+          </span>
           <button
             onClick={() => onRemove(it.sku)}
-            className="hidden md:inline-flex mt-2 items-center gap-1 text-sm text-gray-500 hover:text-red-600 transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors"
             aria-label={`Remove ${it.productName}`}
           >
             <Trash2 size={14} />
+            <span className="hidden lg:inline">Xóa</span>
           </button>
         </div>
+
+        <button
+          onClick={() => onRemove(it.sku)}
+          className="sm:hidden p-2 hover:bg-gray-100 rounded transition-colors shrink-0"
+          aria-label="Remove item"
+        >
+          <Trash2 size={16} className="text-gray-500" />
+        </button>
       </div>
     );
   }
 
-  // Original mode for mini cart and other views
   return (
     <div className="relative border-b">
       {activeSwipe && (

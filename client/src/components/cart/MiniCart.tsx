@@ -29,7 +29,6 @@ export default function MiniCart({ open, onOpenChange, highlightSku }: MiniCartP
   return (
     <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col h-full max-h-screen overflow-hidden">
-        {/* Custom Header */}
         <div className="shrink-0 px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-gray-900 uppercase tracking-wide">
@@ -45,7 +44,6 @@ export default function MiniCart({ open, onOpenChange, highlightSku }: MiniCartP
           </div>
         </div>
 
-        {/* Cart Content */}
         <div ref={scrollRef} className="flex-1 overflow-auto">
           <CartMiniClient highlightSku={highlightSku} />
         </div>

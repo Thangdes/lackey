@@ -15,7 +15,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
   const cart = useSmartCart();
   const items = (cart.items as SmartCartItem[]);
   
-  // Free shipping threshold (500,000 VND)
   const FREE_SHIPPING_THRESHOLD = 500000;
   const subtotal = cart.totals?.subtotal ?? 0;
   const progress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
@@ -120,7 +119,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
 
   return (
     <div className="flex flex-col h-full">
-      {/* Free Shipping Progress */}
       <div className="px-6 py-4 bg-gray-50">
         {hasFreeShipping ? (
           <div className="flex items-center gap-2 text-sm font-medium text-green-600">
@@ -142,7 +140,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         )}
       </div>
 
-      {/* Cart Items */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
         <div className="space-y-4">
           {items.map((it) => (
@@ -160,7 +157,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         </div>
       </div>
 
-      {/* Recommendations Placeholder */}
       <div className="px-6 py-4 bg-gray-50 border-y border-gray-200">
         <h3 className="text-sm font-semibold text-gray-900 text-center mb-2">
           SẢN PHẨM LIÊN QUAN
@@ -170,9 +166,7 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         </p>
       </div>
 
-      {/* Bottom Summary & Checkout */}
       <div className="px-6 py-4 border-t border-gray-200 bg-white">
-        {/* Total */}
         <div className="flex items-center justify-between mb-4">
           <span className="text-base font-semibold text-gray-900 uppercase">
             TỔNG CỘNG
@@ -185,7 +179,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
           Thuế và phí ship sẽ được tính khi thanh toán
         </p>
         
-        {/* Checkout Button */}
         <Link
           href={ROUTES.checkout}
           className="block w-full py-3 bg-[#fff100] hover:bg-[#ffed00] border-2 border-black text-black text-center text-sm font-bold uppercase tracking-wide transition-colors"
@@ -193,7 +186,6 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
           THANH TOÁN NGAY
         </Link>
         
-        {/* View Cart Link */}
         {!hideMiniAction && (
           <Link
             href={ROUTES.cart}
