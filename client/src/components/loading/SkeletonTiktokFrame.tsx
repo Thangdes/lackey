@@ -1,10 +1,13 @@
 const SkeletonTiktokFrame = () => {
   return (
-    <div className="w-full overflow-hidden rounded-xl">
-      <div className="relative w-full h-[420px]">
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-        <div className="h-full w-full flex items-center justify-center">
-          <span className="text-2xl font-semibold">TikTok</span>
+    <div className="w-full overflow-hidden border-2 border-[#2d2d2d]">
+      <div className="relative w-full h-[420px] bg-[#d4cfc0]">
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-[#c9c4b5] to-[#d4cfc0]"
+          style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
+        />
+        <div className="relative h-full w-full flex items-center justify-center">
+          <span className="text-2xl font-mono tracking-wider text-[#2d2d2d]/30 uppercase">TikTok</span>
         </div>
       </div>
     </div>
