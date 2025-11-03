@@ -85,18 +85,18 @@ export function GHNAddressSelector({
   return (
     <div className={className}>
       <div>
-        <label className="mb-1 block text-sm text-black/70">{CHECKOUT_TEXT.labels.city}</label>
+        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.city}</label>
         <Select 
           value={city} 
           onValueChange={handleCityChange}
           disabled={disabled || provincesLoading}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all">
             <SelectValue placeholder={provincesLoading ? "Đang tải..." : CHECKOUT_TEXT.labels.city} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black">
             {provinces.map((province) => (
-              <SelectItem key={province.ProvinceID} value={province.ProvinceName}>
+              <SelectItem key={province.ProvinceID} value={province.ProvinceName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
                 {province.ProvinceName}
               </SelectItem>
             ))}
@@ -105,15 +105,15 @@ export function GHNAddressSelector({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm text-black/70">
-          {CHECKOUT_TEXT.labels.district} <span className="text-red-500">*</span>
+        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
+          {CHECKOUT_TEXT.labels.district} <span className="text-[#AE1C2C]">*</span>
         </label>
         <Select 
           value={district} 
           onValueChange={handleDistrictChange}
           disabled={disabled || !selectedProvinceId || districtsLoading}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all disabled:opacity-50">
             <SelectValue placeholder={
               !selectedProvinceId 
                 ? "Chọn tỉnh/thành phố trước" 
@@ -122,9 +122,9 @@ export function GHNAddressSelector({
                 : CHECKOUT_TEXT.placeholders.chooseDistrict
             } />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black">
             {districts.map((districtObj) => (
-              <SelectItem key={districtObj.DistrictID} value={districtObj.DistrictName}>
+              <SelectItem key={districtObj.DistrictID} value={districtObj.DistrictName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
                 {districtObj.DistrictName}
               </SelectItem>
             ))}
@@ -133,15 +133,15 @@ export function GHNAddressSelector({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm text-black/70">
-          {CHECKOUT_TEXT.labels.ward} <span className="text-red-500">*</span>
+        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
+          {CHECKOUT_TEXT.labels.ward} <span className="text-[#AE1C2C]">*</span>
         </label>
         <Select 
           value={ward} 
           onValueChange={handleWardChange}
           disabled={disabled || !selectedDistrictId || wardsLoading}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all disabled:opacity-50">
             <SelectValue placeholder={
               !selectedDistrictId 
                 ? "Chọn quận/huyện trước" 
@@ -150,9 +150,9 @@ export function GHNAddressSelector({
                 : "Chọn phường/xã"
             } />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-2 border-black">
             {wards.map((wardObj) => (
-              <SelectItem key={wardObj.WardCode} value={wardObj.WardName}>
+              <SelectItem key={wardObj.WardCode} value={wardObj.WardName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
                 {wardObj.WardName}
               </SelectItem>
             ))}
@@ -161,15 +161,15 @@ export function GHNAddressSelector({
       </div>
 
       <div className="sm:col-span-2">
-        <label className="mb-1 block text-sm text-black/70">
-          {CHECKOUT_TEXT.labels.street} <span className="text-red-500">*</span>
+        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
+          {CHECKOUT_TEXT.labels.street} <span className="text-[#AE1C2C]">*</span>
         </label>
         <input 
           value={street} 
           onChange={onStreetChange} 
           placeholder={CHECKOUT_TEXT.placeholders.street}
           disabled={disabled}
-          className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/10 disabled:opacity-50 disabled:cursor-not-allowed" 
+          className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] disabled:opacity-50 disabled:cursor-not-allowed transition-all" 
         />
       </div>
     </div>

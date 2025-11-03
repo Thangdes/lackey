@@ -32,7 +32,6 @@ import { customerService } from "@/service/customer.service";
 import type { CustomerAddress } from "@/type/customer";
 import type { User } from "@/type/user";
 import { VietQRPanel } from "./payment/VietQRPanel";
-import { useViewportFlags } from "./hooks/useViewportFlags";
 import { useUiLoading } from "./hooks/useUiLoading";
 import { canChooseDistrict } from "./utils/address";
 import { useAddressInit } from "./hooks/useAddressInit";
@@ -700,42 +699,44 @@ export default function CheckoutClient() {
 
         {exitModalOpen && (
           <div
-            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-[2px]"
+            className="fixed inset-0 z-[100] bg-black/60"
             onClick={(e) => { if (e.currentTarget === e.target) onExitCancel(); }}
           >
             <div className="flex min-h-[100dvh] items-center justify-center p-4">
-              <div className="w-full max-w-md overflow-hidden rounded-2xl border border-black/10 bg-white shadow-2xl" data-exit-modal-root>
-                <div className="flex items-center gap-3 border-b border-black/5 bg-gradient-to-r from-amber-50 to-amber-100/60 px-5 py-4">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                    <AlertTriangle size={20} />
+              <div className="w-full max-w-md overflow-hidden rounded-none border-3 border-black bg-[#f5f1e8] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.4)] animate-in zoom-in-95 duration-200" data-exit-modal-root>
+                <div className="flex items-center gap-4 border-b-3 border-black bg-[#fff100] px-5 py-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-none border-2 border-black bg-black text-[#fff100]">
+                    <AlertTriangle size={24} strokeWidth={2.5} />
                   </span>
-                  <div className="text-base font-semibold text-amber-800">{exitContext === 'vietqr' ? 'Rời khỏi trang thanh toán?' : 'Rời khỏi trang?'}</div>
+                  <div className="font-[family-name:var(--font-retro)] text-lg font-bold text-black uppercase tracking-wider">
+                    {exitContext === 'vietqr' ? 'RỜI KHỎI THANH TOÁN?' : 'RỜI KHỎI TRANG?'}
+                  </div>
                 </div>
-                <div className="px-5 pb-5 pt-4 max-h-[80vh] overflow-auto">
+                <div className="px-6 py-6">
                   {exitContext === 'vietqr' ? (
-                    <p className="text-sm text-black/75">
+                    <p className="text-base text-[#2d2d2d] leading-relaxed font-medium">
                       Bạn đang có một đơn hàng đang chờ (VietQR). Bạn có muốn hủy đơn hàng này trước khi rời trang?
                     </p>
                   ) : (
-                    <p className="text-sm text-black/75">
+                    <p className="text-base text-[#2d2d2d] leading-relaxed font-medium">
                       Form của bạn có dữ liệu chưa lưu. Nếu rời trang, các thông tin đã nhập có thể bị mất. Bạn có chắc muốn rời trang?
                     </p>
                   )}
 
-                  <div className="mt-4 flex flex-wrap justify-end gap-2">
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <button
                       type="button"
-                      className="inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black/80 shadow-sm transition-colors hover:bg-black/[0.03]"
+                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-none border-3 border-black bg-white px-5 py-3 text-sm font-bold uppercase tracking-wider text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
                       onClick={onExitCancel}
                     >
-                      Ở lại trang
+                      Ở LẠI TRANG
                     </button>
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors ${exitContext === 'vietqr' ? 'bg-red-600 hover:bg-red-700' : 'bg-amber-600 hover:bg-amber-700'}`}
+                      className={`flex-1 inline-flex items-center justify-center gap-2 rounded-none border-3 border-black px-5 py-3 text-sm font-bold uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] ${exitContext === 'vietqr' ? 'bg-[#ff4444] text-white' : 'bg-[#2d2d2d] text-[#fff100]'}`}
                       onClick={onExitConfirm}
                     >
-                      {exitContext === 'vietqr' ? 'Hủy đơn và rời trang' : 'Rời trang'}
+                      {exitContext === 'vietqr' ? 'HỦY ĐƠN VÀ RỜI TRANG' : 'RỜI TRANG'}
                     </button>
                   </div>
                 </div>
