@@ -70,9 +70,12 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
     if (times.length === 0) return null
     return Math.max(...times)
   }, [notifOrders])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasNewNotif, setHasNewNotif] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [newNotifCount, setNewNotifCount] = useState<number>(0);
-  const [adminTapCount, setAdminTapCount] = useState(0); // Used in onHiddenAdminTap callback 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [adminTapCount, setAdminTapCount] = useState(0); 
   const adminTapTimerRef = useRef<number | null>(null)
   const triggerAdminNav = useCallback(() => {
     try {
@@ -250,7 +253,7 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                   id="user-menu"
                   role="menu"
                   aria-label="Tài khoản"
-                  className="absolute right-0 mt-2 w-56 rounded-xl bg-white text-black shadow-lg ring-1 ring-black/10 py-1 overflow-hidden z-50"
+                  className="absolute right-0 mt-3 w-56 bg-white text-black border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC] overflow-hidden z-50"
                   onKeyDown={(e) => {
                     const idx = itemRefs.current.findIndex((el) => el === document.activeElement)
                     if (e.key === 'ArrowDown') {
@@ -274,44 +277,51 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                     }
                   }}
                 >
-                  <button
-                    type="button"
-                    role="menuitem"
-                    ref={(el) => { itemRefs.current[0] = el }}
-                    className="flex items-center gap-2 w-full text-left text-sm px-3 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-md relative z-10"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setAcctOpen(false);
-                      router.push(ROUTES.profile);
-                    }}
-                  >
-                    <User className="h-4 w-4" />
-                    <span>Tài khoản của tôi</span>
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    ref={(el) => { itemRefs.current[1] = el }}
-                    className="flex items-center gap-2 w-full text-left text-sm px-3 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-md relative z-10"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setAcctOpen(false);
-                      router.push(`${ROUTES.profile}?section=orders&tab=all&page=1&limit=10`);
-                    }}
-                  >
-                    <ShoppingBag className="h-4 w-4" />
-                    <span>Đơn mua</span>
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    ref={(el) => { itemRefs.current[2] = el }}
-                    className="flex items-center gap-2 w-full text-left text-sm px-3 py-2 hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none rounded-md"
-                    onClick={() => { setAcctOpen(false); logout.mutate(); }}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Đăng xuất</span>
-                  </button>
+                  <div className="bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black px-4 py-3">
+                    <div className="text-xs font-bold text-white uppercase tracking-wider">Tài khoản</div>
+                    <div className="text-xs text-white/90 mt-0.5 truncate">{user?.username || user?.email}</div>
+                  </div>
+                  <div className="p-1">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      ref={(el) => { itemRefs.current[0] = el }}
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setAcctOpen(false);
+                        router.push(ROUTES.profile);
+                      }}
+                    >
+                      <User className="h-4 w-4 text-[#AE1C2C]" />
+                      <span>Tài khoản của tôi</span>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      ref={(el) => { itemRefs.current[1] = el }}
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setAcctOpen(false);
+                        router.push(`${ROUTES.profile}?section=orders&tab=all&page=1&limit=10`);
+                      }}
+                    >
+                      <ShoppingBag className="h-4 w-4 text-[#AE1C2C]" />
+                      <span>Đơn mua</span>
+                    </button>
+                    <div className="mx-2 my-1 border-t-2 border-black"></div>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      ref={(el) => { itemRefs.current[2] = el }}
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      onClick={() => { setAcctOpen(false); logout.mutate(); }}
+                    >
+                      <LogOut className="h-4 w-4 text-[#AE1C2C]" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
