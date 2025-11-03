@@ -6,6 +6,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constant/route";
+import { CheckCircle2, ShoppingCart, X } from "lucide-react";
 
 export type AddToCartToastPayload = {
   name: string;
@@ -15,27 +16,63 @@ export type AddToCartToastPayload = {
 
 export function showAddedToCartToast({ name, thumbnailUrl, quantity = 1 }: AddToCartToastPayload) {
   toast.custom((t) => (
-    <div className="flex w-[320px] sm:w-[360px] items-start gap-3 rounded-lg border border-black/10 bg-white p-3 shadow-lg">
-      {thumbnailUrl ? (
-        <div className="relative h-12 w-12 overflow-hidden rounded-md bg-neutral-100">
-          <Image src={thumbnailUrl} alt={name} fill className="object-cover" />
+    <div className="flex w-[340px] sm:w-[380px] flex-col rounded-none border-3 border-black bg-[#f5f1e8] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 animate-in slide-in-from-bottom-5">
+      <div className="flex items-center gap-3 border-b-3 border-black bg-[#fff100] px-4 py-3">
+        <div className="flex items-center justify-center w-10 h-10 rounded-none border-2 border-black bg-black shrink-0">
+          <CheckCircle2 className="w-6 h-6 text-[#fff100]" strokeWidth={2.5} />
         </div>
-      ) : null}
-      <div className="min-w-0 flex-1">
-        <div className="text-sm font-medium text-neutral-900 truncate">Đã thêm vào giỏ</div>
-        <div className="mt-0.5 text-[12px] text-neutral-700 line-clamp-2">{name}</div>
-        <div className="mt-0.5 text-[11px] text-neutral-500">Số lượng: <span className="font-medium text-neutral-800">{quantity}</span></div>
-        <div className="mt-2 flex items-center gap-2">
-          <Button asChild size="sm" className="h-8 px-3">
-            <Link href={ROUTES.cart} onClick={() => toast.dismiss(t)}>
-              Xem giỏ hàng
-            </Link>
-          </Button>
-          <Button size="sm" variant="secondary" className="h-8 px-3" onClick={() => toast.dismiss(t)}>
-            Tiếp tục mua
-          </Button>
+        <div className="font-[family-name:var(--font-retro)] text-base font-bold text-black uppercase tracking-wider flex-1">
+          ĐÃ THÊM VÀO GIỎ
+        </div>
+        <button
+          onClick={() => toast.dismiss(t)}
+          className="w-8 h-8 flex items-center justify-center border-2 border-black bg-white hover:bg-black hover:text-white transition-colors"
+        >
+          <X className="w-4 h-4" strokeWidth={2.5} />
+        </button>
+      </div>
+
+      <div className="flex items-start gap-3 p-4">
+        {thumbnailUrl ? (
+          <div className="relative h-16 w-16 overflow-hidden rounded-none border-2 border-black bg-white shrink-0">
+            <Image src={thumbnailUrl} alt={name} fill className="object-cover" />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-16 w-16 rounded-none border-2 border-black bg-white shrink-0">
+            <ShoppingCart className="w-8 h-8 text-black" strokeWidth={2} />
+          </div>
+        )}
+
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="text-sm text-[#2d2d2d] line-clamp-2 leading-snug font-bold">
+            {name}
+          </div>
+
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-white border-2 border-black">
+            <span className="text-xs text-[#2d2d2d] font-bold uppercase">Số lượng:</span>
+            <span className="text-xs text-black font-bold">{quantity}</span>
+          </div>
         </div>
       </div>
+
+      <div className="flex items-center gap-2 px-4 pb-4">
+        <Button 
+          asChild 
+          size="sm" 
+          className="flex-1 h-10 px-4 rounded-none border-3 border-black bg-[#2d2d2d] text-white font-bold uppercase tracking-wider text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
+        >
+          <Link href={ROUTES.cart} onClick={() => toast.dismiss(t)}>
+            XEM GIỎ
+          </Link>
+        </Button>
+        <Button 
+          size="sm" 
+          className="flex-1 h-10 px-4 rounded-none border-3 border-black bg-white text-black font-bold uppercase tracking-wider text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all" 
+          onClick={() => toast.dismiss(t)}
+        >
+          TIẾP TỤC
+        </Button>
+      </div>
     </div>
-  ), { duration: 2500, position: "bottom-right" });
+  ), { duration: 4000, position: "bottom-right" });
 }
