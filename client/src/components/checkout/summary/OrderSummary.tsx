@@ -2,9 +2,6 @@
 
 import type { LocalCartItem as TLocalCartItem } from "@/type/checkout";
 import React, { useMemo, useState } from "react";
-// import { ReceiptText, Package, Truck, CircleDollarSign } from "lucide-react"; // Unused for now
-// import { ORDER_SUMMARY } from "@/constant/checkout"; // Unused for now
-// import { OrderItemRow } from "./OrderItemRow"; // Unused for now
 import { WarningList } from "./WarningList";
 import { CheckoutSummaryItemRow } from "./CheckoutSummaryItemRow";
 

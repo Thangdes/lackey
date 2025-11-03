@@ -120,18 +120,6 @@ export default function ProductRow({
             const discountedVariants = getDiscountedVariants(vs);
             const minPrice = getMinPrice(vs);
 
-            // Note: allVariantsPricing is kept for potential future use
-            // const allVariantsPricing = vs.map((v) => ({
-            //   variant: v,
-            //   pricing: {
-            //     effectivePrice: v.price ?? 0,
-            //     originalPrice: v.price ?? 0,
-            //     hasDiscount: false,
-            //     discountPercent: 0,
-            //     discountPrice: v.discountPrice,
-            //   },
-            // }));
-
             if (discountedVariants.length) {
               const top = discountedVariants[0];
               const badgeVariant: "destructive" | "outline" =

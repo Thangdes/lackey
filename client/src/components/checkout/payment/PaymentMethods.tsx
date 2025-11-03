@@ -1,7 +1,6 @@
 "use client";
 
 import type { PaymentMethod as Method } from "@/type/checkout";
-// import { PAYMENT_UI } from "@/constant/checkout"; // Unused for now
 import { getOrderedEntries } from "./PaymentLogos";
 
 type Props = {

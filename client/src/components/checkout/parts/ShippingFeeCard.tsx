@@ -2,7 +2,6 @@
 
 import React from "react";
 import type { CustomerAddress } from "@/type/customer";
-// import { Truck } from "lucide-react"; // Unused for now
 
 export type ShippingFeeCardProps = {
   shippingFee: number;
@@ -35,8 +34,6 @@ export function ShippingFeeCard({
     const sel = savedAddresses.find((a) => String(a.id) === id) || null;
     onSelectAddress(sel);
   };
-
-  // const selected = savedAddresses.find((a) => String(a.id) === String(selectedAddressId || "")) || null; // Unused for now
 
   return (
     <div className="space-y-4">

@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-export type LowStockRow = { product: string; name: string; sku: string; stockQuantity?: number };
+import type { LowStockRow } from "@/type/supplier";
 
 export default function LowStockTable({ rows, onRowClick }: { rows: LowStockRow[]; onRowClick?: (q: string) => void }) {
   if (!rows || rows.length === 0) {

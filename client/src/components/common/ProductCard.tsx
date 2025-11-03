@@ -40,14 +40,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   desktopPerRow,
 }) => {
   const [added, setAdded] = useState(false);
-  // const [mounted, setMounted] = useState(false); // Unused for now
   const addMutation = useAddToCart();
   const cart = useSmartCart();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
 
   const img = p.thumbnailUrl || p.images?.[0] || "/logo/logo.jpg";
   const v0 = (p.variants && p.variants[0]) || undefined;

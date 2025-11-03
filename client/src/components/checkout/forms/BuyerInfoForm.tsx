@@ -1,5 +1,4 @@
 "use client";
-// import { User } from "lucide-react"; // Unused for now
 import { CHECKOUT_TEXT } from "@/constant/checkout";
 import type { BuyerInfoFormProps } from "@/type/checkout";
 import { ContactFields } from "./ContactFields";

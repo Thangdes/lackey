@@ -1,20 +1,19 @@
-export const currencyVND = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" });
+import type { RevenuePoint, RecentOrder, InventoryItem } from "@/type/supplier";
 
-export type RevenuePoint = { date: string; revenue: number };
+export const currencyVND = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" });
 
 export function calcTotalRevenue(points: RevenuePoint[]): number {
   return points.reduce((s, d) => s + Number(d.revenue || 0), 0);
 }
 
-export type RecentOrder = { createdAt: string };
 export function getNewestOrderTimestamp(orders: RecentOrder[]): number | null {
   const newest = orders
     .map((o) => new Date(o.createdAt).getTime())
+    .filter((t) => Number.isFinite(t) && t > 0)
     .sort((a, b) => b - a)[0];
   return newest || null;
 }
 
-export type InventoryItem = { name: string; variants: { name: string; sku: string; stockQuantity: number }[] };
 export function pickLowStockRows(inventory: InventoryItem[], lowThreshold = 5, limit = 8) {
   return inventory
     .flatMap((p) => (p.variants || []).map((v) => ({ product: p.name, ...v })))

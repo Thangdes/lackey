@@ -5,7 +5,7 @@ import { useShippingFee } from "../../checkout/hooks/useShippingFee";
 import { useAddressInit } from "../../checkout/hooks/useAddressInit";
 import type { SmartCartItem } from "@/type/cart";
 import type { Address } from "@/type/checkout";
-import { extractCartItemWeight, logWeightExtraction } from "../../../utils/weightExtractor";
+import { extractCartItemWeight } from "../../../utils/weightExtractor";
 
 export type UseCartShippingFeeResult = {
   shippingFee: number;
@@ -40,12 +40,6 @@ export function useCartShippingFee(items: SmartCartItem[], subtotal: number): Us
         variantName: item.variantName,
         productName: item.productName
       });
-      
-      logWeightExtraction(
-        { sku: item.sku, variantName: item.variantName, productName: item.productName },
-        weightResult,
-        item.quantity
-      );
       
       const itemWeight = weightResult.weight;
       return total + (item.quantity * itemWeight);

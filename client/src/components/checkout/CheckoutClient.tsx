@@ -36,7 +36,7 @@ import { useUiLoading } from "./hooks/useUiLoading";
 import { canChooseDistrict } from "./utils/address";
 import { useAddressInit } from "./hooks/useAddressInit";
 import { useShippingFee } from "./hooks/useShippingFee";
-import { extractCartItemWeight, logWeightExtraction } from "../../utils/weightExtractor";
+import { extractCartItemWeight } from "../../utils/weightExtractor";
 import { useVietQRFlow } from "./hooks/useVietQRFlow";
 import { buyerReducer as buyerReducerFn, altReducer as altReducerFn } from "./reducers/checkout.reducers";
 import { useCheckoutValidation } from "./hooks/useCheckoutValidation";
@@ -151,12 +151,6 @@ export default function CheckoutClient() {
         variantName: item.variantName,
         productName: item.productName
       });
-      
-      logWeightExtraction(
-        { sku: item.sku, variantName: item.variantName, productName: item.productName },
-        weightResult,
-        item.quantity
-      );
       
       const itemWeight = weightResult.weight;
       return total + (item.quantity * itemWeight);
@@ -285,27 +279,6 @@ export default function CheckoutClient() {
     };
   }, [pendingVietQROrderId, formDirty, orderSuccessOpen]);
 
-  // function validate(): string | null {
-  //   return validateCheckout({
-  //     fullName: buyer.fullName,
-  //     user,
-  //     email: buyer.email,
-  //     phone: buyer.phone,
-  //     city: buyer.city,
-  //     district: buyer.district,
-  //     street: buyer.street,
-  //     shipToDifferent: buyer.shipToDifferent,
-  //     altFullName: alt.altFullName,
-  //     altPhone: alt.altPhone,
-  //     altCity: alt.altCity,
-  //     altDistrict: alt.altDistrict,
-  //     altStreet: alt.altStreet,
-  //     canChooseDistrict,
-  //     isCartLoading,
-  //     itemsLength: items.length,
-  //   });
-  // }
-
   const { preSubmitChecks, afterOrderCreated } = useCheckoutFlow({
     validateForMethod,
     buyer,
@@ -364,8 +337,6 @@ export default function CheckoutClient() {
       showErrorToast({ title: "Lỗi VietQR", message });
     }
   }, [buyer, alt, appliedCode, shippingFee, preSubmitChecks, checkoutMut, createPaymentLinkMut.isPending, afterOrderCreated, submitLocked, setMethod]);
-
-  // const { isPhone, isBelowMd } = useViewportFlags(); // Unused for now
 
   const effectiveUser: (User & { customer?: { id?: string } }) | { email: string } | null =
     user || (customerIdState ? { email: "authed@placeholder" } : null);

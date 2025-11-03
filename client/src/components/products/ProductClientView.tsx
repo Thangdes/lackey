@@ -108,7 +108,6 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
       }
       const sku = selectedVariant.sku || selectedVariant.id;
       if (sku) setMiniHighlightSku(sku);
-      // setMiniOpen(true); // Disabled: Don't auto-open miniCart when adding to cart
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Không thể thêm vào giỏ hàng. Vui lòng thử lại.";
       if (/401|unauthorized/i.test(msg)) {
@@ -166,7 +165,6 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         .then(() => {
           const sku = selectedVariant.sku || selectedVariant.id;
           if (sku) setMiniHighlightSku(sku);
-          // setMiniOpen(true); // Disabled: Don't auto-open miniCart when increasing quantity
         })
         .catch((e: unknown) => {
           const msg = e instanceof Error ? e.message : "Không thể thêm vào giỏ hàng. Vui lòng thử lại.";

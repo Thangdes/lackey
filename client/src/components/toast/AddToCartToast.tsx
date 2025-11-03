@@ -7,12 +7,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constant/route";
 import { CheckCircle2, ShoppingCart, X } from "lucide-react";
+import type { AddToCartToastPayload } from "@/type/toast";
 
-export type AddToCartToastPayload = {
-  name: string;
-  thumbnailUrl?: string | null;
-  quantity?: number;
-};
+export type { AddToCartToastPayload };
 
 export function showAddedToCartToast({ name, thumbnailUrl, quantity = 1 }: AddToCartToastPayload) {
   toast.custom((t) => (
