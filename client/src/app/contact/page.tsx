@@ -3,7 +3,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { siteConfig } from "@/constant/site";
 import { ROUTES } from "@/constant/route";
-import { HelpCircle, Truck, RotateCcw, Shield, FileText } from "lucide-react";
+import { HelpCircle, Truck, RotateCcw, Shield, FileText, Home, ChevronRight } from "lucide-react";
 import ContactClient from "@/components/contact/ContactClient";
 
 export const metadata: Metadata = {

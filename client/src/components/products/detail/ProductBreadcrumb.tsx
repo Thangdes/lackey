@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import React from "react";
 import type { Product } from "@/type/product";
 import { ROUTES, buildProductsByCategory } from "@/constant/route";
+import { buildBreadcrumbJsonLd } from "@/config/seo";
+import { absoluteUrl } from "@/lib/url";
 
 export type ProductBreadcrumbProps = {
   product: Product;
@@ -13,8 +16,41 @@ const ProductBreadcrumb: React.FC<ProductBreadcrumbProps> = ({ product: p }) => 
   const catSlug = typeof p.category?.slug === 'string' ? p.category?.slug : undefined;
   const catName = typeof p.category?.name === 'string' ? p.category?.name : undefined;
 
+  const breadcrumbItems = React.useMemo(() => {
+    const items = [
+      { name: "Trang chủ", url: absoluteUrl(ROUTES.home) },
+      { name: "Sản phẩm", url: absoluteUrl(ROUTES.products) },
+    ];
+    
+    if (catSlug && catName) {
+      items.push({
+        name: catName,
+        url: absoluteUrl(buildProductsByCategory(catSlug)),
+      });
+    }
+    
+    items.push({
+      name: p.name,
+      url: absoluteUrl(`/products/${p.slug}`),
+    });
+    
+    return items;
+  }, [catSlug, catName, p.name, p.slug]);
+
+  const jsonLd = React.useMemo(() => 
+    buildBreadcrumbJsonLd(breadcrumbItems),
+    [breadcrumbItems]
+  );
+
   return (
-    <nav className="mb-6" aria-label="Breadcrumb">
+    <>
+      <Script
+        id="product-breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
+      <nav className="mb-6" aria-label="Breadcrumb">
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black flex-wrap">
         <Link 
           href={ROUTES.home} 
@@ -55,6 +91,7 @@ const ProductBreadcrumb: React.FC<ProductBreadcrumbProps> = ({ product: p }) => 
         </span>
       </div>
     </nav>
+    </>
   );
 };
 

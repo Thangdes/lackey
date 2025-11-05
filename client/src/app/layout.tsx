@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
-import { defaultMetadata, buildOrganizationJsonLd, buildWebsiteJsonLd } from "@/config/seo";
+import { defaultMetadata, buildOrganizationJsonLd, buildWebsiteJsonLd, buildSiteNavigationJsonLd } from "@/config/seo";
 import LayoutChrome from "@/components/layout/LayoutChrome";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -40,6 +40,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <meta name="theme-color" content="#229090" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
       <Script
         id="ld-organization"
         type="application/ld+json"
@@ -49,6 +60,11 @@ export default function RootLayout({
         id="ld-website"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd()) }}
+      />
+      <Script
+        id="ld-site-navigation"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSiteNavigationJsonLd()) }}
       />
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fcRodancy.variable} antialiased bg-white`}
