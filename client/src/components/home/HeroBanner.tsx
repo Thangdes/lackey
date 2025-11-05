@@ -4,70 +4,48 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useHeroSlides } from "@/hook/useSiteContent";
 
-type HeroSlide = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  ctaText: string;
-  ctaLink: string;
-  imageUrl: string;
-  textPosition?: "left" | "center" | "right";
-};
-
-const HERO_SLIDES: HeroSlide[] = [
-  {
-    id: "1",
-    title: "BỘ SƯU TẬP MỚI\nĐÃ RA MẮT!",
-    subtitle: "Móc khóa anime độc đáo",
-    ctaText: "MUA NGAY",
-    ctaLink: "/products?collection=anime",
-    imageUrl: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1200",
-    textPosition: "left",
-  },
-  {
-    id: "2",
-    title: "KPOP COLLECTION\n2025",
-    subtitle: "Idol yêu thích trong tầm tay",
-    ctaText: "KHÁM PHÁ",
-    ctaLink: "/products?collection=kpop",
-    imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200",
-    textPosition: "left",
-  },
-  {
-    id: "3",
-    title: "CUSTOM\nTHEO Ý BẠN",
-    subtitle: "Thiết kế riêng cho bạn",
-    ctaText: "TẠO MỚI",
-    ctaLink: "/products?collection=custom",
-    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200",
-    textPosition: "left",
-  },
-];
 
 export default function HeroBanner() {
+  const { data, isLoading } = useHeroSlides();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const currentSlide = HERO_SLIDES[currentIndex];
+  const slides = data || [];
+  const currentSlide = slides[currentIndex];
+
+  if (isLoading || slides.length === 0) {
+    return (
+      <section className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] bg-gray-900 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
+        <div className="relative h-full flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-64 h-8 bg-gray-700 rounded mb-4 mx-auto" />
+            <div className="w-48 h-6 bg-gray-700 rounded mx-auto" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || slides.length === 0) return;
     
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, slides.length]);
 
   const goToPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
     setIsAutoPlaying(false);
   };
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
     setIsAutoPlaying(false);
   };
 
@@ -123,7 +101,7 @@ export default function HeroBanner() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-        {HERO_SLIDES.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => {

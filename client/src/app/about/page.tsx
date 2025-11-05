@@ -9,6 +9,24 @@ import { CheckCircle2, Truck, CreditCard, Phone, Mail, MapPin } from "lucide-rea
 export const metadata: Metadata = {
   title: `Về ${siteConfig.name}`,
   description: ABOUT_PAGE.metadata.description,
+  keywords: [...siteConfig.default.keywords, "giới thiệu", "về chúng tôi", "LắcKey"],
+  alternates: { canonical: `${siteConfig.url}${ROUTES.about}` },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    url: `${siteConfig.url}${ROUTES.about}`,
+    title: `Về ${siteConfig.name}`,
+    description: ABOUT_PAGE.metadata.description,
+    siteName: siteConfig.name,
+    locale: "vi_VN",
+    images: [{ url: siteConfig.logo, alt: siteConfig.name, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Về ${siteConfig.name}`,
+    description: ABOUT_PAGE.metadata.description,
+    images: [{ url: siteConfig.logo, alt: siteConfig.name }],
+  },
 };
 
 export default function AboutPage() {

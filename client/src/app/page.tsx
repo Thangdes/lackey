@@ -17,23 +17,37 @@ export const metadata: Metadata = {
   title: siteConfig.default.title,
   description: siteConfig.default.description,
   keywords: siteConfig.default.keywords,
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
   alternates: { canonical: siteConfig.url },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     url: siteConfig.url,
     title: siteConfig.default.title,
     description: siteConfig.default.description,
     siteName: siteConfig.name,
+    locale: "vi_VN",
     images: [
-      { url: siteConfig.logo, alt: `${siteConfig.name} logo`, width: 1200, height: 630 },
+      { url: siteConfig.logo, alt: siteConfig.name, width: 1200, height: 630 },
     ],
   },
   twitter: {
     card: "summary_large_image",
+    site: siteConfig.name,
     title: siteConfig.default.title,
     description: siteConfig.default.description,
-    images: [siteConfig.logo],
+    images: [{ url: siteConfig.logo, alt: siteConfig.name }],
   },
 };
 

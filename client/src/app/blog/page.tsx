@@ -10,24 +10,24 @@ import { postService } from "@/service/post.service";
 
 export const metadata: Metadata = {
   title: `Blog | ${siteConfig.name}`,
-  description: `Tin tức, công thức và chia sẻ từ ${siteConfig.name}.`,
-  alternates: {
-    canonical: `${siteConfig.url}/blog`,
-  },
+  description: `Tin tức, kiến thức và cảm hứng về móc khóa từ ${siteConfig.name}. Khám phá xu hướng mới nhất và hướng dẫn bảo quản.`,
+  keywords: [...siteConfig.default.keywords, "blog", "tin tức", "kiến thức móc khóa"],
+  alternates: { canonical: `${siteConfig.url}/blog` },
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     url: `${siteConfig.url}/blog`,
     title: `Blog | ${siteConfig.name}`,
-    description: `Tin tức, công thức và chia sẻ từ ${siteConfig.name}.`,
+    description: `Tin tức, kiến thức và cảm hứng về móc khóa từ ${siteConfig.name}`,
     siteName: siteConfig.name,
-    images: siteConfig.logo ? [{ url: siteConfig.logo, alt: `${siteConfig.name} Logo` }] : undefined,
+    locale: "vi_VN",
+    images: [{ url: siteConfig.logo, alt: siteConfig.name, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: `Blog | ${siteConfig.name}`,
-    description: `Tin tức, công thức và chia sẻ từ ${siteConfig.name}.`,
-    images: siteConfig.logo ? [siteConfig.logo] : undefined,
+    description: `Tin tức, kiến thức và cảm hứng về móc khóa từ ${siteConfig.name}`,
+    images: [{ url: siteConfig.logo, alt: siteConfig.name }],
   },
 };
 
