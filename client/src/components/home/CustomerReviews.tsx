@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
+import { useFeaturedReviews } from "@/hook/useRating";
 
 type Review = {
   id: string;
@@ -16,71 +17,40 @@ type Review = {
   verified?: boolean;
 };
 
-// Mock reviews data - Testimonials
-const MOCK_REVIEWS: Review[] = [
-  {
-    id: "1",
-    name: "Minh Anh",
-    title: "Móc khóa anime cực chất!",
-    content: "Mình mua móc khóa Naruto và nó đẹp hơn mong đợi rất nhiều! Chất lượng in ảnh sắc nét, màu sắc rực rỡ. Shop giao hàng siêu nhanh, đóng gói cẩn thận. Giá cả hợp lý, mình đã giới thiệu cho bạn bè mua luôn!",
-    rating: 5,
-    reviewCount: 127,
-    imageUrl: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400",
-    verified: true,
-  },
-  {
-    id: "2",
-    name: "Tuấn Kiệt",
-    title: "Fan Kpop phải có!",
-    content: "Móc khóa BTS của shop quá xịn! Design đẹp, chất liệu bền. Bạn mình thấy cũng đặt mua ngay. Giá cả phải chăng, chất lượng vượt trội. Shop phục vụ nhiệt tình, tư vấn tận tâm. Rất hài lòng!",
-    rating: 5,
-    reviewCount: 89,
-    imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400",
-    verified: true,
-  },
-  {
-    id: "3",
-    name: "Phương Linh",
-    title: "Quà tặng ý nghĩa nhất!",
-    content: "Mua làm quà sinh nhật cho em trai, em ấy mở ra rất thích và bất ngờ! Móc khóa Pikachu cute lắm, màu sắc tươi, chất liệu bền đẹp. Đóng gói đẹp, kèm thiệp chúc mừng nữa. Đã giới thiệu shop cho cả lớp rồi!",
-    rating: 5,
-    reviewCount: 156,
-    imageUrl: "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400",
-    verified: true,
-  },
-  {
-    id: "4",
-    name: "Hoàng Nam",
-    title: "Chất lượng vượt trội!",
-    content: "Shop uy tín, sản phẩm đúng như hình, thậm chí còn đẹp hơn. Móc khóa custom theo yêu cầu của mình rất đẹp, shop tư vấn nhiệt tình. Sẽ tiếp tục ủng hộ và mua thêm nhiều sản phẩm khác!",
-    rating: 5,
-    reviewCount: 203,
-    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
-    verified: true,
-  },
-  {
-    id: "5",
-    name: "Thanh Hà",
-    title: "Gấu Brown quá dễ thương!",
-    content: "Móc khóa gấu Brown của Line Friends quá cute! Chất liệu mềm mại, màu nâu đẹp mê. Bạn mình nhìn thấy cũng đặt mua ngay 3 cái. Shop tư vấn tận tình, giao hàng nhanh chóng. Rất đáng mua!",
-    rating: 5,
-    reviewCount: 94,
-    imageUrl: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
-    verified: true,
-  },
-  {
-    id: "6",
-    name: "Đức Anh",
-    title: "Game thủ phải có!",
-    content: "Móc khóa Among Us và Valorant đẹp xỉu! Thiết kế độc đáo, màu sắc sống động. Treo vào balo gaming cực ngầu. Bạn game thủ mình ai cũng khen. Shop có nhiều mẫu game hay lắm!",
-    rating: 5,
-    reviewCount: 178,
-    imageUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400",
-    verified: true,
-  },
-];
 
 export default function CustomerReviews() {
+  const { data, isLoading } = useFeaturedReviews(6);
+
+  const reviews = (data || []).map((item) => ({
+    id: item.id,
+    name: item.customerName || "Khách hàng",
+    title: item.productName || "Đánh giá sản phẩm",
+    content: item.comment || "",
+    rating: item.rating || 5,
+    reviewCount: 0,
+    imageUrl: "/placeholder.jpg",
+    verified: true,
+  }));
+
+  if (isLoading) {
+    return (
+      <section className="w-full bg-white py-16 md:py-20">
+        <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl text-neutral-900 mb-4 tracking-wider uppercase">
+              Khách hàng nói gì về chúng tôi
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-gray-200 animate-pulse border-2 border-black h-96" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full bg-white py-16 md:py-20">
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
@@ -106,7 +76,7 @@ export default function CustomerReviews() {
 
         {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {MOCK_REVIEWS.map((review) => (
+          {reviews.map((review) => (
             <div
               key={review.id}
               className="bg-white border-2 border-black hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden flex flex-col"
@@ -142,9 +112,11 @@ export default function CustomerReviews() {
                       />
                     ))}
                   </div>
-                  <span className="text-xs text-gray-600">
-                    {review.reviewCount} reviews
-                  </span>
+                  {review.reviewCount > 0 && (
+                    <span className="text-xs text-gray-600">
+                      {review.reviewCount} reviews
+                    </span>
+                  )}
                 </div>
 
                 {/* Review Text */}

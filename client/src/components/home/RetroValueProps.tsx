@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useValueProps } from "@/hook/useSiteContent";
 
 export type RetroValueProp = {
   icon: string; // Emoji
@@ -22,6 +23,31 @@ const RetroValueProps: React.FC<RetroValuePropsProps> = ({
   subtitle,
   items,
 }) => {
+  const { data: apiData, isLoading } = useValueProps();
+  
+  const displayItems = (apiData && apiData.length > 0) ? apiData : items;
+
+  if (isLoading) {
+    return (
+      <section className="relative w-full bg-white py-12 md:py-20 overflow-hidden">
+        <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-10 md:mb-16">
+              <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-black mb-4 tracking-wider">
+                {title}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-gray-200 animate-pulse border-4 border-black h-80" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative w-full bg-white py-12 md:py-20 overflow-hidden">
       {/* Container */}
@@ -42,7 +68,7 @@ const RetroValueProps: React.FC<RetroValuePropsProps> = ({
 
           {/* Grid of Value Props */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {items.map((item, index) => (
+            {displayItems.map((item, index) => (
               <div
                 key={index}
                 className="group relative bg-[#fff100] border-4 border-black p-6 md:p-8 transition-all duration-300 hover:-translate-y-2 flex flex-col"

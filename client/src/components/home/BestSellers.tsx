@@ -5,87 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Star, ShoppingBag, Heart } from "lucide-react";
 import { ROUTES } from "@/constant/route";
+import { useBestSellers } from "@/hook/useProduct";
 
-const BEST_SELLERS = [
-  {
-    id: "1",
-    name: "Móc khóa Anime Naruto",
-    slug: "moc-khoa-anime-naruto",
-    image: "https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=400",
-    price: 45000,
-    originalPrice: 65000,
-    discount: 31,
-    rating: 4.8,
-    reviewCount: 124,
-    sold: 856,
-    badge: "HOT"
-  },
-  {
-    id: "2",
-    name: "Móc khóa Kpop BTS",
-    slug: "moc-khoa-kpop-bts",
-    image: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?w=400",
-    price: 52000,
-    originalPrice: 75000,
-    discount: 31,
-    rating: 4.9,
-    reviewCount: 98,
-    sold: 742,
-    badge: "TRENDING"
-  },
-  {
-    id: "3",
-    name: "Móc khóa Gấu Brown",
-    slug: "moc-khoa-gau-brown",
-    image: "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400",
-    price: 38000,
-    originalPrice: 55000,
-    discount: 31,
-    rating: 4.7,
-    reviewCount: 156,
-    sold: 923,
-    badge: "BEST"
-  },
-  {
-    id: "4",
-    name: "Móc khóa Doraemon",
-    slug: "moc-khoa-doraemon",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
-    price: 42000,
-    originalPrice: 60000,
-    discount: 30,
-    rating: 4.6,
-    reviewCount: 89,
-    sold: 678,
-    badge: "HOT"
-  },
-  {
-    id: "5",
-    name: "Móc khóa Pikachu LED",
-    slug: "moc-khoa-pikachu-led",
-    image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
-    price: 68000,
-    originalPrice: 95000,
-    discount: 28,
-    rating: 4.9,
-    reviewCount: 167,
-    sold: 1024,
-    badge: "NEW"
-  },
-  {
-    id: "6",
-    name: "Móc khóa Minion 3D",
-    slug: "moc-khoa-minion-3d",
-    image: "https://images.unsplash.com/photo-1580870069867-74c57ee60d19?w=400",
-    price: 55000,
-    originalPrice: 78000,
-    discount: 29,
-    rating: 4.8,
-    reviewCount: 134,
-    sold: 891,
-    badge: "SALE"
-  },
-];
 
 const BADGE_STYLES = {
   HOT: "bg-black text-white",
@@ -96,6 +17,58 @@ const BADGE_STYLES = {
 };
 
 export default function BestSellers() {
+  const { data, isLoading } = useBestSellers(6);
+
+  const products = data?.data || [];
+
+  const mapProduct = (product: typeof products[number]) => {
+    const variants = product.variants || [];
+    const firstVariant = variants[0];
+    const price = firstVariant?.discountPrice || firstVariant?.price || product.minEffectivePrice || 0;
+    const originalPrice = firstVariant?.discountPrice ? firstVariant.price : null;
+    const discount = originalPrice && price < originalPrice 
+      ? Math.round(((originalPrice - price) / originalPrice) * 100)
+      : 0;
+    
+    const totalBuyCount = product.totalBuyCount || product.buyCount || 0;
+    const badge = totalBuyCount >= 100 ? "HOT" : "NEW";
+    
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      image: product.thumbnailUrl || product.images?.[0] || "/placeholder.jpg",
+      price,
+      originalPrice,
+      discount,
+      rating: product.ratingAvg || 0,
+      reviewCount: product.ratingCount || 0,
+      sold: totalBuyCount,
+      badge,
+    };
+  };
+
+  const mappedProducts = products.map(mapProduct);
+
+  if (isLoading) {
+    return (
+      <section className="w-full bg-white py-16 md:py-24">
+        <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+          <div className="mb-12 md:mb-16 text-center">
+            <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl text-neutral-900 mb-4 tracking-wider uppercase">
+              Bán chạy nhất
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-12">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-gray-200 animate-pulse rounded-none border border-black aspect-square" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full bg-white py-16 md:py-24">
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
@@ -111,7 +84,7 @@ export default function BestSellers() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-12">
-          {BEST_SELLERS.map((product) => (
+          {mappedProducts.map((product) => (
             <Link
               key={product.id}
               href={`${ROUTES.products}/${product.slug}`}
