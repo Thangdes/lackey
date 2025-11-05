@@ -14,6 +14,8 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import CartBootstrap from "@/components/providers/CartBootstrap";
 import TopProgress from "@/components/progress/TopProgress";
 import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
+import SkipToContent from "@/components/common/SkipToContent";
+import AccessibilityPanel from "@/components/dev/AccessibilityPanel";
 import { Suspense } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +72,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${fcRodancy.variable} antialiased bg-white`}
         suppressHydrationWarning
       >
+        <SkipToContent />
         <Suspense fallback={null}>
           <TopProgress />
         </Suspense>
@@ -84,6 +87,7 @@ export default function RootLayout({
               <ChristmasPopup />
               <CartBootstrap />
               <Toaster richColors position="top-right" duration={3000}/>
+              <AccessibilityPanel />
             </TooltipProvider>
           </AuthProvider>
         </QueryProvider>

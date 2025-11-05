@@ -82,7 +82,7 @@ export default function OptimizedImage({
       ? { fill: true, sizes: sizes || "100vw" }
       : { width, height }),
     ...(priority ? { priority: true } : { loading: "lazy" as const }),
-  };
+  } as const;
 
   return (
     <div className="relative">
@@ -92,7 +92,7 @@ export default function OptimizedImage({
           style={fill ? {} : { width, height }}
         />
       )}
-      <Image {...imageProps} />
+      <Image {...imageProps} alt={alt} />
     </div>
   );
 }

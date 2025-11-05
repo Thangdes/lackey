@@ -18,13 +18,13 @@ const LayoutChrome: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 
   if (isAdmin || isSupplier || isCheckout) {
-    return <>{children}</>;
+    return <main id="main-content">{children}</main>;
   }
 
   return (
     <>
       <Header />
-      <div className="">{children}</div>
+      <main id="main-content">{children}</main>
       <ChatWidget />
       <Footer />
     </>
