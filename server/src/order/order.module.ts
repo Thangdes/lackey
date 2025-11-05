@@ -5,6 +5,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ShippingModule } from 'src/shipping/shipping.module';
 import { MailModule } from 'src/mail/mail.module';
+import { OrderRepository } from './repositories/order.repository';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MailModule } from 'src/mail/mail.module';
     MailModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService],
+  providers: [OrderService, OrderRepository],
   exports: [OrderService],
 })
 export class OrderModule {}

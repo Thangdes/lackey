@@ -14,19 +14,25 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { CustomerRepository } from './repositories/customer.repository';
+import { AddressRepository } from './repositories/address.repository';
 
 @Injectable()
 export class CustomerService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly customerRepository: CustomerRepository,
+    private readonly addressRepository: AddressRepository,
+  ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
-    const existingCustomer = await this.prisma.customer.findUnique({
-      where: { email: createCustomerDto.email },
-    });
+    const existingCustomer = await this.customerRepository.findByEmail(
+      createCustomerDto.email,
+    );
     if (existingCustomer) {
       throw new ConflictException('Customer with this email already exists.');
     }
-    return this.prisma.customer.create({ data: createCustomerDto });
+    return this.customerRepository.createCustomer(createCustomerDto);
   }
 
   async findAll(query: { page?: number; limit?: number; search?: string }): Promise<PaginatedResult<any>> {
@@ -53,17 +59,7 @@ export class CustomerService {
   }
 
   async findOne(id: string) {
-    const customer = await this.prisma.customer.findUnique({
-      where: { id },
-      include: {
-        user: { select: { id: true, username: true, role: true } },
-        addresses: true,
-        orders: {
-          take: 5,
-          orderBy: { createdAt: 'desc' },
-        },
-      },
-    });
+    const customer = await this.customerRepository.findOneWithDetails(id);
     if (!customer) {
       throw new NotFoundException(`Customer with ID '${id}' not found`);
     }
@@ -72,10 +68,7 @@ export class CustomerService {
 
   async update(id: string, updateCustomerDto: UpdateCustomerDto) {
     await this.findOne(id);
-    return this.prisma.customer.update({
-      where: { id },
-      data: updateCustomerDto,
-    });
+    return this.customerRepository.updateCustomer(id, updateCustomerDto);
   }
 
   async remove(id: string) {
@@ -88,33 +81,25 @@ export class CustomerService {
       );
     }
     await this.findOne(id);
-    return this.prisma.customer.delete({ where: { id } });
+    return this.customerRepository.deleteCustomer(id);
   }
 
   async addAddress(customerId: string, createAddressDto: CreateAddressDto) {
     await this.findOne(customerId);
     if (createAddressDto.isDefault) {
-      await this.prisma.address.updateMany({
-        where: { customerId },
-        data: { isDefault: false },
-      });
+      await this.addressRepository.unsetDefaultForCustomer(customerId);
     }
     const fullAddress = `${createAddressDto.street}, ${createAddressDto.ward}, ${createAddressDto.district}, ${createAddressDto.city}`;
-    return this.prisma.address.create({
-      data: {
-        ...createAddressDto,
-        customerId,
-        fullAddress,
-      },
+    return this.addressRepository.create({
+      ...createAddressDto,
+      customerId,
+      fullAddress,
     });
   }
 
   async findAllAddresses(customerId: string) {
     await this.findOne(customerId);
-    return this.prisma.address.findMany({
-      where: { customerId },
-      orderBy: { isDefault: 'desc' },
-    });
+    return this.addressRepository.findByCustomerId(customerId);
   }
 
   async updateAddress(
@@ -122,20 +107,17 @@ export class CustomerService {
     addressId: string,
     updateAddressDto: UpdateAddressDto,
   ) {
-    await this.prisma.address
-      .findFirstOrThrow({
-        where: { id: addressId, customerId },
-      })
-      .catch(() => {
-        throw new NotFoundException(
-          `Address not found or does not belong to this customer.`,
-        );
-      });
+    const address = await this.addressRepository.findOneByCustomer(
+      addressId,
+      customerId,
+    );
+    if (!address) {
+      throw new NotFoundException(
+        `Address not found or does not belong to this customer.`,
+      );
+    }
     if (updateAddressDto.isDefault) {
-      await this.prisma.address.updateMany({
-        where: { customerId, NOT: { id: addressId } },
-        data: { isDefault: false },
-      });
+      await this.addressRepository.unsetDefaultForCustomer(customerId, addressId);
     }
     let fullAddress: string | undefined = undefined;
     if (
@@ -144,35 +126,32 @@ export class CustomerService {
       updateAddressDto.district ||
       updateAddressDto.city
     ) {
-      const currentAddress = await this.prisma.address.findUnique({
-        where: { id: addressId },
-      });
-      fullAddress = `${updateAddressDto.street || currentAddress.street}, ${updateAddressDto.ward || currentAddress.ward}, ${updateAddressDto.district || currentAddress.district}, ${updateAddressDto.city || currentAddress.city}`;
+      fullAddress = `${updateAddressDto.street || address.street}, ${updateAddressDto.ward || address.ward}, ${updateAddressDto.district || address.district}, ${updateAddressDto.city || address.city}`;
     }
-    return this.prisma.address.update({
-      where: { id: addressId },
-      data: { ...updateAddressDto, fullAddress },
+    return this.addressRepository.update(addressId, {
+      ...updateAddressDto,
+      fullAddress,
     });
   }
 
   async removeAddress(customerId: string, addressId: string) {
-    await this.prisma.address
-      .findFirstOrThrow({
-        where: { id: addressId, customerId },
-      })
-      .catch(() => {
-        throw new NotFoundException(
-          `Address not found or does not belong to this customer.`,
-        );
-      });
-    const orderCount = await this.prisma.order.count({
-      where: { shippingAddressId: addressId },
-    });
+    const address = await this.addressRepository.findOneByCustomer(
+      addressId,
+      customerId,
+    );
+    if (!address) {
+      throw new NotFoundException(
+        `Address not found or does not belong to this customer.`,
+      );
+    }
+    const orderCount = await this.addressRepository.countOrdersWithAddress(
+      addressId,
+    );
     if (orderCount > 0) {
       throw new ConflictException(
         'Cannot delete address that is being used in orders.',
       );
     }
-    return this.prisma.address.delete({ where: { id: addressId } });
+    return this.addressRepository.delete(addressId);
   }
 }

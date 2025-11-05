@@ -3,10 +3,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { OrderStatus, Prisma } from '@prisma/client';
 import { buildPagination, buildPaginationMeta, PaginatedResult } from 'src/common/pagination';
+import { RatingRepository } from './repositories/rating.repository';
 
 @Injectable()
 export class RatingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ratingRepository: RatingRepository,
+  ) {}
 
   async create(customerId: string, createRatingDto: CreateRatingDto) {
     const { orderId, productId, productVariantId, ratingValue, comment } =
@@ -30,48 +34,29 @@ export class RatingService {
     }
 
     return this.prisma.$transaction(async (tx) => {
-      const newRating = await tx.rating.create({
-        data: {
-          customerId,
-          productId,
-          productVariantId,
-          orderId,
-          ratingValue,
-          comment,
-        },
+      const newRating = await this.ratingRepository.createRating({
+        customer: { connect: { id: customerId } },
+        product: { connect: { id: productId } },
+        productVariant: { connect: { id: productVariantId } },
+        order: { connect: { id: orderId } },
+        ratingValue,
+        comment,
       });
 
-      const aggregates = await tx.rating.aggregate({
-        _avg: { ratingValue: true },
-        _count: { ratingValue: true },
-        where: { productId },
-      });
+      const aggregates = await this.ratingRepository.aggregateForProduct(productId);
 
-      await tx.product.update({
-        where: { id: productId },
-        data: {
-          ratingAvg: aggregates._avg.ratingValue || 0,
-          ratingCount: aggregates._count.ratingValue || 0,
-        },
-      });
+      await this.ratingRepository.updateProductRating(
+        productId,
+        aggregates._avg.ratingValue || 0,
+        aggregates._count.ratingValue || 0,
+      );
 
       return newRating;
     });
   }
 
   async findForProduct(productId: string) {
-    return this.prisma.rating.findMany({
-      where: { productId },
-      include: {
-        customer: {
-          select: {
-            fullName: true,
-            user: { select: { avatar: true } },
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    return this.ratingRepository.findForProduct(productId);
   }
 
   async findForProductPaginated(
@@ -94,24 +79,13 @@ export class RatingService {
       default:
         orderBy = { createdAt: 'desc' };
     }
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.rating.findMany({
-        where,
-        include: {
-          customer: {
-            select: {
-              fullName: true,
-              user: { select: { avatar: true } },
-            },
-          },
-          productVariant: { select: { name: true, sku: true } },
-        },
-        orderBy,
-        skip,
-        take,
-      }),
-      this.prisma.rating.count({ where }),
-    ]);
+    const [items, total] = await this.ratingRepository.findForProductPaginated(
+      productId,
+      where,
+      orderBy,
+      skip,
+      take,
+    );
     return { data: items, meta: buildPaginationMeta(total, page, limit) };
   }
 
@@ -128,42 +102,28 @@ export class RatingService {
         }
       : undefined;
 
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.rating.findMany({
-        where,
-        include: {
-          customer: { select: { fullName: true, id: true } },
-          product: { select: { name: true, id: true, slug: true } },
-          productVariant: { select: { name: true, id: true, sku: true } },
-          order: { select: { id: true, orderCode: true } },
-        },
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take,
-      }),
-      this.prisma.rating.count({ where }),
-    ]);
+    const [items, total] = await this.ratingRepository.findAllAdminPaginated(
+      where,
+      skip,
+      take,
+    );
 
     return { data: items, meta: buildPaginationMeta(total, page, limit) };
   }
 
   async remove(id: string) {
     return this.prisma.$transaction(async (tx) => {
-      const rating = await tx.rating.delete({ where: { id } });
+      const rating = await this.ratingRepository.delete(id);
 
-      const aggregates = await tx.rating.aggregate({
-        _avg: { ratingValue: true },
-        _count: { ratingValue: true },
-        where: { productId: rating.productId },
-      });
+      const aggregates = await this.ratingRepository.aggregateForProduct(
+        rating.productId,
+      );
 
-      await tx.product.update({
-        where: { id: rating.productId },
-        data: {
-          ratingAvg: aggregates._avg.ratingValue || 0,
-          ratingCount: aggregates._count.ratingValue || 0,
-        },
-      });
+      await this.ratingRepository.updateProductRating(
+        rating.productId,
+        aggregates._avg.ratingValue || 0,
+        aggregates._count.ratingValue || 0,
+      );
 
       return { success: true };
     });

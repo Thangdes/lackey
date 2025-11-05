@@ -9,10 +9,14 @@ import { buildPagination, buildPaginationMeta, PaginatedResult } from 'src/commo
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { Prisma } from '@prisma/client';
+import { DiscountRepository } from './repositories/discount.repository';
 
 @Injectable()
 export class DiscountService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly discountRepository: DiscountRepository,
+  ) {}
 
   async create(createDiscountDto: CreateDiscountDto) {
     const data: Prisma.DiscountCreateInput = {
@@ -23,15 +27,13 @@ export class DiscountService {
         ? new Date(createDiscountDto.endDate)
         : null,
     };
-    const existingCode = await this.prisma.discount.findUnique({
-      where: { code: data.code },
-    });
+    const existingCode = await this.discountRepository.findByCode(data.code);
     if (existingCode) {
       throw new ConflictException(
         `Discount code '${data.code}' already exists.`,
       );
     }
-    return this.prisma.discount.create({ data });
+    return this.discountRepository.create(data);
   }
 
   async findAll(query: { page?: number; limit?: number }): Promise<PaginatedResult<any>> {
@@ -48,9 +50,7 @@ export class DiscountService {
   }
 
   async findOne(id: string) {
-    const discount = await this.prisma.discount.findUnique({
-      where: { id },
-    });
+    const discount = await this.discountRepository.findById(id).catch(() => null);
     if (!discount) {
       throw new NotFoundException(`Discount with ID '${id}' not found.`);
     }
@@ -72,41 +72,29 @@ export class DiscountService {
         : undefined,
     };
     if (data.code) {
-      const existingCode = await this.prisma.discount.findFirst({
-        where: { code: data.code as string, NOT: { id } },
-      });
+      const existingCode = await this.discountRepository.findByCodeExcluding(
+        data.code as string,
+        id,
+      );
       if (existingCode) {
         throw new ConflictException(
           `Discount code '${data.code}' already exists.`,
         );
       }
     }
-    return this.prisma.discount.update({
-      where: { id },
-      data,
-    });
+    return this.discountRepository.update(id, data);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.discount.delete({
-      where: { id },
-    });
+    return this.discountRepository.delete(id);
   }
 
   async validateCode(code: string, subtotal: number) {
     if (!code) {
       throw new BadRequestException('Discount code is required.');
     }
-    const now = new Date();
-    const discount = await this.prisma.discount.findFirst({
-      where: {
-        code: code.toUpperCase(),
-        isActive: true,
-        startDate: { lte: now },
-        OR: [{ endDate: null }, { endDate: { gte: now } }],
-      },
-    });
+    const discount = await this.discountRepository.findActiveByCode(code);
     if (!discount) {
       throw new NotFoundException('Invalid or expired discount code.');
     }
@@ -136,53 +124,11 @@ export class DiscountService {
   }
 
   async findAllActive() {
-    const now = new Date();
-
-    return this.prisma.discount.findMany({
-      where: {
-        isActive: true,
-        startDate: {
-          lte: now,
-        },
-        OR: [
-          {
-            endDate: null,
-          },
-          {
-            endDate: {
-              gte: now,
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        code: true,
-        description: true,
-        type: true,
-        value: true,
-        minAmount: true,
-      },
-      orderBy: {
-        startDate: 'desc',
-      },
-    });
+    return this.discountRepository.findAllActive();
   }
 
   async getPromoStrip() {
-    const now = new Date();
-    const discount = await this.prisma.discount.findFirst({
-      where: {
-        isActive: true,
-        startDate: { lte: now },
-        OR: [{ endDate: null }, { endDate: { gte: now } }],
-      },
-      orderBy: [
-        // Prefer the soonest ending promo if available, otherwise latest started
-        { endDate: 'asc' },
-        { startDate: 'desc' },
-      ],
-    });
+    const discount = await this.discountRepository.findActiveForPromoStrip();
     if (!discount) {
       return { active: false };
     }

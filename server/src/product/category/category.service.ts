@@ -8,31 +8,27 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { buildPagination, buildPaginationMeta, PaginatedResult } from 'src/common/pagination';
+import { CategoryRepository } from './repositories/category.repository';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    private prisma: PrismaService,
-    private cloudinaryService: CloudinaryService,
+    private readonly prisma: PrismaService,
+    private readonly categoryRepository: CategoryRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const existingCategory = await this.prisma.category.findFirst({
-      where: {
-        OR: [
-          { name: createCategoryDto.name },
-          { slug: createCategoryDto.slug },
-        ],
-      },
-    });
+    const existingCategory = await this.categoryRepository.findByNameOrSlug(
+      createCategoryDto.name,
+      createCategoryDto.slug,
+    );
 
     if (existingCategory) {
       throw new ConflictException('Category name or slug already exists.');
     }
 
-    return this.prisma.category.create({
-      data: createCategoryDto,
-    });
+    return this.categoryRepository.create(createCategoryDto);
   }
 
   async findAll(query: { page?: number; limit?: number }): Promise<PaginatedResult<any>> {
@@ -49,16 +45,7 @@ export class CategoryService {
   }
 
   async findOneWithProducts(id: string) {
-    const category = await this.prisma.category.findUnique({
-      where: { id },
-      include: {
-        products: {
-          where: { isActive: true },
-          orderBy: { name: 'asc' },
-        },
-      },
-    });
-
+    const category = await this.categoryRepository.findOneWithProducts(id);
     if (!category) {
       throw new NotFoundException(`Category with ID '${id}' not found`);
     }
@@ -66,10 +53,7 @@ export class CategoryService {
   }
 
   async findOne(id: string) {
-    const category = await this.prisma.category.findUnique({
-      where: { id },
-    });
-
+    const category = await this.categoryRepository.findById(id).catch(() => null);
     if (!category) {
       throw new NotFoundException(`Category with ID '${id}' not found`);
     }
@@ -80,32 +64,21 @@ export class CategoryService {
     await this.findOne(id);
 
     if (updateCategoryDto.name || updateCategoryDto.slug) {
-      const existingCategory = await this.prisma.category.findFirst({
-        where: {
-          OR: [
-            { name: updateCategoryDto.name },
-            { slug: updateCategoryDto.slug },
-          ],
-          NOT: {
-            id: id,
-          },
-        },
-      });
+      const existingCategory = await this.categoryRepository.findByNameOrSlugExcluding(
+        id,
+        updateCategoryDto.name,
+        updateCategoryDto.slug,
+      );
       if (existingCategory) {
         throw new ConflictException('Category name or slug already exists.');
       }
     }
 
-    return this.prisma.category.update({
-      where: { id },
-      data: updateCategoryDto,
-    });
+    return this.categoryRepository.update(id, updateCategoryDto);
   }
 
   async remove(id: string) {
-    const productsInCategory = await this.prisma.product.count({
-      where: { categoryId: id },
-    });
+    const productsInCategory = await this.categoryRepository.countProductsInCategory(id);
 
     if (productsInCategory > 0) {
       throw new ConflictException(
@@ -114,31 +87,11 @@ export class CategoryService {
     }
 
     await this.findOne(id);
-    return this.prisma.category.delete({
-      where: { id },
-    });
+    return this.categoryRepository.delete(id);
   }
 
   async findTopByProductCount(limit = 7) {
-    const rows: Array<{ category_id: string; cnt: number }> = await this.prisma.$queryRaw`
-      SELECT "category_id", COUNT(*) AS cnt
-      FROM "products"
-      WHERE "is_active" = true AND "category_id" IS NOT NULL
-      GROUP BY "category_id"
-      ORDER BY cnt DESC
-      LIMIT ${limit}
-    `;
-
-    const ids = rows.map((r) => String(r.category_id)).filter(Boolean);
-    if (ids.length === 0) return [];
-
-    const categories = await this.prisma.category.findMany({
-      where: { id: { in: ids } },
-    });
-
-    const orderMap = new Map<string, number>(ids.map((id, idx) => [id, idx]));
-    categories.sort((a, b) => (orderMap.get(a.id)! - orderMap.get(b.id)!));
-    return categories;
+    return this.categoryRepository.findTopByProductCount(limit);
   }
 
   async updateThumbnail(
@@ -155,11 +108,6 @@ export class CategoryService {
         console.error('Failed to delete old thumbnail:', error);
       }
     }
-    return this.prisma.category.update({
-      where: { id: categoryId },
-      data: {
-        thumbnailUrl: uploadResult.secure_url,
-      },
-    });
+    return this.categoryRepository.updateThumbnail(categoryId, uploadResult.secure_url);
   }
 }

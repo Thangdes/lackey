@@ -8,17 +8,21 @@ import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order.dto';
-import { OrderStatus, Prisma, PaymentStatus, PaymentMethod, PaymentEventType } from '@prisma/client';
+import { OrderStatus, PaymentStatus, PaymentMethod, Prisma } from '@prisma/client';
 import { ShippingService } from '../shipping/shipping.service';
 import { buildPagination, buildPaginationMeta, PaginatedResult } from 'src/common/pagination';
 import { MailService } from '../mail/mail.service';
+import { OrderRepository } from './repositories/order.repository';
+import { OrderCalculator } from './calculators/order.calculator';
+import { OrderQueryBuilder } from './builders/order-query.builder';
 
 @Injectable()
 export class OrderService {
   constructor(
-    private prisma: PrismaService,
-    private shippingService: ShippingService,
-    private mailService: MailService,
+    private readonly prisma: PrismaService,
+    private readonly orderRepository: OrderRepository,
+    private readonly shippingService: ShippingService,
+    private readonly mailService: MailService,
     @InjectQueue('notifications') private notificationsQueue: Queue,
   ) {}
 
@@ -76,11 +80,7 @@ export class OrderService {
       addressForFeeCalc = { city, district, ward };
     }
 
-    const subtotalAmount = cartItems.reduce((acc, item) => {
-      const price =
-        item.productVariant.discountPrice || item.productVariant.price;
-      return acc + Number(price) * item.quantity;
-    }, 0);
+    const subtotalAmount = OrderCalculator.calculateSubtotal(cartItems);
 
     const shippingFee = createOrderDto.shippingFee;
 
@@ -194,15 +194,10 @@ export class OrderService {
           );
         }
         
-        const price = Number(item.productVariant.price);
-        const discountPrice = item.productVariant.discountPrice 
-          ? Number(item.productVariant.discountPrice) 
-          : null;
-        
-        const effectivePrice = 
-          discountPrice && discountPrice > 0 && discountPrice < price
-            ? discountPrice
-            : price;
+        const effectivePrice = OrderCalculator.getEffectivePrice(
+          item.productVariant.price,
+          item.productVariant.discountPrice,
+        );
         
         await tx.orderItem.create({
           data: {
@@ -272,94 +267,25 @@ export class OrderService {
     code?: string;
     email?: string;
     deliveryCode?: string;
-    isGuest?: string; // 'true' | 'false'
+    isGuest?: string;
   }): Promise<PaginatedResult<any>> {
     const { page, limit, skip, take } = buildPagination(query.page, query.limit);
-    const { status, search, fromDate, toDate, paymentStatus, paymentMethod, customerId } = query;
-    const whereClause: Prisma.OrderWhereInput = {};
-
-    if (status) {
-      whereClause.status = status;
-    }
-
-    if (search) {
-      whereClause.OR = [
-        { orderCode: { contains: search, mode: 'insensitive' } },
-        { customer: { fullName: { contains: search, mode: 'insensitive' } } },
-        { customer: { email: { contains: search, mode: 'insensitive' } } },
-      ];
-    }
-    if (query.code) {
-      // allow partial match for admin find
-      whereClause.orderCode = { contains: query.code, mode: 'insensitive' } as any;
-    }
-    if (query.email) {
-      whereClause.customer = { ...(whereClause.customer as any), email: { contains: query.email, mode: 'insensitive' } } as any;
-    }
-    if (query.deliveryCode) {
-      whereClause.deliveryCode = { contains: query.deliveryCode, mode: 'insensitive' } as any;
-    }
-    if (typeof query.isGuest === 'string') {
-      const wantGuest = query.isGuest.toLowerCase() === 'true';
-      whereClause.customer = {
-        ...(whereClause.customer as any),
-        user: wantGuest ? { is: null } : { isNot: null },
-      } as any;
-    }
-    if (fromDate || toDate) {
-      whereClause.createdAt = {
-        gte: fromDate ? new Date(fromDate) : undefined,
-        lte: toDate ? new Date(toDate) : undefined,
-      } as any;
-    }
-    if (paymentStatus) {
-      whereClause.payments = { some: { status: paymentStatus } };
-    }
-    if (paymentMethod) {
-      whereClause.payments = { some: { method: paymentMethod } };
-    }
-    if (customerId) {
-      whereClause.customerId = customerId;
-    }
-
-    let orderBy: any = { createdAt: 'desc' };
-    switch (query.sort) {
-      case 'amount_desc':
-        orderBy = { totalAmount: 'desc' };
-        break;
-      case 'amount_asc':
-        orderBy = { totalAmount: 'asc' };
-        break;
-      default:
-        orderBy = { createdAt: 'desc' };
-    }
+    const whereClause = OrderQueryBuilder.buildWhereClause(query);
+    const orderBy = OrderQueryBuilder.buildOrderBy(query.sort);
+    const include = OrderQueryBuilder.buildInclude();
 
     const [orders, total] = await this.prisma.$transaction([
       this.prisma.order.findMany({
         skip,
         take,
         where: whereClause,
-        include: {
-          customer: { select: { id: true, fullName: true, email: true, user: { select: { id: true } } } },
-          payments: { select: { method: true, status: true, paidAt: true }, orderBy: { paidAt: 'desc' } },
-        },
+        include,
         orderBy,
       }),
       this.prisma.order.count({ where: whereClause }),
     ]);
 
-    // Map extra fields for client convenience
-    const mapped = orders.map((o) => {
-      const primaryPayment = (o.payments || [])[0];
-      const paymentMethod = primaryPayment?.method;
-      const isGuest = !o.customer?.user?.id;
-      return {
-        ...o,
-        paymentMethod,
-        isGuest,
-      };
-    });
-
+    const mapped = OrderQueryBuilder.mapOrderResponse(orders);
     return { data: mapped, meta: buildPaginationMeta(total, page, limit) };
   }
 
@@ -373,38 +299,8 @@ export class OrderService {
     customerId?: string;
     sort?: 'newest' | 'amount_desc' | 'amount_asc';
   }): Promise<string> {
-    // Rebuild where and sorting consistent with findAll
-    const { status, search, fromDate, toDate, paymentStatus, paymentMethod, customerId } = query;
-    const whereClause: Prisma.OrderWhereInput = {};
-    if (status) whereClause.status = status;
-    if (search) {
-      whereClause.OR = [
-        { orderCode: { contains: search, mode: 'insensitive' } },
-        { customer: { fullName: { contains: search, mode: 'insensitive' } } },
-        { customer: { email: { contains: search, mode: 'insensitive' } } },
-      ];
-    }
-    if (fromDate || toDate) {
-      whereClause.createdAt = {
-        gte: fromDate ? new Date(fromDate) : undefined,
-        lte: toDate ? new Date(toDate) : undefined,
-      } as any;
-    }
-    if (paymentStatus) whereClause.payments = { some: { status: paymentStatus } };
-    if (paymentMethod) whereClause.payments = { some: { method: paymentMethod } };
-    if (customerId) whereClause.customerId = customerId;
-
-    let orderBy: any = { createdAt: 'desc' };
-    switch (query.sort) {
-      case 'amount_desc':
-        orderBy = { totalAmount: 'desc' };
-        break;
-      case 'amount_asc':
-        orderBy = { totalAmount: 'asc' };
-        break;
-      default:
-        orderBy = { createdAt: 'desc' };
-    }
+    const whereClause = OrderQueryBuilder.buildWhereClause(query);
+    const orderBy = OrderQueryBuilder.buildOrderBy(query.sort);
 
     const items = await this.prisma.order.findMany({
       where: whereClause,
@@ -485,29 +381,7 @@ export class OrderService {
   }
 
   async findOne(orderId: string, customerId?: string) {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        customer: {
-          select: {
-            fullName: true,
-            email: true,
-            phone: true,
-          },
-        },
-        shippingAddress: true,
-        orderItems: {
-          include: {
-            productVariant: {
-              include: { product: { select: { name: true } } },
-            },
-          },
-        },
-        payments: true,
-        discount: true,
-      },
-    });
-
+    const order = await this.orderRepository.findOneWithDetails(orderId, customerId);
     if (!order) throw new NotFoundException('Order not found');
     if (customerId && order.customerId !== customerId) {
       throw new NotFoundException('Order not found');
@@ -516,22 +390,7 @@ export class OrderService {
   }
 
   async findByCode(orderCode: string) {
-    const order = await this.prisma.order.findFirst({
-      where: { orderCode },
-      include: {
-        customer: { select: { fullName: true, email: true } },
-        shippingAddress: true,
-        orderItems: {
-          include: {
-            productVariant: {
-              include: { product: { select: { name: true } } },
-            },
-          },
-        },
-        payments: true,
-      },
-    });
-
+    const order = await this.orderRepository.findByCode(orderCode);
     if (!order) throw new NotFoundException('Order not found');
     return order;
   }
@@ -545,53 +404,7 @@ export class OrderService {
       );
     }
 
-    const orConditions: Prisma.OrderWhereInput[] = [];
-
-    if (email) {
-      orConditions.push({
-        customer: {
-          email: {
-            equals: email,
-            mode: 'insensitive',
-          },
-        },
-      });
-    }
-
-    if (phone) {
-      orConditions.push({
-        customer: {
-          phone: phone,
-        },
-      });
-      orConditions.push({
-        shippingAddress: {
-          phoneNumber: phone,
-        },
-      });
-    }
-
-    const orders = await this.prisma.order.findMany({
-      where: {
-        OR: orConditions,
-      },
-      include: {
-        customer: { select: { fullName: true, email: true, phone: true } },
-        shippingAddress: true,
-        orderItems: {
-          include: {
-            productVariant: {
-              include: { product: { select: { name: true } } },
-            },
-          },
-        },
-        payments: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 20,
-    });
+    const orders = await this.orderRepository.findByEmailOrPhone(email, phone);
 
     if (orders.length === 0) {
       throw new NotFoundException(
@@ -644,10 +457,7 @@ export class OrderService {
       updateData.completedAt = new Date();
     }
 
-    return this.prisma.order.update({
-      where: { id: orderId },
-      data: updateData,
-    });
+    return this.orderRepository.updateStatus(orderId, updateData);
   }
   async updateDeliveryCode(orderId: string, deliveryCode: string) {
     const order = await this.prisma.order.findUnique({
@@ -666,14 +476,10 @@ export class OrderService {
         `Order must be in CONFIRMED or PREPARING_SHIPMENT status to add a delivery code.`,
       );
     }
-    const updatedOrder = await this.prisma.order.update({
-      where: { id: orderId },
-      data: {
-        deliveryCode: deliveryCode,
-        status: OrderStatus.SHIPPED,
-        shippedAt: new Date(),
-      },
-    });
+    const updatedOrder = await this.orderRepository.updateDeliveryInfo(
+      orderId,
+      deliveryCode,
+    );
     this.mailService
       .sendOrderShippedEmail(order.customer.email, {
         orderCode: updatedOrder.orderCode,
