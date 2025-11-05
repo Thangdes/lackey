@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import type { Product } from "@/type/product";
 import { buildProductDetailPath } from "@/constant/route";
 import { Star, ShoppingBag, Heart } from "lucide-react";
@@ -42,7 +41,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [added, setAdded] = useState(false);
   const addMutation = useAddToCart();
   const cart = useSmartCart();
-  const router = useRouter();
 
   const img = p.thumbnailUrl || p.images?.[0] || "/logo/logo.jpg";
   const v0 = (p.variants && p.variants[0]) || undefined;
@@ -96,21 +94,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const handleBuyNow = async () => {
-    if (outOfStock) return;
-    try {
-      const firstInStock = Array.isArray(p.variants) ? p.variants.find(v => (v.stockQuantity ?? 0) > 0) : undefined;
-      const variantId = firstInStock?.id || p.variants?.[0]?.id;
-      if (!variantId) return;
-      if (!existingItem || (existingItem.quantity || 0) <= 0) {
-        await addMutation.mutateAsync({ productVariantId: variantId, quantity: 1 });
-        try { window.dispatchEvent(new CustomEvent("cart:changed")); } catch {}
-      }
-      router.push("/checkout");
-    } catch {
-      showErrorToast({ title: "Không thể tiếp tục thanh toán", message: "Vui lòng thử lại sau." });
-    }
-  };
 
   const isCompact = variant === "compact";
   const desktopWidthClass = (() => {

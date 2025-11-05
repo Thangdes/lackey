@@ -49,6 +49,7 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
   const supportItemRefs = useRef<Array<HTMLAnchorElement | HTMLButtonElement | null>>([])
 
   const { data: notifOrders } = useMyOrdersPaginated({ page: 1, limit: 5 })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestCreatedAt = useMemo<number | null>(() => {
     const items = notifOrders?.items ?? []
     if (!items || items.length === 0) return null
