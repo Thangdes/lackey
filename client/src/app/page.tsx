@@ -104,7 +104,6 @@ export default function Home() {
         subtitle="Giải đáp mọi thắc mắc của bạn về móc khóa LắcKey"
       />
       
-      {/* <BlogTeasers /> */}
     </div>
   )
 }

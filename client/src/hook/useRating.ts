@@ -25,3 +25,14 @@ export function useCreateRating(productId: string) {
     },
   });
 }
+
+export function useFeaturedReviews(limit = 6) {
+  return useQuery({
+    queryKey: ["ratings", "featured", limit],
+    queryFn: async () => {
+      const result = await ratingService.admin.list({ page: 1, limit });
+      return result.items || [];
+    },
+    staleTime: STALE_TIME,
+  });
+}
