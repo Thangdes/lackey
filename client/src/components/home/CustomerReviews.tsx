@@ -6,18 +6,6 @@ import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
 import { useFeaturedReviews } from "@/hook/useRating";
 
-type Review = {
-  id: string;
-  name: string;
-  title: string;
-  content: string;
-  rating: number;
-  reviewCount: number;
-  imageUrl: string;
-  verified?: boolean;
-};
-
-
 export default function CustomerReviews() {
   const { data, isLoading } = useFeaturedReviews(6);
 

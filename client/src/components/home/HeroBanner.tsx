@@ -15,6 +15,16 @@ export default function HeroBanner() {
   const slides = data || [];
   const currentSlide = slides[currentIndex];
 
+  useEffect(() => {
+    if (!isAutoPlaying || slides.length === 0) return;
+    
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, slides.length]);
+
   if (isLoading || slides.length === 0) {
     return (
       <section className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] bg-gray-900 overflow-hidden">
@@ -28,16 +38,6 @@ export default function HeroBanner() {
       </section>
     );
   }
-
-  useEffect(() => {
-    if (!isAutoPlaying || slides.length === 0) return;
-    
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [isAutoPlaying, slides.length]);
 
   const goToPrev = () => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
