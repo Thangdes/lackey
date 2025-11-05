@@ -12,60 +12,38 @@ import {
   buildPagination,
   buildPaginationMeta,
 } from 'src/common/pagination';
+import { PostRepository } from './repositories/post.repository';
 
 @Injectable()
 export class PostService {
   constructor(
-    private prisma: PrismaService,
-    private cloudinaryService: CloudinaryService,
+    private readonly prisma: PrismaService,
+    private readonly postRepository: PostRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(authorId: string, createPostDto: CreatePostDto) {
-    const existingPost = await this.prisma.post.findUnique({
-      where: { slug: createPostDto.slug },
-    });
+    const existingPost = await this.postRepository.findBySlug(createPostDto.slug);
     if (existingPost) {
       throw new ConflictException(
         `Post with slug '${createPostDto.slug}' already exists.`,
       );
     }
-    return this.prisma.post.create({
-      data: {
-        ...createPostDto,
-        authorId: authorId,
-      },
+    return this.postRepository.create({
+      ...createPostDto,
+      author: { connect: { id: authorId } },
     });
   }
 
   async updateThumbnail(postId: string, file: Express.Multer.File) {
     await this.findOne(postId);
     const uploadResult = await this.cloudinaryService.uploadFile(file);
-    return this.prisma.post.update({
-      where: { id: postId },
-      data: { thumbnailUrl: uploadResult.secure_url },
-    });
+    return this.postRepository.updateThumbnail(postId, uploadResult.secure_url);
   }
 
   async findAllPublic(query: { page?: number; limit?: number }): Promise<PaginatedResult<any>> {
     const { page, limit, skip, take } = buildPagination(query.page, query.limit);
-    const where = { isPublished: true } as const;
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.post.findMany({
-        skip,
-        take,
-        where,
-        select: {
-          title: true,
-          slug: true,
-          excerpt: true,
-          thumbnailUrl: true,
-          createdAt: true,
-          author: { select: { username: true } },
-        },
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.post.count({ where }),
-    ]);
+    const [items, total] = await this.postRepository.findAllPublicPaginated(skip, take);
     return {
       data: items,
       meta: buildPaginationMeta(total, page, limit),
@@ -74,14 +52,7 @@ export class PostService {
 
   async findAllAdmin(query: { page?: number; limit?: number }): Promise<PaginatedResult<any>> {
     const { page, limit, skip, take } = buildPagination(query?.page ?? 1, query?.limit ?? 20);
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.post.findMany({
-        skip,
-        take,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.post.count(),
-    ]);
+    const [items, total] = await this.postRepository.findAllAdminPaginated(skip, take);
     return {
       data: items,
       meta: buildPaginationMeta(total, page, limit),
@@ -89,10 +60,7 @@ export class PostService {
   }
 
   async findBySlug(slug: string) {
-    const post = await this.prisma.post.findUnique({
-      where: { slug: slug, isPublished: true },
-      include: { author: { select: { username: true } } },
-    });
+    const post = await this.postRepository.findBySlugPublished(slug);
     if (!post) {
       throw new NotFoundException(`Post with slug '${slug}' not found.`);
     }
@@ -100,7 +68,7 @@ export class PostService {
   }
 
   async findOne(id: string) {
-    const post = await this.prisma.post.findUnique({ where: { id } });
+    const post = await this.postRepository.findById(id).catch(() => null);
     if (!post) {
       throw new NotFoundException(`Post with ID '${id}' not found.`);
     }
@@ -109,14 +77,11 @@ export class PostService {
 
   async update(id: string, updatePostDto: UpdatePostDto) {
     await this.findOne(id);
-    return this.prisma.post.update({
-      where: { id },
-      data: updatePostDto,
-    });
+    return this.postRepository.update(id, updatePostDto);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.post.delete({ where: { id } });
+    return this.postRepository.delete(id);
   }
 }
