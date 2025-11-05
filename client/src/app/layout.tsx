@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
-import { defaultMetadata } from "@/config/seo";
-import { siteConfig } from "@/constant/site";
+import { defaultMetadata, buildOrganizationJsonLd, buildWebsiteJsonLd } from "@/config/seo";
 import LayoutChrome from "@/components/layout/LayoutChrome";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -40,46 +40,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: siteConfig.name,
-              url: siteConfig.url,
-              logo: siteConfig.logo,
-              sameAs: siteConfig.sameAs?.filter(Boolean),
-              contactPoint: [
-                {
-                  "@type": "ContactPoint",
-                  telephone: siteConfig.contact.telephoneE164,
-                  email: siteConfig.contact.email,
-                  contactType: "customer service",
-                  availableLanguage: ["vi"],
-                },
-              ],
-            }),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: siteConfig.name,
-              url: siteConfig.url,
-              potentialAction: {
-                "@type": "SearchAction",
-                target: `${siteConfig.url}/search?q={search_term_string}`,
-                "query-input": "required name=search_term_string",
-              },
-            }),
-          }}
-        />
-      </head>
+      <Script
+        id="ld-organization"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationJsonLd()) }}
+      />
+      <Script
+        id="ld-website"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd()) }}
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fcRodancy.variable} antialiased bg-white`}
         suppressHydrationWarning

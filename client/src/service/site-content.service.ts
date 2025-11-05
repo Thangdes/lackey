@@ -7,6 +7,16 @@ export type BannerItem = {
   href?: string;
 };
 
+export type HeroSlide = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  ctaText: string;
+  ctaLink: string;
+  imageUrl: string;
+  textPosition?: "left" | "center" | "right";
+};
+
 export type TestimonialItem = {
   id: string;
   name: string;
@@ -42,6 +52,16 @@ export type SiteContentDto = {
 const mapBanner = (it: SiteContentDto): BannerItem => ({
   imageUrl: it.thumbnailUrl || "",
   alt: it.title,
+});
+
+const mapHeroSlide = (it: SiteContentDto): HeroSlide => ({
+  id: it.id,
+  title: it.title || "",
+  subtitle: it.content,
+  ctaText: it.authorTitle || "XEM THÊM",
+  ctaLink: it.linkUrl || "/products",
+  imageUrl: it.thumbnailUrl || "",
+  textPosition: (it.authorName as "left" | "center" | "right") || "left",
 });
 
 const mapTestimonial = (it: SiteContentDto): TestimonialItem => ({
@@ -83,6 +103,17 @@ export const siteContentService = {
         .filter((d) => d?.type === "VALUE_PROP" && !!d?.title && !!d?.content)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
         .map(mapValueProp);
+    } catch {
+      return [];
+    }
+  },
+  getHeroSlides: async (): Promise<HeroSlide[]> => {
+    try {
+      const data = await http.get<SiteContentDto[]>(API.siteContent.banners);
+      return (data || [])
+        .filter((d) => d?.type === "BANNER" && !!d?.thumbnailUrl && !!d?.title)
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map(mapHeroSlide);
     } catch {
       return [];
     }
