@@ -75,6 +75,21 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             hướng dẫn bảo quản và cách phối đồ cùng móc khóa yêu thích.
           </p>
         </header>
+        <nav className="mb-8" aria-label="Breadcrumb">
+          <ol className="flex items-center gap-2">
+            <li>
+              <Link href={siteConfig.url} className="text-neutral-600 hover:text-black transition-colors">
+                Trang chủ
+              </Link>
+            </li>
+            <li>
+              <span className="text-neutral-600">/</span>
+            </li>
+            <li>
+              <span className="text-neutral-900">Blog</span>
+            </li>
+          </ol>
+        </nav>
         <Script id="ld-breadcrumb-blog" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

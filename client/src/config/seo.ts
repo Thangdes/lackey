@@ -213,12 +213,68 @@ export const buildCategoryJsonLd = (c: Category) => {
   };
 };
 
-export const buildProductJsonLd = (p: Product) => {
+export const buildProductJsonLd = (p: Product, reviews?: Array<{author: string; rating: number; text: string; date: string}>) => {
   const images = (p.images?.length ? p.images : [p.thumbnailUrl].filter(Boolean)) as string[];
   const imageUrls = images.map(img => /^https?:\/\//.test(img) ? img : absoluteUrl(img));
   const offer = p.variants?.[0];
-  const price = offer?.discountPrice && offer.discountPrice > 0 ? offer.discountPrice : offer?.price;
+  const originalPrice = offer?.price;
+  const discountPrice = offer?.discountPrice;
+  const hasDiscount = discountPrice && discountPrice > 0 && discountPrice < (originalPrice || 0);
+  const finalPrice = hasDiscount ? discountPrice : originalPrice;
   const availability = (offer?.stockQuantity ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+
+  const offerSchema = offer ? {
+    "@type": "Offer",
+    url: absoluteUrl(`/products/${p.slug}`),
+    priceCurrency: "VND",
+    price: finalPrice,
+    priceValidUntil: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    availability,
+    itemCondition: "https://schema.org/NewCondition",
+    seller: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingRate: {
+        "@type": "MonetaryAmount",
+        value: siteConfig.shipping?.defaultFee || 26000,
+        currency: "VND",
+      },
+      shippingDestination: {
+        "@type": "DefinedRegion",
+        addressCountry: "VN",
+      },
+      deliveryTime: {
+        "@type": "ShippingDeliveryTime",
+        handlingTime: {
+          "@type": "QuantitativeValue",
+          minValue: 0,
+          maxValue: 1,
+          unitCode: "DAY",
+        },
+        transitTime: {
+          "@type": "QuantitativeValue",
+          minValue: 2,
+          maxValue: 5,
+          unitCode: "DAY",
+        },
+      },
+    },
+    ...(hasDiscount && originalPrice ? {
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: finalPrice,
+        priceCurrency: "VND",
+        referenceQuantity: {
+          "@type": "QuantitativeValue",
+          value: 1,
+        },
+      },
+    } : {}),
+  } : undefined;
 
   return {
     "@context": "https://schema.org",
@@ -240,21 +296,22 @@ export const buildProductJsonLd = (p: Product) => {
           worstRating: 1,
         }
       : undefined,
-    offers: offer
-      ? {
-          "@type": "Offer",
-          url: absoluteUrl(`/products/${p.slug}`),
-          priceCurrency: "VND",
-          price: price,
-          priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-          availability,
-          itemCondition: "https://schema.org/NewCondition",
-          seller: {
-            "@type": "Organization",
-            name: siteConfig.name,
-          },
-        }
-      : undefined,
+    review: reviews?.map(r => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: r.author,
+      },
+      datePublished: r.date,
+      reviewBody: r.text,
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    })),
+    offers: offerSchema,
   };
 };
 
@@ -374,6 +431,22 @@ export const buildFAQJsonLd = (faqs: FAQItem[]) => ({
   })),
 });
 
+type HowToStep = { name: string; text: string; image?: string };
+export const buildHowToJsonLd = (name: string, description: string, steps: HowToStep[], totalTime?: string) => ({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name,
+  description,
+  totalTime: totalTime || "PT10M",
+  step: steps.map((step, index) => ({
+    "@type": "HowToStep",
+    position: index + 1,
+    name: step.name,
+    text: step.text,
+    image: step.image ? (step.image.startsWith('http') ? step.image : absoluteUrl(step.image)) : undefined,
+  })),
+});
+
 export const buildLocalBusinessJsonLd = () => ({
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -396,4 +469,47 @@ export const buildLocalBusinessJsonLd = () => ({
   })),
   priceRange: "$$",
   sameAs: siteConfig.sameAs,
+});
+
+export const buildSiteNavigationJsonLd = () => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Site Navigation",
+  itemListElement: [
+    {
+      "@type": "SiteNavigationElement",
+      position: 1,
+      name: "Sản phẩm",
+      description: "Danh sách tất cả sản phẩm",
+      url: absoluteUrl("/products"),
+    },
+    {
+      "@type": "SiteNavigationElement",
+      position: 2,
+      name: "Blog",
+      description: "Tin tức và bài viết",
+      url: absoluteUrl("/blog"),
+    },
+    {
+      "@type": "SiteNavigationElement",
+      position: 3,
+      name: "Giỏ hàng",
+      description: "Xem giỏ hàng",
+      url: absoluteUrl("/cart"),
+    },
+    {
+      "@type": "SiteNavigationElement",
+      position: 4,
+      name: "Liên hệ",
+      description: "Thông tin liên hệ và hỗ trợ",
+      url: absoluteUrl("/contact"),
+    },
+    {
+      "@type": "SiteNavigationElement",
+      position: 5,
+      name: "Về chúng tôi",
+      description: "Thông tin về cửa hàng",
+      url: absoluteUrl("/about"),
+    },
+  ],
 });
