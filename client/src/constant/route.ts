@@ -3,11 +3,13 @@ export const ROUTES = {
     login: "/login",
     admin: "/admin",
     products: "/products",
+    categories: "/categories",
     cart: "/cart",
     checkout: "/checkout",
     orders: "/orders",
     ordersLookup: "/orders/lookup",
     profile: "/profile",
+    wishlist: "/wishlist",
     about: "/about",
     contact: "/contact",
     terms: "/terms",
@@ -26,6 +28,9 @@ export const ROUTES = {
   export const buildProductDetailPath = (idOrSlug: string): string =>
     `/products/${encodeURIComponent(idOrSlug)}`;
   
+  export const buildCategoryPath = (slugOrId: string): string =>
+    `${ROUTES.categories}/${encodeURIComponent(slugOrId)}`;
+
   export const buildProductsByCategory = (categoryId: string): string =>
     `${ROUTES.products}?category=${encodeURIComponent(categoryId)}`;
   

@@ -4,8 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { ROUTES } from "@/constant/route";
 import { IoIosStar } from "react-icons/io";
-import { FiHeart, FiShare2, FiPackage } from "react-icons/fi";
-import type { ProductVariant } from "@/type/product";
+import { FiShare2, FiPackage } from "react-icons/fi";
+import type { Product, ProductVariant } from "@/type/product";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 
 interface ProductInfoProps {
   name: string;
@@ -26,7 +27,7 @@ interface ProductInfoProps {
   outOfStock: boolean;
   totalStock: number;
   stockUnit: string;
-  onFavorite?: () => void;
+  product?: Product; // NEW: Product data for wishlist
   onShare?: () => void;
 }
 
@@ -48,7 +49,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   outOfStock,
   totalStock,
   stockUnit,
-  onFavorite,
+  product,
   onShare,
 }) => {
   return (
@@ -89,16 +90,14 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             {totalStock}+ {stockUnit}
           </span>
         )}
-        {onFavorite && (
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase border-2 border-black bg-white hover:bg-black hover:text-white transition-all"
-            aria-label="Thêm vào yêu thích"
-            onClick={onFavorite}
-          >
-            <FiHeart className="h-4 w-4" />
-            Yêu thích
-          </button>
+        {product && (
+          <WishlistButton
+            product={product}
+            variant={selectedVariant}
+            size="md"
+            showLabel={true}
+            className="!inline-flex items-center gap-2 !px-3 !py-2 !text-xs !font-bold !uppercase !border-2 !border-black !bg-white hover:!bg-black hover:!text-white !transition-all !rounded-none !w-auto !h-auto"
+          />
         )}
         {onShare && (
           <button

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCategoryList } from "@/hook/useCategory";
 import type { Category } from "@/service/category.service";
-import { ROUTES } from "@/constant/route";
+import { ROUTES, buildCategoryPath } from "@/constant/route";
 import { ArrowRight } from "lucide-react";
 
 // Mock categories cho demo
@@ -61,7 +61,7 @@ type Props = {
 const CategoriesGrid: React.FC<Props> = ({
   title = "Danh mục nổi bật",
   subtitle,
-  viewAllHref = ROUTES.products,
+  viewAllHref = ROUTES.categories,
   viewAllText = "Xem tất cả",
 }) => {
   const { data, isLoading } = useCategoryList();
@@ -110,7 +110,7 @@ const CategoriesGrid: React.FC<Props> = ({
           {renderItems.map((c) => (
             <Link
               key={c.id}
-              href={{ pathname: ROUTES.products, query: { category: c.slug } }}
+              href={buildCategoryPath(c.slug || c.id)}
               className="group bg-white border border-transparent hover:border-black transition-all overflow-hidden"
             >
               <div className="relative aspect-square bg-gray-200 overflow-hidden">

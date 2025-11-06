@@ -5,12 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/type/product";
 import { buildProductDetailPath } from "@/constant/route";
-import { Star, ShoppingBag, Heart } from "lucide-react";
+import { Star, ShoppingBag } from "lucide-react";
 import { formatVND } from "@/utils/format";
 import useProductPricing from "@/hook/useProductPricing";
 import { useAddToCart, useSmartCart } from "@/hook/useCart";
 import { showAddedToCartToast } from "@/components/toast/AddToCartToast";
 import { showErrorToast } from "@/components/toast/AppToast";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 
 export type ProductCardProps = {
   product: Product;
@@ -156,14 +157,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </div>
             ) : null}
             <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button
-                className="w-10 h-10 bg-white border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <Heart className="w-5 h-5" />
-              </button>
+              <WishlistButton
+                product={p}
+                variant={v0}
+                size="md"
+                className="!bg-white border border-black hover:!bg-black hover:!text-white"
+              />
             </div>
           </>
         ) : null}

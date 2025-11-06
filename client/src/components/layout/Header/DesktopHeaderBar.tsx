@@ -1,6 +1,6 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useRef, useState, startTransition } from 'react'
-import { User, ShoppingBag, LogOut, Search } from 'lucide-react'
+import { User, ShoppingBag, LogOut, Search, Heart } from 'lucide-react'
 import Image from 'next/image'
 import SearchModal from './SearchModal'
 import { useAuthModalStore } from '@/store/authModal'
@@ -13,6 +13,7 @@ import { ROUTES } from '@/constant/route'
 import { useSmartCart } from '@/hook/useCart'
 import { useAuthProfile, useLogout } from '@/hook/useAuth'
 import { useMyOrdersPaginated } from '@/hook/useOrder'
+import { useWishlistStore } from '@/store/wishlist'
 
 
 type DesktopHeaderBarProps = {
@@ -35,6 +36,7 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
   const handleAuthClick = useCallback(() => openAuth('signin'), [openAuth])
   const { data: user } = useAuthProfile()
   const logout = useLogout()
+  const wishlistCount = useWishlistStore(state => state.totalItems)
   const [acctOpen, setAcctOpen] = useState(false)
   const acctRef = useRef<HTMLDivElement | null>(null)
   const acctBtnRef = useRef<HTMLButtonElement | null>(null)
@@ -309,6 +311,24 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
             <User className="h-5 w-5" />
           </Button>
         )}
+
+        {/* Wishlist */}
+        <Link href={ROUTES.wishlist}>
+          <Button
+            variant="ghost"
+            className="relative rounded-full cursor-pointer px-2 md:px-3 py-2 shadow-none border-none text-neutral-900 hover:bg-black/5"
+            aria-label="Yêu thích"
+          >
+            <span className="relative flex items-center">
+              <Heart className="h-5 w-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 left-3 inline-flex items-center justify-center bg-pink-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </span>
+          </Button>
+        </Link>
 
         {/* Cart */}
         <Sheet modal={false}>

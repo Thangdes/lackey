@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Header from "@/components/layout/Header/Header";
 import Footer from "./Footer/Footer";
 
-// Dynamic import ChatWidget to prevent hydration mismatch
 const ChatWidget = dynamic(() => import("@/components/chat/ChatWidget"), {
   ssr: false,
 });
