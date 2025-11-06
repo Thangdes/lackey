@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Category } from "@/service/category.service";
-import { ROUTES } from "@/constant/route";
+import { ROUTES, buildCategoryPath } from "@/constant/route";
 import { Package, Grid3X3 } from "lucide-react";
 import { useHeaderTopCategories } from "@/hook/useCategory";
 
@@ -100,7 +100,7 @@ const { data, isLoading } = useHeaderTopCategories();
                   <li key={c.id}>
                     <Link
                       ref={idx === 0 ? firstItemRef : undefined}
-                      href={{ pathname: ROUTES.products, query: { category: c.slug } }}
+                      href={buildCategoryPath(c.slug || c.id)}
                       role="menuitem"
                       className="group flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none"
                       onClick={() => setOpen(false)}
@@ -125,7 +125,7 @@ const { data, isLoading } = useHeaderTopCategories();
               </ul>
               <div className="pt-1 px-2">
                 <Link
-                  href={ROUTES.products}
+                  href={ROUTES.categories}
                   className="w-full inline-flex items-center justify-center gap-2 text-sm px-3 py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200"
                   onClick={() => setOpen(false)}
                 >

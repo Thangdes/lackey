@@ -5,9 +5,10 @@ import ProductInfo from "./ProductInfo";
 import ProductPricing from "./ProductPricing";
 import ProductVariantSelector from "./ProductVariantSelector";
 import ProductAddToCart from "./ProductAddToCart";
-import type { ProductVariant } from "@/type/product";
+import type { Product, ProductVariant } from "@/type/product";
 
 export type ProductDetailInfoColumnProps = {
+  product?: Product; // NEW: Product data for wishlist
   name: string;
   ratingValue: number;
   fullStars: number;
@@ -35,6 +36,7 @@ export type ProductDetailInfoColumnProps = {
 };
 
 const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
+  product,
   name,
   ratingValue,
   fullStars,
@@ -63,6 +65,7 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
   return (
     <div className="space-y-3 sm:space-y-4 lg:space-y-5 self-start lg:sticky lg:top-20 w-full max-w-[580px] mx-auto lg:mx-0 ">
       <ProductInfo
+        product={product}
         name={name}
         ratingValue={ratingValue}
         fullStars={fullStars}
@@ -75,7 +78,6 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
         outOfStock={outOfStock}
         totalStock={totalStock}
         stockUnit={stockUnit}
-        onFavorite={undefined}
         onShare={onShare}
       />
 

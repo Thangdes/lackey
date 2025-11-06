@@ -32,6 +32,7 @@ const Footer = () => {
     };
 
     const SUPPORT_LINKS = [
+        { label: "Danh mục sản phẩm", href: ROUTES.categories },
         { label: "FAQs", href: ROUTES.help },
         { label: "Hướng dẫn chọn size", href: ROUTES.help },
         { label: "Tra cứu đơn hàng", href: ROUTES.ordersLookup },

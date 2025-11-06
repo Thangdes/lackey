@@ -284,6 +284,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         />
 
         <ProductDetailInfoColumn
+          product={p}
           name={p.name}
           ratingValue={ratingValue}
           fullStars={fullStars}

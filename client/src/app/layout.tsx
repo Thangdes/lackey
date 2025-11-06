@@ -10,7 +10,6 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthModal from "@/components/auth/AuthModal";
-import { GoogleAnalytics } from '@next/third-parties/google'
 import CartBootstrap from "@/components/providers/CartBootstrap";
 import TopProgress from "@/components/progress/TopProgress";
 import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
@@ -81,7 +80,7 @@ export default function RootLayout({
             <TooltipProvider>
               <LayoutChrome>
                 {children}
-                <GoogleAnalytics gaId="G-CL7D21ZY78" />
+                {/* <GoogleAnalytics gaId="G-CL7D21ZY78" /> */}
               </LayoutChrome>
               <AuthModal />
               <ChristmasPopup />
