@@ -56,7 +56,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   }
   return (
     <main className="bg-white min-h-screen">
-      <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16">
+      <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pt-6">
         <Script id="ld-blog" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

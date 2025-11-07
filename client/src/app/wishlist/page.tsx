@@ -28,7 +28,7 @@ export default function WishlistPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 mt-4">
+      <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
         <div className="mb-8">
           <div className="h-4 bg-black/5 border border-black w-32 animate-pulse mb-6" />
         </div>
@@ -56,7 +56,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 mt-4">
+    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
       <div className="">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
