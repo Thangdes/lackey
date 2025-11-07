@@ -36,7 +36,6 @@ const Footer = () => {
         { label: "FAQs", href: ROUTES.help },
         { label: "Hướng dẫn chọn size", href: ROUTES.help },
         { label: "Tra cứu đơn hàng", href: ROUTES.ordersLookup },
-        { label: "Tài khoản", href: ROUTES.profile },
         { label: "Đổi trả hàng", href: ROUTES.return },
         { label: "Liên hệ", href: ROUTES.contact },
     ];

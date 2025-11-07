@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 xl:py-10 2xl:py-12">
+    <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
       <Script id="ld-breadcrumb-terms" type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",

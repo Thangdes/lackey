@@ -25,7 +25,7 @@ const ProductsPageClient: React.FC = () => {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16">
+    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
       {/* <div className="pt-6">
         <Breadcrumb
           items={[
