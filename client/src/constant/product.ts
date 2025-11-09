@@ -25,14 +25,14 @@ export const OFFER_OPTIONS: string[] = [
   "Giảm giá theo số lượng"
 ];
 
-// Filter options for dietary/lifestyle
-export const DIETARY_OPTIONS: string[] = [
-  "Organic",
-  "Không đường",
-  "Ít muối", 
-  "Cho trẻ em",
-  "Người ăn chay",
-  "Không gluten",
-  "Ít calo",
-  "Tự nhiên"
+// Filter options for keychain styles/materials
+export const STYLE_OPTIONS: string[] = [
+  "Acrylic",
+  "Kim loại",
+  "Da",
+  "Gỗ", 
+  "Nhựa",
+  "Vải",
+  "Cao su",
+  "Mica"
 ];

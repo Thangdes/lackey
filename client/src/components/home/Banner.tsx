@@ -21,20 +21,20 @@ const defaultItems: BannerItem[] = [
   {
     imageUrl:
       'https://cdn.dribbble.com/userupload/18593430/file/original-584f68940e003859095420105796187c.png?resize=1024x768&vertical=center',
-    alt: 'Nguyên liệu tươi ngon và thực phẩm',
+    alt: 'Móc khóa đa dạng mẫu mã',
     href: '/products',
   },
   {
     imageUrl:
       'https://cdn.dribbble.com/userupload/43042575/file/original-39a16b2b624c7e0e29de8f50ecc36e7f.png?format=webp&resize=450x338&vertical=center',
-    alt: 'Các bữa ăn ngon và combo',
+    alt: 'Thiết kế móc khóa theo ý tưởng',
     href: '/products?sort=popularity',
   },
   {
     imageUrl:
       'https://cdn.dribbble.com/userupload/42700532/file/original-8a25e1e4d76982d94f3898ed09bc958f.png?format=webp&resize=450x338&vertical=center',
-    alt: 'Đồ uống và nhiều hơn nữa',
-    href: '/products?category=beverages',
+    alt: 'Phụ kiện thời trang độc đáo',
+    href: '/products?category=accessories',
   },
 ]
 
