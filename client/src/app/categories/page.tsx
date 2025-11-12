@@ -84,8 +84,8 @@ export default function CategoriesPage() {
   const categoryList = (categories && categories.length > 0 ? categories : MOCK_CATEGORIES) as (Category & { productCount?: number })[]
 
   return (
-    <div className="min-h-screen bg-[#f5f1e8]">
-      <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 mt-10">
+    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
+      <div>
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <div>

@@ -168,7 +168,7 @@ const Footer = () => {
                     </div>
                     <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-xs text-gray-400">
                         <span>© 2025, LắcKey</span>
-                        <Link href="https://shopify.com" className="hover:text-white">Powered by Lackey</Link>
+                        <Link href={ROUTES.home} className="hover:text-white">Powered by <span className="font-bold underline">Annamite Labs</span></Link>
                         <Link href={ROUTES.return} className="hover:text-white">Chính sách đổi trả</Link>
                         <Link href={ROUTES.privacy} className="hover:text-white">Chính sách bảo mật</Link>
                         <Link href={ROUTES.terms} className="hover:text-white">Điều khoản dịch vụ</Link>
