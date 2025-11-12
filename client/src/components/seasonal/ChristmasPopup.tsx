@@ -84,7 +84,7 @@ export default function ChristmasPopup() {
                   🎄 Khuyến mãi đặc biệt mùa lễ hội
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  Áp dụng cho tất cả sản phẩm hạt dinh dưỡng
+                  Áp dụng cho tất cả sản phẩm móc khóa.
                 </p>
               </div>
 

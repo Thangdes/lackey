@@ -17,14 +17,14 @@ const COLLECTIONS = [
     id: "2",
     title: "Kpop",
     slug: "kpop",
-    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    image: "https://images-cdn.ubuy.ae/635a21ed18d6af2dc8114ff9-blackpink-merchandise-the-album-crown.jpg",
     buttonText: "MUA KPOP",
   },
   {
     id: "3",
     title: "Nhân vật",
     slug: "nhan-vat",
-    image: "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=600&h=800&fit=crop",
+    image: "https://images.unsplash.com/photo-1674448417387-345997fcd888?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=600&h=800",
     buttonText: "MUA NHÂN VẬT",
   },
 ];
