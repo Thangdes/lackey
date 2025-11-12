@@ -27,14 +27,14 @@ const defaultItems: ValueProp[] = [
     icon: <Truck className="h-6 w-6" aria-hidden />,
     title: "Giao hàng hỏa tốc",
     description: "Nhanh 1–3 ngày toàn quốc, đóng gói an toàn",
-    ctaHref: "/about/shipping",
+    ctaHref: "/shipping",
     ctaLabel: "Tìm hiểu thêm",
   },
   {
     icon: <Headphones className="h-6 w-6" aria-hidden />,
     title: "CSKH tận tâm 24/7",
     description: "Zalo/Facebook/Hotline luôn sẵn sàng",
-    ctaHref: "/support",
+    ctaHref: "/help",
     ctaLabel: "Liên hệ",
   },
   {
@@ -48,7 +48,7 @@ const defaultItems: ValueProp[] = [
     icon: <Shield className="h-6 w-6" aria-hidden />,
     title: "Chất lượng đảm bảo",
     description: "Nguồn gốc rõ ràng, an toàn cho sức khỏe",
-    ctaHref: "/about/quality",
+    ctaHref: "/about",
     ctaLabel: "Cam kết",
   },
 ];

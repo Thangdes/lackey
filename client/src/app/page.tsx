@@ -72,14 +72,14 @@ export default function Home() {
             icon: "⚡",
             title: "GIAO HÀNG SIÊU TỐC",
             description: "Giao hàng toàn quốc 1-3 ngày. Đóng gói cẩn thận, an toàn tuyệt đối.",
-            ctaHref: "/about/shipping",
+            ctaHref: "/shipping",
             ctaLabel: "Xem chi tiết",
           },
           {
             icon: "💯",
             title: "CHẤT LƯỢNG CAO CẤP",
             description: "Acrylic trong suốt, bền đẹp. In offset chất lượng cao, không phai màu theo thời gian.",
-            ctaHref: "/about/quality",
+            ctaHref: "/about",
             ctaLabel: "Cam kết",
           },
           {
