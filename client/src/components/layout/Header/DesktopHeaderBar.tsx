@@ -145,7 +145,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
 
   return (
     <div className="flex items-center justify-between w-full max-h-14 relative">
-      {/* Logo - Left */}
       <div className="flex items-center gap-3 shrink-0">
         <Link
           href={ROUTES.home}
@@ -166,7 +165,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         </Link>
       </div>
 
-      {/* Navigation - Center */}
       <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
         <Link href={ROUTES.products} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Tất Cả
@@ -180,14 +178,12 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         <Link href="/contact" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Liên hệ
         </Link>
-        <Link href={ROUTES.products + '?sale=true'} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
-          Khuyến mãi
+        <Link href="/custom-keychain" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+          Custom Keychain
         </Link>
       </nav>
 
-      {/* Actions - Right */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* Search Icon */}
         <Button
           variant="ghost"
           size="icon"
@@ -198,7 +194,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
           <Search className="h-5 w-5" />
         </Button>
 
-        {/* User Account */}
         {user ? (
           <div className="relative" ref={acctRef}>
             <Button
@@ -312,7 +307,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
           </Button>
         )}
 
-        {/* Wishlist */}
         <Link href={ROUTES.wishlist}>
           <Button
             variant="ghost"
@@ -330,7 +324,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
           </Button>
         </Link>
 
-        {/* Cart */}
         <Sheet modal={false}>
           <SheetTrigger asChild>
             <Button
@@ -373,7 +366,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         tabIndex={-1}
       />
       
-      {/* Search Modal */}
       <SearchModal 
         isOpen={searchOpen} 
         onClose={() => setSearchOpen(false)} 

@@ -41,14 +41,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     } catch {}
   }, [isOpen]);
 
-  // Focus input when modal opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
 
-  // Close on ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -97,11 +95,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <div className="fixed inset-0 z-[1000] bg-white">
-      {/* Header */}
       <div className="border-b border-black">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-3 sm:py-4 md:py-6">
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-            {/* Search Input */}
             <div className="flex-1 relative">
               <input
                 ref={inputRef}
@@ -117,7 +113,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <Search className="absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-400" />
             </div>
 
-            {/* Close Button */}
             <button
               onClick={onClose}
               className="p-2 sm:p-3 md:p-4 border-2 border-black hover:bg-black hover:text-white transition-colors"
@@ -129,10 +124,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-4 sm:py-6 md:py-8 overflow-auto max-h-[calc(100vh-100px)] sm:max-h-[calc(100vh-110px)] md:max-h-[calc(100vh-120px)]">
         {query.trim() ? (
-          // Search Results
           <div>
             <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600">
               Kết quả tìm kiếm
@@ -175,9 +168,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             )}
           </div>
         ) : (
-          // Recent & Popular Searches
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
-            {/* Recent Searches */}
             {recentSearches.length > 0 && (
               <div>
                 <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600 flex items-center gap-2">
@@ -198,7 +189,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </div>
             )}
 
-            {/* Popular Searches */}
             <div>
               <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600 flex items-center gap-2">
                 <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -219,8 +209,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </div>
         )}
       </div>
-
-      {/* Footer Hint */}
       <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-2 sm:py-3 md:py-4">
           <p className="text-[10px] sm:text-xs text-gray-500 text-center">
