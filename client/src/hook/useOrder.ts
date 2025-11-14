@@ -6,6 +6,7 @@ import { orderKeys as keys } from "@/constant/key/order";
 import type { Paginated } from "@/type/common";
 import type { CheckoutPayload, OrderDetail, OrderSummary } from "@/type/order";
 import { toast } from "sonner";
+import { isLikelyAuthenticated } from "@/utils/http";
 
 export function useOrderList(
   params?: { page?: number; limit?: number; status?: string; search?: string; code?: string; email?: string; deliveryCode?: string; customerType?: "guest" | "registered" },
@@ -45,6 +46,8 @@ export function useMyOrderHistory(initial?: OrderSummary[]) {
     },
     initialData: initial ?? [],
     placeholderData: initial ?? [],
+    enabled: isLikelyAuthenticated(),
+    retry: false,
   });
 }
 
@@ -58,6 +61,8 @@ export function useMyOrdersPaginated(params: { page?: number; limit?: number; st
     refetchOnMount: "always",
     refetchOnReconnect: true,
     refetchOnWindowFocus: true,
+    enabled: isLikelyAuthenticated(),
+    retry: false,
   });
 }
 

@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/service/auth.service";
 import type { User } from "@/type/user";
+import { isLikelyAuthenticated } from "@/utils/http";
 import { authKeys as keys } from "@/constant/key/auth";
 import { cartKeys } from "@/constant/key/cart";
 import { showSuccessToast } from "@/components/toast/AppToast";
@@ -27,6 +28,8 @@ export function useAuthProfile() {
       })();
       return { ...(res as User), email, role } as User;
     },
+    enabled: isLikelyAuthenticated(),
+    retry: false,
   });
 }
 

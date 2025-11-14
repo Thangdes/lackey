@@ -65,7 +65,6 @@ const PUBLIC_BASE = (() => {
 })();
 const SSR_BASE = (process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "") || "http://localhost:8000");
 
-// Ensure base URL ends with a trailing slash to safely join with child paths that omit leading slash
 const ensureTrailingSlash = (v: string) => (v.endsWith('/') ? v : `${v}/`);
 export const API_BASE = ensureTrailingSlash(isServer ? `${SSR_BASE}${API_PREFIX}` : PUBLIC_BASE);
 

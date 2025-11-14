@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ratingService } from "@/service/rating.service";
 import { ratingKeys as keys } from "@/constant/key/rating";
 import { STALE_TIME } from "@/constant/query";
+import { isLikelyAuthenticated } from "@/utils/http";
 
 export function useAdminRatings(params: { page: number; search?: string }) {
   const { page, search } = params;
@@ -11,6 +12,8 @@ export function useAdminRatings(params: { page: number; search?: string }) {
     queryKey: keys.adminList(page, search),
     queryFn: () => ratingService.admin.list({ page, limit: 20, search }),
     staleTime: STALE_TIME,
+    enabled: isLikelyAuthenticated(),
+    retry: false,
   });
 }
 
