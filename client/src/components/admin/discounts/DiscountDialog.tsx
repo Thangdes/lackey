@@ -39,13 +39,13 @@ export function DiscountDialog(props: DiscountDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
-      <DialogContent className="sm:max-w-[560px]">
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-[560px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === "create" ? "Thêm mã giảm giá" : "Sửa mã giảm giá"}</DialogTitle>
           <DialogDescription>{mode === "create" ? "Tạo một mã giảm giá mới" : "Cập nhật thông tin mã giảm giá"}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm mb-1">Mã</label>
               <Input name="code" value={code} onChange={handleText} placeholder="VD: SALE20" autoFocus />
