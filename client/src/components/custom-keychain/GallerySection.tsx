@@ -1,8 +1,28 @@
+'use client';
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { GALLERY_IMAGES } from "../../constant/keychain";
+import { siteContentService } from "@/service/site-content.service";
 
 export function GallerySection() {
+  const [images, setImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const list = await siteContentService.getKeychainGallery();
+        if (!mounted) return;
+        setImages((list || []).map((it) => it.imageUrl).filter(Boolean));
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <section className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-16 md:py-24">
       <div className="max-w-7xl mx-auto">
@@ -14,14 +34,23 @@ export function GallerySection() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {GALLERY_IMAGES.map((img, index) => (
+          {(images.length ? images : loading ? Array.from({ length: 6 }).map(() => "") : []).map((img, index) => (
             <div
               key={index}
               className="aspect-square bg-white border-4 border-black overflow-hidden hover:-translate-y-2 transition-all"
               style={{ boxShadow: "8px 8px 0px 0px rgba(0,0,0,1)" }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img} alt={`Custom keychain ${index + 1}`} className="w-full h-full object-cover" />
+              {img ? (
+                <Image
+                  src={img}
+                  alt={`Custom keychain ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 animate-pulse" />
+              )}
             </div>
           ))}
         </div>
