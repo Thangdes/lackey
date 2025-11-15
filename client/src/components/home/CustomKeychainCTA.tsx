@@ -8,7 +8,6 @@ import { Sparkles, Upload, MessageCircle, Zap } from "lucide-react";
 export default function CustomKeychainCTA() {
   return (
     <section className="relative w-full bg-white py-12 md:py-20 overflow-hidden">
-      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
           backgroundImage: `
@@ -23,16 +22,12 @@ export default function CustomKeychainCTA() {
         }} />
       </div>
 
-      {/* Container */}
       <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <div className="max-w-7xl mx-auto">
           
-          {/* Main Content Grid */}
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             
-            {/* Left Side - Text Content */}
             <div className="space-y-6 md:space-y-8">
-              {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fff100] border-4 border-black shadow-[4px_4px_0px_0px_rgba(34,144,144,1)]">
                 <Sparkles className="w-5 h-5" />
                 <span className="font-[family-name:var(--font-retro)] text-sm md:text-base font-bold uppercase">
@@ -40,21 +35,18 @@ export default function CustomKeychainCTA() {
                 </span>
               </div>
 
-              {/* Main Heading */}
               <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-black leading-tight tracking-wider">
                 CUSTOM<br />
                 MÓC KHÓA<br />
                 <span className="text-[#229090]">THEO Ý BẠN</span>
               </h2>
 
-              {/* Description */}
               <p className="text-lg md:text-xl text-black/80 leading-relaxed">
                 Gửi hình ảnh, concept, nhân vật yêu thích của bạn. 
                 Chúng tôi sẽ thiết kế và in móc khóa acrylic chất lượng cao, 
                 hoàn toàn độc quyền cho riêng bạn!
               </p>
 
-              {/* Features List */}
               <div className="space-y-3">
                 {[
                   { icon: "🎨", text: "Thiết kế FREE theo yêu cầu" },
@@ -71,7 +63,6 @@ export default function CustomKeychainCTA() {
                 ))}
               </div>
 
-              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/contact?type=custom"
@@ -91,19 +82,16 @@ export default function CustomKeychainCTA() {
               </div>
             </div>
 
-            {/* Right Side - Visual Content */}
             <div className="relative">
-              {/* Main Image Box */}
               <div className="relative bg-[#fff100] border-4 border-black p-4 md:p-6 shadow-[12px_12px_0px_0px_rgba(34,144,144,1)]">
                 <div className="aspect-square relative bg-white border-4 border-black overflow-hidden">
                   <Image
-                    src="https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=600"
+                    src="https://s.alicdn.com/@sc04/kf/H6d86fa5d68dc4580ab29e41a00c5ec4as.jpg?avif=close&webp=close"
                     alt="Custom Keychain Design"
                     fill
                     className="object-cover"
                   />
                   
-                  {/* Overlay Badge */}
                   <div className="absolute top-4 right-4 bg-black text-[#fff100] px-4 py-2 border-4 border-[#fff100]">
                     <span className="font-[family-name:var(--font-retro)] text-sm md:text-base font-bold uppercase">
                       Custom
@@ -111,7 +99,6 @@ export default function CustomKeychainCTA() {
                   </div>
                 </div>
 
-                {/* Info Box */}
                 <div className="mt-4 bg-black text-white p-4 border-4 border-black">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -127,14 +114,12 @@ export default function CustomKeychainCTA() {
                 </div>
               </div>
 
-              {/* Floating Badge 1 */}
               <div className="absolute -top-4 -left-4 bg-black text-white px-4 py-2 border-4 border-white rotate-[-5deg] shadow-lg">
                 <span className="font-[family-name:var(--font-retro)] text-sm font-bold uppercase">
                   Từ 1 chiếc
                 </span>
               </div>
 
-              {/* Floating Badge 2 */}
               <div className="absolute -bottom-4 -right-4 bg-[#229090] text-white px-4 py-2 border-4 border-white rotate-[5deg] shadow-lg">
                 <span className="font-[family-name:var(--font-retro)] text-sm font-bold uppercase">
                   3-5 ngày
@@ -143,7 +128,6 @@ export default function CustomKeychainCTA() {
             </div>
           </div>
 
-          {/* Bottom Stats */}
           <div className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {[
               { number: "500+", label: "Thiết kế custom" },
