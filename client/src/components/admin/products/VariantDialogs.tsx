@@ -89,21 +89,21 @@ export function AddVariantDialog(props: AddVariantDialogProps) {
       <DialogTrigger asChild>
         <Button type="button">{triggerLabel}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Thêm biến thể</DialogTitle>
           <DialogDescription>Nhập thông tin biến thể cho sản phẩm</DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium mb-1">Tên cơ bản (không bao gồm khối lượng)</label>
             <Input placeholder="Ví dụ: Hạt điều rang muối" value={baseName} onChange={handleBaseName} />
           </div>
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium mb-1">Khối lượng (gram)</label>
             <Input type="number" min={0} step="1" placeholder="Ví dụ: 500" value={weight} onChange={handleWeight} />
           </div>
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <div className="p-3 bg-green-50 border border-green-200 rounded text-sm">
               <div className="text-green-700 font-medium">Tên biến thể sẽ được tạo:</div>
               <div className="text-green-800 font-semibold mt-1">{finalVariantName || "(Nhập tên cơ bản và khối lượng)"}</div>
@@ -206,21 +206,21 @@ export function EditVariantDialog(props: EditVariantDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Sửa biến thể</DialogTitle>
           <DialogDescription>Cập nhật thông tin biến thể</DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium mb-1">Tên cơ bản (không bao gồm khối lượng)</label>
             <Input placeholder="Ví dụ: Hạt điều rang muối" value={baseName} onChange={handleBaseName} />
           </div>
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium mb-1">Khối lượng (gram)</label>
             <Input type="number" min={0} step="1" placeholder="Ví dụ: 500" value={weight} onChange={handleWeight} />
           </div>
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <div className="p-3 bg-green-50 border border-green-200 rounded text-sm">
               <div className="text-green-700 font-medium">Tên biến thể sẽ được lưu:</div>
               <div className="text-green-800 font-semibold mt-1">{finalVariantName || "(Nhập tên cơ bản và khối lượng)"}</div>

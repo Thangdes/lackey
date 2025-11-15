@@ -44,7 +44,7 @@ export function CategoryDialog(props: CategoryDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
-      <DialogContent>
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === "create" ? "Thêm danh mục" : "Sửa danh mục"}</DialogTitle>
           <DialogDescription>{mode === "create" ? "Tạo một danh mục mới" : "Cập nhật thông tin danh mục"}</DialogDescription>
