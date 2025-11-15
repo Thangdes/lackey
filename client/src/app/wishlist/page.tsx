@@ -17,6 +17,7 @@ export default function WishlistPage() {
   }, [syncWithServer])
 
   const handleAddToCart = (_item: WishlistItem) => {
+    void _item
     toast.info('Tính năng thêm vào giỏ hàng đang được phát triển')
   }
 
