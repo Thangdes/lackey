@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { ImageIcon, Quote, Image as ImageLucide, Plus, RefreshCw, Save, Trash2, UploadCloud } from "lucide-react";
 
-const TYPES: ContentType[] = ["BANNER", "TESTIMONIAL"];
+const TYPES: ContentType[] = ["BANNER", "TESTIMONIAL", "GALLERY"];
 
 export default function SiteContentAdminPage() {
   const [type, setType] = useState<ContentType>("BANNER");
@@ -46,7 +46,7 @@ export default function SiteContentAdminPage() {
                 onClick={() => setType(t)}
                 className={["px-3 py-1.5 text-sm", type === t ? "bg-foreground text-background" : "bg-background text-foreground"].join(" ")}
               >
-                {t === "BANNER" ? "Banner" : "Testimonial"}
+                {t === "BANNER" ? "Banner" : t === "TESTIMONIAL" ? "Testimonial" : "Gallery"}
               </button>
             ))}
           </div>
@@ -266,18 +266,19 @@ function EditableRow({
   }, [item.id, onDeleted]);
 
   const onUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
+    const inputEl = e.currentTarget; // capture before any await
+    const f = inputEl.files?.[0];
     if (!f) return;
     setUploading(true);
     try {
       await siteContentAdminService.uploadThumbnail(item.id, f);
       toast.success("Đã cập nhật hình");
       onSaved?.();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Tải hình thất bại");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Tải hình thất bại");
     } finally {
       setUploading(false);
-      e.currentTarget.value = ""; // reset input
+      if (inputEl) inputEl.value = ""; // reset input safely
     }
   }, [item.id, onSaved]);
 
