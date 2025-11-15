@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "m.media-amazon.com" },
       { protocol: "https", hostname: "images-cdn.ubuy.ae" },
       { protocol: "https", hostname: "i.pinimg.com" },
+      { protocol: "https", hostname: "s.alicdn.com" },
     ],
     formats: ["image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

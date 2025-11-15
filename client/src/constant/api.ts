@@ -2,6 +2,7 @@ export const API = {
   siteContent: {
     banners: "/site-content/banners",
     testimonials: "/site-content/testimonials",
+    gallery: "/site-content/gallery",
     adminAll: (type?: string) => (type ? `/site-content/admin/all?type=${encodeURIComponent(type)}` : "/site-content/admin/all"),
     adminById: (id: string) => `/site-content/admin/${id}`,
     create: "/site-content",
