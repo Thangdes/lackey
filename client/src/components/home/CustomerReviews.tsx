@@ -1,26 +1,49 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Star, CheckCircle2 } from "lucide-react";
-import { useFeaturedReviews } from "@/hook/useRating";
+import { siteContentService } from "@/service/site-content.service";
 
 export default function CustomerReviews() {
-  const { data, isLoading } = useFeaturedReviews(6);
+  const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState<Array<{
+    id: string;
+    name: string;
+    title: string;
+    content: string;
+    rating: number;
+    reviewCount: number;
+    imageUrl?: string;
+    verified: boolean;
+  }>>([]);
 
-  const reviews = (data || []).map((item) => ({
-    id: item.id,
-    name: item.customerName || "Khách hàng",
-    title: item.productName || "Đánh giá sản phẩm",
-    content: item.comment || "",
-    rating: item.rating || 5,
-    reviewCount: 0,
-    imageUrl: "/placeholder.jpg",
-    verified: true,
-  }));
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const items = await siteContentService.getTestimonials();
+        if (!mounted) return;
+        const mapped = (items || []).slice(0, 6).map((it) => ({
+          id: it.id,
+          name: it.name || "Khách hàng",
+          title: it.role || "Đánh giá sản phẩm",
+          content: it.content || "",
+          rating: it.rating ?? 5,
+          reviewCount: 0,
+          imageUrl: it.imageUrl || "/placeholder.jpg",
+          verified: true,
+        }));
+        setReviews(mapped);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <section className="w-full bg-white py-16 md:py-20">
         <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
@@ -42,7 +65,6 @@ export default function CustomerReviews() {
   return (
     <section className="w-full bg-white py-16 md:py-20">
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl text-neutral-900 mb-4 tracking-wider uppercase">
             Khách hàng nói gì về chúng tôi
@@ -62,31 +84,26 @@ export default function CustomerReviews() {
           </Link>
         </div>
 
-        {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {reviews.map((review) => (
             <div
               key={review.id}
               className="bg-white border-2 border-black hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden flex flex-col"
             >
-              {/* Image */}
               <div className="relative aspect-square bg-gray-200 overflow-hidden">
                 <Image
-                  src={review.imageUrl}
+                  src={review.imageUrl || "/placeholder.jpg"}
                   alt={review.title}
                   fill
                   className="object-cover"
                 />
               </div>
 
-              {/* Content */}
               <div className="p-5 md:p-6 flex-1 flex flex-col bg-white">
-                {/* Title */}
                 <h3 className="font-[family-name:var(--font-retro)] text-lg md:text-xl font-bold mb-3 line-clamp-1 uppercase">
                   {review.title}
                 </h3>
 
-                {/* Rating */}
                 <div className="flex items-center gap-2 mb-2">
                   <div className="flex items-center">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -107,12 +124,10 @@ export default function CustomerReviews() {
                   )}
                 </div>
 
-                {/* Review Text */}
                 <p className="text-sm leading-relaxed text-gray-700 mb-4 line-clamp-4 flex-1">
                   &ldquo;{review.content}&rdquo;
                 </p>
 
-                {/* Author */}
                 <div className="flex items-center justify-between pt-4 border-t-2 border-black">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-sm text-black">
