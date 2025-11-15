@@ -2,7 +2,7 @@ import { http, httpSuccess } from "@/utils/http";
 import { API } from "@/constant/api";
 import { api } from "@/utils/http";
 
-export type ContentType = "BANNER" | "TESTIMONIAL";
+export type ContentType = "BANNER" | "TESTIMONIAL" | "GALLERY";
 
 export type SiteContentAdminItem = {
   id: string;

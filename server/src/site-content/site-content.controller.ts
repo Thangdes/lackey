@@ -41,6 +41,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
     findTestimonials() {
       return this.siteContentService.findPublishedTestimonials();
     }
+
+    @Get('/gallery')
+    findGallery() {
+      return this.siteContentService.findPublishedGallery();
+    }
   
     @Post()
     @AdminAccess()

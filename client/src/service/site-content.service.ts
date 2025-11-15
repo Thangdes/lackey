@@ -36,7 +36,7 @@ export type ValuePropItem = {
 
 export type SiteContentDto = {
   id: string;
-  type: "BANNER" | "TESTIMONIAL" | "VALUE_PROP";
+  type: "BANNER" | "TESTIMONIAL" | "VALUE_PROP" | "GALLERY";
   title: string;
   content?: string;
   thumbnailUrl?: string;
@@ -114,6 +114,17 @@ export const siteContentService = {
         .filter((d) => d?.type === "BANNER" && !!d?.thumbnailUrl && !!d?.title)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
         .map(mapHeroSlide);
+    } catch {
+      return [];
+    }
+  },
+  getKeychainGallery: async (): Promise<Array<{ imageUrl: string; title?: string }>> => {
+    try {
+      const data = await http.get<SiteContentDto[]>(API.siteContent.gallery);
+      return (data || [])
+        .filter((d) => !!d?.thumbnailUrl)
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map((it) => ({ imageUrl: it.thumbnailUrl as string, title: it.title }));
     } catch {
       return [];
     }

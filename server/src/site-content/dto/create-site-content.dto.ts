@@ -13,7 +13,7 @@ import {
   
   export class CreateSiteContentDto {
     @IsEnum(ContentType)
-    @IsNotEmpty({ message: 'Type must be either BANNER or TESTIMONIAL' })
+    @IsNotEmpty({ message: 'Type must be one of BANNER, TESTIMONIAL, GALLERY' })
     type: ContentType;
   
     @IsString()

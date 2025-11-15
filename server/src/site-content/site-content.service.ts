@@ -46,6 +46,16 @@ export class SiteContentService {
     });
   }
 
+  findPublishedGallery() {
+    return this.prisma.siteContent.findMany({
+      where: {
+        type: ContentType.GALLERY,
+        isPublished: true,
+      },
+      orderBy: { displayOrder: 'asc' },
+    });
+  }
+
   async findOne(id: string) {
     const content = await this.prisma.siteContent.findUnique({
       where: { id },
