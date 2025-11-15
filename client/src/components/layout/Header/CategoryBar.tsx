@@ -93,7 +93,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({
 
   return (
     <div className="w-full bg-white">
-      <div className="mx-auto w-full max-w-screen-2xl px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+      <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <nav className="relative py-3" aria-label="Danh mục">
           <button
             type="button"
