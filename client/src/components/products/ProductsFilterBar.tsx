@@ -1,100 +1,62 @@
 "use client";
 
 import React from "react";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { ProductSort } from "@/type/product";
 
 export type FilterBarProps = {
   productCount?: number;
-  selectedSize?: string;
-  selectedType?: string;
-  selectedColor?: string;
-  onSizeChange?: (value: string) => void;
-  onTypeChange?: (value: string) => void;
-  onColorChange?: (value: string) => void;
+  minPrice?: string;
+  maxPrice?: string;
+  onMinPriceChange?: (value: string) => void;
+  onMaxPriceChange?: (value: string) => void;
+  sort?: ProductSort;
+  onSortChange?: (value: ProductSort) => void;
 };
-
-const MATERIALS = [
-  { value: "all", label: "Tất cả chất liệu" },
-  { value: "acrylic", label: "Acrylic" },
-  { value: "metal", label: "Kim loại" },
-  { value: "leather", label: "Da" },
-  { value: "wood", label: "Gỗ" },
-  { value: "rubber", label: "Nhựa" },
-];
-
-const STYLES = [
-  { value: "all", label: "Tất cả phong cách" },
-  { value: "anime", label: "Anime" },
-  { value: "kpop", label: "Kpop" },
-  { value: "cartoon", label: "Cartoon" },
-  { value: "minimalist", label: "Tối giản" },
-  { value: "cute", label: "Dễ thương" },
-  { value: "custom", label: "Tùy chỉnh" },
-];
-
-const COLORS = [
-  { value: "all", label: "Tất cả màu sắc" },
-  { value: "black", label: "Đen" },
-  { value: "white", label: "Trắng" },
-  { value: "red", label: "Đỏ" },
-  { value: "blue", label: "Xanh" },
-  { value: "yellow", label: "Vàng" },
-  { value: "pink", label: "Hồng" },
-  { value: "multi", label: "Nhiều màu" },
-];
 
 export default function ProductsFilterBar({
   productCount = 0,
-  selectedSize = "all",
-  selectedType = "all",
-  selectedColor = "all",
-  onSizeChange,
-  onTypeChange,
-  onColorChange,
+  minPrice = "",
+  maxPrice = "",
+  onMinPriceChange,
+  onMaxPriceChange,
+  sort,
+  onSortChange,
 }: FilterBarProps) {
   return (
     <div className="flex items-center justify-between border-b-2 border-[#2d2d2d] py-4 bg-[#f5f1e8]">
       <div className="hidden md:flex items-center gap-3">
         <span className="text-sm font-mono tracking-wider text-[#2d2d2d] uppercase">Filter:</span>
-        
-        <Select value={selectedSize} onValueChange={onSizeChange}>
+        <Select
+          value={sort ?? "priceAsc"}
+          onValueChange={(value) => onSortChange?.(value as ProductSort)}
+        >
           <SelectTrigger className="w-[210px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
-            <SelectValue placeholder="Chất liệu" />
+            <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
-            {MATERIALS.map((material) => (
-              <SelectItem key={material.value} value={material.value} className="text-sm">
-                {material.label}
-              </SelectItem>
-            ))}
+            <SelectItem value="priceAsc" className="text-sm">Price: Low to High</SelectItem>
+            <SelectItem value="priceDesc" className="text-sm">Price: High to Low</SelectItem>
           </SelectContent>
         </Select>
-
-        <Select value={selectedType} onValueChange={onTypeChange}>
-          <SelectTrigger className="w-[220px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
-            <SelectValue placeholder="Phong cách" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
-            {STYLES.map((style) => (
-              <SelectItem key={style.value} value={style.value} className="text-sm">
-                {style.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={selectedColor} onValueChange={onColorChange}>
-          <SelectTrigger className="w-[200px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
-            <SelectValue placeholder="Màu sắc" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
-            {COLORS.map((color) => (
-              <SelectItem key={color.value} value={color.value} className="text-sm">
-                {color.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Input
+            value={minPrice}
+            onChange={(e) => onMinPriceChange?.(e.target.value)}
+            inputMode="numeric"
+            placeholder="Từ (₫)"
+            className="w-[140px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none"
+          />
+          <span className="text-[#2d2d2d]">–</span>
+          <Input
+            value={maxPrice}
+            onChange={(e) => onMaxPriceChange?.(e.target.value)}
+            inputMode="numeric"
+            placeholder="Đến (₫)"
+            className="w-[140px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none"
+          />
+        </div>
       </div>
 
       <div className="hidden md:block text-sm font-mono text-[#2d2d2d]/70">

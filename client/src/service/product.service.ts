@@ -173,9 +173,9 @@ export const productService = {
     );
   },
 
-  create: (payload: CreateProductPayload) => httpSuccess.postData<Product>(API.product.root, payload),
+  create: (payload: CreateProductPayload) => http.post<Product>(API.product.root, payload),
 
-  update: (id: string, payload: UpdateProductPayload) => httpSuccess.patchData<Product>(API.product.byId(id), payload),
+  update: (id: string, payload: UpdateProductPayload) => http.patch<Product>(API.product.byId(id), payload),
 
   delete: (id: string) => httpSuccess.deleteData<{ id: string }>(API.product.byId(id)),
 
