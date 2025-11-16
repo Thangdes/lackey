@@ -10,6 +10,16 @@ import { useSignup } from '@/hook/useAuth'
 import { toast } from 'sonner'
 import { showSuccessToast } from '@/components/toast/AppToast'
 
+function normalizeErrorMessage(err: unknown, fallback: string): string {
+  const m = err instanceof Error ? String(err.message || '') : ''
+  const s = m.trim()
+  if (!s) return fallback
+  const looksHtml = /^<!DOCTYPE/i.test(s) || /^<html/i.test(s) || /<[^>]+>/.test(s)
+  if (looksHtml) return fallback
+  if (s.length > 300) return fallback
+  return s
+}
+
 const useIsMounted = () => {
   const [mounted, setMounted] = React.useState(false)
   useEffect(() => setMounted(true), [])
@@ -75,7 +85,7 @@ const SignInForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       showSuccessToast({ title: 'Đăng nhập thành công', message: 'Chào mừng bạn quay lại LắcKey!' })
       close()
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Đăng nhập thất bại'
+      const msg = normalizeErrorMessage(err, 'Đăng nhập thất bại')
       setError(msg)
       toast.error(msg)
     }
@@ -169,7 +179,7 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       showSuccessToast({ title: 'Tạo tài khoản thành công', message: 'Chào mừng bạn đến với LắcKey!' })
       close()
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Tạo tài khoản thất bại'
+      const msg = normalizeErrorMessage(err, 'Tạo tài khoản thất bại')
       setError(msg)
       toast.error(msg)
     }
