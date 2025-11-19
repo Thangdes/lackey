@@ -22,7 +22,6 @@ import ProductDetailGalleryColumn from "@/components/products/detail/ProductDeta
 import ProductDetailInfoColumn from "@/components/products/detail/ProductDetailInfoColumn";
 import ProductTabsSection from "@/components/products/detail/ProductTabsSection";
 import ProductRelatedSection from "@/components/products/detail/ProductRelatedSection";
-import ProductCTASection from "@/components/products/detail/ProductCTASection";
 
 export type ProductClientViewProps = {
   product: Product;
