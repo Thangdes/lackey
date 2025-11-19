@@ -14,17 +14,10 @@ export type MiniCartProps = {
 };
 
 export default function MiniCart({ open, onOpenChange, highlightSku }: MiniCartProps) {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+
   const cart = useSmartCart();
   const itemCount = cart.items?.length ?? 0;
 
-  useEffect(() => {
-    if (!open) return;
-    const el = scrollRef.current;
-    if (!el) return;
-    const t = setTimeout(() => { try { el.scrollTop = 0; } catch {} }, 50);
-    return () => clearTimeout(t);
-  }, [open]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
@@ -44,7 +37,7 @@ export default function MiniCart({ open, onOpenChange, highlightSku }: MiniCartP
           </div>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-hidden relative">
           <CartMiniClient highlightSku={highlightSku} />
         </div>
       </SheetContent>
