@@ -14,7 +14,7 @@ import { Truck } from "lucide-react";
 export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMiniAction }: { highlightSku?: string; hideMiniAction?: boolean; }) {
   const cart = useSmartCart();
   const items = (cart.items as SmartCartItem[]);
-  
+
   const FREE_SHIPPING_THRESHOLD = 500000;
   const subtotal = cart.totals?.subtotal ?? 0;
   const progress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
@@ -119,7 +119,8 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-6 py-4 bg-gray-50">
+      {/* Free Shipping Banner - Fixed at top */}
+      <div className="shrink-0 px-6 py-4 bg-gray-50">
         {hasFreeShipping ? (
           <div className="flex items-center gap-2 text-sm font-medium text-green-600">
             <Truck className="w-4 h-4" />
@@ -140,7 +141,8 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      {/* Cart Items - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
         <div className="space-y-4">
           {items.map((it) => (
             <CartItemRow
@@ -157,43 +159,37 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         </div>
       </div>
 
-      <div className="px-6 py-4 bg-gray-50 border-y border-gray-200">
-        <h3 className="text-sm font-semibold text-gray-900 text-center mb-2">
-          SẢN PHẨM LIÊN QUAN
-        </h3>
-        <p className="text-xs text-gray-600 text-center">
-          Thêm sản phẩm vào giỏ để xem gợi ý
-        </p>
-      </div>
+      {/* Checkout Section - Fixed at bottom */}
+      <div className="shrink-0 border-t border-gray-200 bg-white">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-base font-semibold text-gray-900 uppercase">
+              TỔNG CỘNG
+            </span>
+            <span className="text-lg font-bold text-gray-900">
+              {formatVND(subtotal)}
+            </span>
+          </div>
+          <p className="text-xs text-gray-600 mb-4">
+            Thuế và phí ship sẽ được tính khi thanh toán
+          </p>
 
-      <div className="px-6 py-4 border-t border-gray-200 bg-white">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-base font-semibold text-gray-900 uppercase">
-            TỔNG CỘNG
-          </span>
-          <span className="text-lg font-bold text-gray-900">
-            {formatVND(subtotal)}
-          </span>
-        </div>
-        <p className="text-xs text-gray-600 mb-4">
-          Thuế và phí ship sẽ được tính khi thanh toán
-        </p>
-        
-        <Link
-          href={ROUTES.checkout}
-          className="block w-full py-3 bg-[#fff100] hover:bg-[#ffed00] border-2 border-black text-black text-center text-sm font-bold uppercase tracking-wide transition-colors"
-        >
-          THANH TOÁN NGAY
-        </Link>
-        
-        {!hideMiniAction && (
           <Link
-            href={ROUTES.cart}
-            className="block w-full py-3 mt-2 text-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            href={ROUTES.checkout}
+            className="block w-full py-3 bg-[#fff100] hover:bg-[#ffed00] border-2 border-black text-black text-center text-sm font-bold uppercase tracking-wide transition-colors"
           >
-            Xem giỏ hàng
+            THANH TOÁN NGAY
           </Link>
-        )}
+
+          {!hideMiniAction && (
+            <Link
+              href={ROUTES.cart}
+              className="block w-full py-3 mt-2 text-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Xem giỏ hàng
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
