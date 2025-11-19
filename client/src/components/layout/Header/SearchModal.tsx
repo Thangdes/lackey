@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Search, X, Clock, TrendingUp } from "lucide-react";
+import { Search, X, Clock, TrendingUp, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProductSearch } from "@/hook/useProductSearch";
+import { useProductSearch, type QuickSearchItem } from "@/hook/useProductSearch";
 import { buildProductDetailPath, buildProductsWithParams } from "@/constant/route";
+import { getRecentProducts } from "@/utils/recent";
+import type { Product, ProductVariant } from "@/type/product";
 
 type SearchModalProps = {
   isOpen: boolean;
@@ -16,6 +18,7 @@ type SearchModalProps = {
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -38,7 +41,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           setRecentSearches(items);
         }
       }
-    } catch {}
+    } catch { }
+
+    try {
+      const recent = getRecentProducts();
+      setRecentProducts(recent.slice(0, 6));
+    } catch { }
   }, [isOpen]);
 
   useEffect(() => {
@@ -71,7 +79,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         const now = Date.now();
         const payload = limited.map((s) => ({ term: s, t: s.toLowerCase() === val.toLowerCase() ? now : now - 1 }));
         window.localStorage.setItem("op_recent_searches", JSON.stringify(payload));
-      } catch {}
+      } catch { }
       return limited;
     });
   }, []);
@@ -90,6 +98,94 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     router.push(buildProductsWithParams({ q: searchTerm }));
     onClose();
   }, [router, onClose, pushRecent]);
+
+  const calculateDiscount = (product: QuickSearchItem | Product) => {
+    if (!('variants' in product) || !product.variants || product.variants.length === 0) {
+      return null;
+    }
+
+    const validVariants = product.variants.filter((v: ProductVariant) => v.price && v.discountPrice && v.discountPrice < v.price);
+    if (validVariants.length === 0) return null;
+
+    const maxDiscount = Math.max(...validVariants.map((v: ProductVariant) => {
+      const price = v.price;
+      const discountPrice = v.discountPrice!;
+      return Math.round(((price - discountPrice) / price) * 100);
+    }));
+
+    return maxDiscount > 0 ? maxDiscount : null;
+  };
+
+  const renderProductCard = (product: QuickSearchItem | Product, key: string) => {
+    const discount = calculateDiscount(product);
+    const variantCount = ('variants' in product && product.variants) ? product.variants.length : 0;
+    const hasStock = 'inStock' in product
+      ? product.inStock
+      : ('variants' in product && product.variants)
+        ? product.variants.some((v: ProductVariant) => (v.stockQuantity ?? 0) > 0)
+        : undefined;
+
+    return (
+      <Link
+        key={key}
+        href={buildProductDetailPath(product.slug || product.id)}
+        onClick={onClose}
+        className="group border-2 border-gray-200 hover:border-black transition-all p-3 flex gap-4 bg-white hover:shadow-lg"
+      >
+        <div className="relative flex-shrink-0">
+          {product.thumbnailUrl ? (
+            <Image
+              src={product.thumbnailUrl}
+              alt={product.name}
+              width={100}
+              height={100}
+              className="w-20 h-20 md:w-24 md:h-24 object-cover bg-gray-100"
+            />
+          ) : (
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-400 text-xs">No image</span>
+            </div>
+          )}
+          {discount && (
+            <div className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5">
+              -{discount}%
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          <div>
+            <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-blue-600 transition-colors">
+              {product.name}
+            </h3>
+            {product.category?.name && (
+              <p className="text-xs text-gray-500 mb-2">{product.category.name}</p>
+            )}
+          </div>
+          <div>
+            <div className="flex items-baseline gap-2 mb-1">
+              {product.minEffectivePrice && (
+                <p className="text-base font-bold text-black">
+                  {product.minEffectivePrice.toLocaleString()}₫
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {variantCount > 1 && (
+                <span className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                  {variantCount} phiên bản
+                </span>
+              )}
+              {hasStock === false && (
+                <span className="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded">
+                  Hết hàng
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  };
 
   if (!isOpen) return null;
 
@@ -131,52 +227,63 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               Kết quả tìm kiếm
             </h2>
             {loading ? (
-              <p className="text-sm sm:text-base text-gray-600">Đang tìm kiếm...</p>
+              <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                Đang tìm kiếm...
+              </div>
             ) : results.length === 0 ? (
-              <p className="text-sm sm:text-base text-gray-600">Không tìm thấy sản phẩm nào</p>
+              <div className="text-center py-12">
+                <p className="text-base text-gray-600 mb-2">Không tìm thấy sản phẩm nào</p>
+                <p className="text-sm text-gray-500">Hãy thử tìm kiếm với từ khóa khác</p>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {results.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={buildProductDetailPath(product.slug || product.id)}
-                    onClick={onClose}
-                    className="border border-transparent hover:border-black transition-all p-2 sm:p-3 md:p-4 flex gap-2 sm:gap-3 md:gap-4"
-                  >
-                    {product.thumbnailUrl ? (
-                      <Image
-                        src={product.thumbnailUrl}
-                        alt={product.name}
-                        width={80}
-                        height={80}
-                        className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover bg-gray-200"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gray-200" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-xs sm:text-sm line-clamp-2 mb-1">{product.name}</h3>
-                      {product.minEffectivePrice && (
-                        <p className="text-xs sm:text-sm font-bold text-black">
-                          {product.minEffectivePrice.toLocaleString()}₫
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {results.map((product, index) => renderProductCard(product, `search-${index}`))}
               </div>
             )}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
-            {recentSearches.length > 0 && (
+          <div className="space-y-8">
+            {recentProducts.length > 0 && (
+              <div>
+                <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-4 text-gray-600 flex items-center gap-2">
+                  <Star className="w-4 h-4" />
+                  Sản phẩm đã xem gần đây
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                  {recentProducts.map((product, index) => renderProductCard(product, `recent-${index}`))}
+                </div>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+              {recentSearches.length > 0 && (
+                <div>
+                  <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600 flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    Tìm kiếm gần đây
+                  </h2>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    {recentSearches.map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => handleSearchClick(term)}
+                        className="block w-full text-left px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all text-xs sm:text-sm font-medium"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600 flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  Tìm kiếm gần đây
+                  <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Tìm kiếm phổ biến
                 </h2>
                 <div className="space-y-1.5 sm:space-y-2">
-                  {recentSearches.map((term) => (
+                  {popularSearches.map((term) => (
                     <button
                       key={term}
                       onClick={() => handleSearchClick(term)}
@@ -186,24 +293,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-
-            <div>
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 sm:mb-4 text-gray-600 flex items-center gap-2">
-                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                Tìm kiếm phổ biến
-              </h2>
-              <div className="space-y-1.5 sm:space-y-2">
-                {popularSearches.map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => handleSearchClick(term)}
-                    className="block w-full text-left px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all text-xs sm:text-sm font-medium"
-                  >
-                    {term}
-                  </button>
-                ))}
               </div>
             </div>
           </div>
