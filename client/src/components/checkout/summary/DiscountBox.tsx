@@ -21,17 +21,7 @@ export function DiscountBox({
   const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     plain ? <>{children}</> : <div className="rounded-2xl border border-black/10 bg-white p-5 mb-4 space-y-3">{children}</div>
   );
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[DISCOUNT_BOX]', {
-      selectedCode,
-      appliedCode,
-      discountAmount,
-      applyingDiscount,
-      optionsCount: options.length,
-    });
-  }
-  
+
   return (
     <Wrapper>
       <label className="flex items-center gap-1.5 text-black/70 mb-1"><Ticket size={14} /> {CART_UI.voucher}</label>

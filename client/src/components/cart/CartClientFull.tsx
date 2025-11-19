@@ -24,12 +24,12 @@ import { AddressModal } from "../checkout/modals/AddressModal";
 export default function CartClientFull({ forceHighlightSku }: { forceHighlightSku?: string }) {
   const cart = useSmartCart();
   const sp = useSearchParams();
-  
+
   const items = cart.items as SmartCartItem[];
 
   const subtotal = cart.totals?.subtotal ?? 0;
   const { options, selectedCode, appliedCode, discountAmount, applyingDiscount, onSelect, onClear } = useCartDiscount(subtotal);
-  
+
   const {
     shippingFee,
     loading: shippingLoading,
@@ -43,16 +43,6 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
   const totalsMissing = !cart.totals;
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const isDev = process.env.NODE_ENV !== 'production';
-  const [showDebug, setShowDebug] = useState(false);
-  useEffect(() => {
-    try { if (typeof window !== 'undefined') setShowDebug(window.localStorage.getItem('debugCart') === '1'); } catch {}
-  }, []);
-  const toggleDebug = useCallback(() => {
-    const next = !showDebug;
-    setShowDebug(next);
-    try { if (typeof window !== 'undefined') window.localStorage.setItem('debugCart', next ? '1' : '0'); } catch {}
-  }, [showDebug]);
 
   const [stockMap, setStockMap] = useState<Map<string, number>>(new Map());
   const productIdsKey = useMemo(() => {
@@ -112,7 +102,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
     onChangeQty(sku, 0);
   }, [onChangeQty]);
 
-  const [freeShipThreshold] = useState<number>(0); 
+  const [freeShipThreshold] = useState<number>(0);
   const effectiveShipping = (freeShipThreshold > 0 && subtotal >= freeShipThreshold) ? 0 : shippingFee;
   const total = useMemo(() => Math.max(0, (cart.totals?.totalAfterDiscount ?? 0) + effectiveShipping), [cart.totals?.totalAfterDiscount, effectiveShipping]);
 
@@ -140,11 +130,11 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
     const t = setTimeout(() => setHighlightSku(null), 4000);
     return () => clearTimeout(t);
   }, [forceHighlightSku]);
-  
+
   const handleChangeAddress = useCallback(() => {
     openAddressModal();
   }, [openAddressModal]);
-  
+
   const handleAddressSaved = useCallback(async (payload: {
     fullName: string;
     phone: string;
@@ -169,7 +159,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
     } catch {
       // Silently handle error
     }
-    
+
     await refreshAddresses();
     closeAddressModal();
   }, [refreshAddresses, closeAddressModal]);
@@ -210,27 +200,6 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
 
   return (
     <>
-      {isDev && !showDebug && (
-        <button
-          type="button"
-          onClick={toggleDebug}
-          className="fixed z-40 bottom-4 right-4 rounded px-2.5 py-1.5 text-xs bg-black text-white shadow hover:bg-black/90"
-          aria-label="Toggle cart debug"
-        >
-          Debug Cart
-        </button>
-      )}
-      {isDev && showDebug && (
-        <div className="mb-3 rounded-lg border border-amber-300 bg-amber-50 text-amber-900 text-xs p-3 space-y-1">
-          <div className="flex items-center justify-between">
-            <strong>Cart Debug (client)</strong>
-            <button type="button" onClick={toggleDebug} className="text-[11px] underline">Hide</button>
-          </div>
-          <div>items: {items.length}</div>
-          <div>totals: {cart.totals ? JSON.stringify(cart.totals) : 'null'}</div>
-          <div>error: {cart.error ? String(cart.error) : 'null'}</div>
-        </div>
-      )}
       {totalsMissing && (
         <div className="mb-3 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm px-3 py-2" role="alert">
           Thiếu totals từ Backend: Vui lòng kiểm tra API /cart trả về totals.
@@ -341,7 +310,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
         continueLabel={CART_UI.continue}
         checkoutLabel={CART_UI.checkout}
       />
-      
+
       {/* Address Modal */}
       <AddressModal
         open={addressModalOpen}

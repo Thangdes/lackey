@@ -17,7 +17,7 @@ export const productService = {
     supplierId?: string | string[];
     offers?: string[];
     q?: string;
-    sort?: ProductSort; 
+    sort?: ProductSort;
     inStock?: boolean;
     minPrice?: number;
     maxPrice?: number;
@@ -32,26 +32,16 @@ export const productService = {
         case "rating":
           return "rating_desc";
         case "priceAsc":
-          return "price_asc"; 
+          return "price_asc";
         case "priceDesc":
-          return "price_desc"; 
+          return "price_desc";
         default:
           return undefined;
       }
     };
 
     const qp: string[] = [`page=${page}`, `limit=${limit}`];
-    
-    // Debug logging
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[PRODUCT_SERVICE] Filtering with params:', {
-        categoryIds: params?.categoryIds,
-        categorySlugs: params?.categorySlugs,
-        offers: params?.offers,
-        supplierIds: params?.supplierId
-      });
-    }
-    
+
     // Handle categorySlugs (array) - PRIORITY: Use slugs first
     const categorySlugs = params?.categorySlugs;
     if (Array.isArray(categorySlugs) && categorySlugs.length > 0) {
@@ -89,7 +79,7 @@ export const productService = {
     } else if (supplierId) {
       qp.push(`supplierId=${encodeURIComponent(supplierId)}`);
     }
-    
+
     // Add offers filter
     const offers = params?.offers;
     if (Array.isArray(offers)) {
@@ -98,21 +88,14 @@ export const productService = {
         qp.push(`offers[]=${encodeURIComponent(offer)}`);
       }
     }
-    
-    
+
+
     if (params?.q) qp.push(`q=${encodeURIComponent(params.q)}`);
     if (typeof params?.inStock === "boolean") qp.push(`inStock=${params.inStock ? "true" : "false"}`);
     if (typeof params?.minPrice === "number") qp.push(`minPrice=${params.minPrice}`);
     if (typeof params?.maxPrice === "number") qp.push(`maxPrice=${params.maxPrice}`);
     const beSort = mapSort(params?.sort);
     if (beSort) qp.push(`sort=${encodeURIComponent(beSort)}`);
-
-    const finalUrl = `${API.product.root}?${qp.join("&")}`;
-    
-    // Debug logging
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[PRODUCT_SERVICE] Final API URL:', finalUrl);
-    }
 
     return http
       .get<{
@@ -183,9 +166,9 @@ export const productService = {
     const form = new FormData();
     form.append("thumbnail", file);
     return api.post<Product>(API.product.thumbnail(id), form, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      })
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+    })
       .then((r) => r.data);
   },
 
@@ -193,16 +176,16 @@ export const productService = {
     const form = new FormData();
     files.forEach((f) => form.append("images", f));
     return api.post<Product>(API.product.images(id), form, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      })
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+    })
       .then((r) => r.data);
   },
 
   removeImage: (id: string, imageUrl: string) =>
     httpSuccess.patchData<Product>(API.product.deleteImage(id), { imageUrl }),
 
- 
+
   listVariants: (productId: string) => http.get<ProductVariant[]>(API.product.variants(productId)),
 
   addVariant: (
