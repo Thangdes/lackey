@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { Product, ProductVariant } from "@/type/product";
 import { useSmartCart, useAddToCart } from "@/hook/useCart";
 import { formatVND } from "@/utils/format";
-import { addRecentProduct  } from "@/utils/recent";
+import { addRecentProduct } from "@/utils/recent";
 import ProductSEO from "@/components/products/detail/ProductSEO";
 import ProductBreadcrumb from "@/components/products/detail/ProductBreadcrumb";
 import ProductMobileBar from "./detail/ProductMobileBar";
@@ -53,8 +53,8 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         v.discountPrice == null
           ? undefined
           : typeof v.discountPrice === "string"
-          ? Number(v.discountPrice)
-          : v.discountPrice,
+            ? Number(v.discountPrice)
+            : v.discountPrice,
     }));
   }, [p.variants]);
   const [activeImg, setActiveImg] = useState(0);
@@ -112,7 +112,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
       const msg = e instanceof Error ? e.message : "Không thể thêm vào giỏ hàng. Vui lòng thử lại.";
       if (/401|unauthorized/i.test(msg)) {
         showErrorToast({ title: "Cần đăng nhập", message: "Bạn cần đăng nhập để thêm vào giỏ." });
-        try { openAuth('signin'); } catch {}
+        try { openAuth('signin'); } catch { }
       } else {
         setToastMsg("Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
       }
@@ -128,23 +128,23 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
       const nav = navigator as Navigator & { share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>; clipboard?: { writeText?: (t: string) => Promise<void> } };
       const shareData = { title: p.name, text: p.name, url };
       if (nav.share) {
-        nav.share(shareData).catch(() => {});
+        nav.share(shareData).catch(() => { });
       } else if (nav.clipboard?.writeText && url) {
         nav.clipboard.writeText(url).then(() => {
           alert("Đã sao chép liên kết sản phẩm.");
-        }).catch(() => {});
+        }).catch(() => { });
       }
-    } catch {}
+    } catch { }
   };
 
   const currentSku = selectedVariant?.sku || selectedVariant?.id;
   const cartItem = useMemo(() => (cart.items || []).find((it) => it.sku === currentSku), [cart.items, currentSku]);
-  
+
   const [cartQty, setCartQty] = useState(0);
   useEffect(() => {
     setCartQty(cartItem?.quantity ?? 0);
   }, [cartItem?.quantity]);
-  
+
   const maxStock = typeof selectedVariant?.stockQuantity === "number" ? Math.max(0, selectedVariant.stockQuantity as number) : undefined;
 
   const handleDecrease = useCallback(() => {
@@ -170,7 +170,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
           const msg = e instanceof Error ? e.message : "Không thể thêm vào giỏ hàng. Vui lòng thử lại.";
           if (/401|unauthorized/i.test(msg)) {
             showErrorToast({ title: "Cần đăng nhập", message: "Bạn cần đăng nhập để thêm vào giỏ." });
-            try { openAuth('signin'); } catch {}
+            try { openAuth('signin'); } catch { }
           } else {
             setToastMsg("Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
           }
@@ -192,15 +192,15 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
     return gap === 1
       ? "gap-1"
       : gap === 3
-      ? "gap-3"
-      : "gap-2";
+        ? "gap-3"
+        : "gap-2";
   }, [thumbGap]);
 
   const thumbColsClass = useMemo(() => {
-    const base = (thumbCols?.base ?? 5) as 3|4|5|6|7|8|9|10|11|12;
-    const sm = (thumbCols?.sm ?? 6) as 3|4|5|6|7|8|9|10|11|12;
-    const md = (thumbCols?.md ?? 8) as 3|4|5|6|7|8|9|10|11|12;
-    const map: Record<3|4|5|6|7|8|9|10|11|12, string> = {
+    const base = (thumbCols?.base ?? 5) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    const sm = (thumbCols?.sm ?? 6) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    const md = (thumbCols?.md ?? 8) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    const map: Record<3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12, string> = {
       3: "grid-cols-3",
       4: "grid-cols-4",
       5: "grid-cols-5",
@@ -218,9 +218,9 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
   useEffect(() => {
     try {
       if (p && p.id) addRecentProduct(p);
-    } catch {}
+    } catch { }
   }, [p]);
-  
+
   useEffect(() => {
     let mounted = true;
     setRelatedLoading(true);
@@ -252,7 +252,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         const matched = byId || bySku || byName;
         if (matched) setSelectedVariantId(matched.id);
       }
-    } catch {}
+    } catch { }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -267,7 +267,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
   }, [selectedVariant?.id, selectedVariant?.sku, pathname, router, searchParams]);
 
   return (
-    <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 pb-24 sm:pb-28 md:pb-10">
+    <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pb-24 sm:pb-28 md:pb-10">
       <ProductToast message={toastMsg} />
       <ProductSEO product={p} images={images} selectedVariant={selectedVariant} price={price} compareAt={compareAt} isSale={isSale} discountPercent={discountPercent} />
       <ProductBreadcrumb product={p} />
@@ -337,7 +337,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         <ProductRelatedSection related={related} loading={false} categorySlug={p.category?.slug ?? null} />
       )}
 
-      <ProductCTASection />
+      {/* <ProductCTASection /> */}
 
       <ProductMobileBar
         price={price}

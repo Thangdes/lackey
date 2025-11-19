@@ -29,15 +29,16 @@ export default function ProductsFilterBar({
       <div className="hidden md:flex items-center gap-3">
         <span className="text-sm font-mono tracking-wider text-[#2d2d2d] uppercase">Filter:</span>
         <Select
-          value={sort ?? "priceAsc"}
+          defaultValue="priceAsc"
+          value={sort || "priceAsc"}
           onValueChange={(value) => onSortChange?.(value as ProductSort)}
         >
           <SelectTrigger className="w-[210px] border-2 border-[#2d2d2d] bg-[#f5f1e8] text-sm rounded-none">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="Sắp xếp" />
           </SelectTrigger>
           <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
-            <SelectItem value="priceAsc" className="text-sm">Price: Low to High</SelectItem>
-            <SelectItem value="priceDesc" className="text-sm">Price: High to Low</SelectItem>
+            <SelectItem value="priceAsc" className="text-sm">Giá: Tăng dần</SelectItem>
+            <SelectItem value="priceDesc" className="text-sm">Giá: Giảm dần</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
@@ -62,7 +63,7 @@ export default function ProductsFilterBar({
       <div className="hidden md:block text-sm font-mono text-[#2d2d2d]/70">
         {productCount} {productCount === 1 ? "product" : "products"}
       </div>
-      
+
       <div className="md:hidden text-sm font-mono text-[#2d2d2d]/70">
         {productCount} sản phẩm
       </div>
