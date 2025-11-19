@@ -21,16 +21,14 @@ export type ProductTabsProps = {
     address?: string | null;
     description?: string | null; // HTML content
   };
-  displayMode?: "tabs" | "stacked" | "auto"; // auto = stacked on mobile/tablet, tabs on desktop
+  displayMode?: "tabs" | "stacked" | "auto";
 };
 
 const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, ratingValue, ratingCount, variants, supplier, displayMode = "tabs" }) => {
   return (
     <div className="pt-2 md:pt-3">
       {displayMode === "auto" ? (
-        // Auto mode: Stacked on small screens, Tabs on lg+
         <>
-          {/* Tabs header visible on lg+ */}
           <div role="tablist" className="hidden lg:flex items-center gap-3 border-b">
             <button
               role="tab"
@@ -67,7 +65,6 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               </button>
             ) : null}
           </div>
-          {/* Tab panels for lg+ */}
           <div role="tabpanel" className="hidden lg:block pt-3">
             {tab === "desc" && (
               description ? (
@@ -136,7 +133,6 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               )
             )}
           </div>
-          {/* Stacked content for small screens */}
           <div className="lg:hidden space-y-7 md:space-y-8 pt-2.5">
             <section>
               <h3 className="text-base md:text-lg font-semibold text-[var(--color-cod-gray-900)] mb-2">Mô tả</h3>
@@ -397,6 +393,6 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
     </div>
   );
 }
-;
+  ;
 
 export default ProductTabs;
