@@ -26,11 +26,11 @@ import { PrismaModule } from 'src/prisma/prisma.module';
             },
           };
         }
-        const suffix = token.slice(-6);
+        const suffix = token.slice(-4);
         // Minimal log for troubleshooting
         // Using console.log instead of Nest logger because module factory runs before DI logger here
         // eslint-disable-next-line no-console
-        console.log(`Telegraf configured. token=***${suffix} webhook=${webhookUrl ? 'on' : 'off'}`);
+        console.log(`Telegraf configured. token=****${suffix} webhook=${webhookUrl ? 'on' : 'off'}`);
         return telegrafOptions;
       },
     }),
@@ -41,4 +41,4 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   providers: [TelegramService, TelegramUpdate],
   exports: [TelegramService],
 })
-export class TelegramModule {}
+export class TelegramModule { }

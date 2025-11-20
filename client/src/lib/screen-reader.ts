@@ -170,26 +170,28 @@ export function generateAccessibilityReport(): {
 }
 
 export function logAccessibilityReport(): void {
-  const report = generateAccessibilityReport();
+  if (process.env.NODE_ENV === 'development') {
+    const report = generateAccessibilityReport();
 
-  console.group('🔍 Accessibility Audit Report');
-  console.log(`Score: ${report.score}/100`);
-  console.log(`Errors: ${report.errors}`);
-  console.log(`Warnings: ${report.warnings}`);
-  console.log(`Info: ${report.infos}`);
+    console.group('🔍 Accessibility Audit Report');
+    console.log(`Score: ${report.score}/100`);
+    console.log(`Errors: ${report.errors}`);
+    console.log(`Warnings: ${report.warnings}`);
+    console.log(`Info: ${report.infos}`);
 
-  if (report.issues.length > 0) {
-    console.table(
-      report.issues.map((issue) => ({
-        Severity: issue.severity,
-        Element: issue.element,
-        Issue: issue.issue,
-        WCAG: issue.wcagCriterion || 'N/A',
-      }))
-    );
-  } else {
-    console.log('✅ No accessibility issues found!');
+    if (report.issues.length > 0) {
+      console.table(
+        report.issues.map((issue) => ({
+          Severity: issue.severity,
+          Element: issue.element,
+          Issue: issue.issue,
+          WCAG: issue.wcagCriterion || 'N/A',
+        }))
+      );
+    } else {
+      console.log('✅ No accessibility issues found!');
+    }
+
+    console.groupEnd();
   }
-
-  console.groupEnd();
 }

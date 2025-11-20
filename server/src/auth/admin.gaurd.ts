@@ -10,8 +10,6 @@ import { UserRole } from '@prisma/client';
 export class AdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log('Cookies:', request.cookies);
-    console.log('User in AdminGuard:', request.user);
 
     if (!request.user) {
       throw new ForbiddenException('User is not authenticated.');
