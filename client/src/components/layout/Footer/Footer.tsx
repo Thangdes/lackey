@@ -5,6 +5,7 @@ import Image from "next/image";
 import { SiFacebook, SiInstagram, SiTiktok, SiYoutube } from "react-icons/si";
 import { ROUTES } from "@/constant/route";
 import { showSuccessToast, showErrorToast } from "@/components/toast/AppToast";
+import { facebookHref, instagramHref } from "@/config/contact";
 
 const Footer = () => {
     const [email, setEmail] = useState("");
@@ -141,10 +142,10 @@ const Footer = () => {
                 <div className="mt-12 pt-8 relative">
                     <h3 className="text-lg font-bold mb-4 tracking-wide text-center md:text-left">KẾT NỐI</h3>
                     <div className="flex gap-4 justify-center md:justify-start">
-                        <Link href="#" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                        <Link href={facebookHref} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
                             <SiFacebook className="w-5 h-5" />
                         </Link>
-                        <Link href="#" aria-label="Instagram" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                        <Link href={instagramHref} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
                             <SiInstagram className="w-5 h-5" />
                         </Link>
                         <Link href="#" aria-label="YouTube" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
@@ -172,7 +173,7 @@ const Footer = () => {
                         ))}
                     </div>
                     <p className="mt-3 text-[11px] md:text-xs text-gray-400 max-w-2xl text-center md:text-left mx-auto md:mx-0">
-                        Website học tập phục vụ đồ án của trường. <br/> Dự án học tập, chưa thực hiện thông báo Bộ Công Thương.
+                        Website học tập phục vụ đồ án của trường. <br /> Dự án học tập, chưa thực hiện thông báo Bộ Công Thương.
                     </p>
                 </div>
             </div>

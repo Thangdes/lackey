@@ -30,7 +30,7 @@ export class CartController {
   constructor(
     private readonly cartService: CartService,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
   private async getCartIdentifier(
     userPayload: UserPayload | null,
@@ -43,7 +43,6 @@ export class CartController {
       });
       return { customerId: user?.customerId };
     }
-    console.log("guestCartId", req.cookies.guestCartId);
     if (!req.cookies.guestCartId) {
       return { guestCartId: undefined };
     }

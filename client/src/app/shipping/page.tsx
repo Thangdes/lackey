@@ -3,12 +3,10 @@ import Link from "next/link";
 import Script from "next/script";
 import { ROUTES } from "@/constant/route";
 import { SHIPPING_PAGE } from "@/constant/pages/shipping";
-import { Truck, Globe, Timer, PackageSearch, ArrowRight, Info } from "lucide-react";
-import { SectionList } from "@/components/shipping/SectionList";
 import { siteConfig } from "@/constant/site";
 
 export const metadata: Metadata = {
-  title: SHIPPING_PAGE.metadata.title,
+  title: `${SHIPPING_PAGE.title} | ${siteConfig.name}`,
   description: SHIPPING_PAGE.metadata.description,
   alternates: { canonical: `${siteConfig.url}/shipping` },
   robots: { index: true, follow: true },
@@ -16,13 +14,13 @@ export const metadata: Metadata = {
     type: "website",
     url: `${siteConfig.url}/shipping`,
     siteName: siteConfig.name,
-    title: SHIPPING_PAGE.metadata.title,
+    title: `${SHIPPING_PAGE.title} | ${siteConfig.name}`,
     description: SHIPPING_PAGE.metadata.description,
     images: siteConfig.logo ? [{ url: siteConfig.logo, alt: `${siteConfig.name} Logo` }] : undefined,
   },
   twitter: {
     card: "summary_large_image",
-    title: SHIPPING_PAGE.metadata.title,
+    title: `${SHIPPING_PAGE.title} | ${siteConfig.name}`,
     description: SHIPPING_PAGE.metadata.description,
     images: siteConfig.logo ? [siteConfig.logo] : undefined,
   },
@@ -30,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function ShippingPage() {
   return (
-    <main className=" px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
+    <main className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
       <Script id="ld-breadcrumb-shipping" type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -41,78 +39,66 @@ export default function ShippingPage() {
           ],
         })}
       </Script>
-      <Script id="ld-webpage-shipping" type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: SHIPPING_PAGE.metadata.title,
-          url: `${siteConfig.url}/shipping`,
-          description: SHIPPING_PAGE.metadata.description,
-        })}
-      </Script>
-      <header className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">{SHIPPING_PAGE.title}</h1>
-        <p className="mt-2 text-sm text-neutral-600 flex items-center gap-2">
-          <Info className="size-4 text-neutral-500" aria-hidden />
-          {SHIPPING_PAGE.metadata.description}
-        </p>
+      <nav aria-label="Breadcrumb" className="mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black">
+          <Link href={ROUTES.home} className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors">Trang chủ</Link>
+          <span className="text-black font-bold">/</span>
+          <span className="text-sm font-bold uppercase tracking-wide text-black">Vận chuyển</span>
+        </div>
+      </nav>
 
-        <nav aria-label="Mục lục vận chuyển" className="mt-4">
-          <ul className="flex flex-wrap items-center gap-2 text-sm">
-            <li><Link href="#scope" className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 py-1.5 hover:bg-neutral-50"><Globe className="size-4"/> Phạm vi</Link></li>
-            <li><Link href="#fee" className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 py-1.5 hover:bg-neutral-50"><Truck className="size-4"/> Phí</Link></li>
-            <li><Link href="#time" className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 py-1.5 hover:bg-neutral-50"><Timer className="size-4"/> Thời gian</Link></li>
-            <li><Link href="#tracking" className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 py-1.5 hover:bg-neutral-50"><PackageSearch className="size-4"/> Theo dõi</Link></li>
-          </ul>
-        </nav>
+      <header className="mb-10 bg-[#fff100] border-4 border-black p-8 md:p-10 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider uppercase text-black mb-3">{SHIPPING_PAGE.title}</h1>
+        <p className="text-black font-medium text-lg">{SHIPPING_PAGE.metadata.description}</p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <section id="scope" className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600"><Globe className="size-5" aria-hidden/></div>
-            <h2 className="text-lg font-semibold">{SHIPPING_PAGE.sections.scope.title}</h2>
-          </div>
-          <p className="mt-3 text-neutral-700 leading-relaxed">{SHIPPING_PAGE.sections.scope.body}</p>
-        </section>
+      <section id="scope" className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{SHIPPING_PAGE.sections.scope.title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">{SHIPPING_PAGE.sections.scope.body}</p>
+        </div>
+      </section>
 
-        <section id="tracking" className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-sky-50 p-2 text-sky-600"><PackageSearch className="size-5" aria-hidden/></div>
-            <h2 className="text-lg font-semibold">{SHIPPING_PAGE.sections.tracking.title}</h2>
-          </div>
-          <p className="mt-3 text-neutral-700 leading-relaxed">{SHIPPING_PAGE.sections.tracking.body}</p>
-        </section>
+      <section id="tracking" className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{SHIPPING_PAGE.sections.tracking.title}</h2>
+        <div className="p-4 bg-neutral-50 border-2 border-neutral-300">
+          <p className="font-medium text-neutral-800">{SHIPPING_PAGE.sections.tracking.body}</p>
+        </div>
+      </section>
 
-        <section id="fee" className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm md:col-span-2">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-amber-50 p-2 text-amber-700"><Truck className="size-5" aria-hidden/></div>
-            <h2 className="text-lg font-semibold">{SHIPPING_PAGE.sections.fee.title}</h2>
-          </div>
-          <SectionList items={SHIPPING_PAGE.sections.fee.items} bulletClass="bg-amber-500" />
-        </section>
+      <section id="fee" className="mb-6 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{SHIPPING_PAGE.sections.fee.title}</h2>
+        <ul className="space-y-3">
+          {SHIPPING_PAGE.sections.fee.items.map((item) => (
+            <li key={item} className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-        <section id="time" className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm md:col-span-2">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-indigo-50 p-2 text-indigo-600"><Timer className="size-5" aria-hidden/></div>
-            <h2 className="text-lg font-semibold">{SHIPPING_PAGE.sections.time.title}</h2>
+      <section id="time" className="mb-8 bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 pb-3 border-b-4 border-black">{SHIPPING_PAGE.sections.time.title}</h2>
+        <ul className="space-y-3 mb-4">
+          {SHIPPING_PAGE.sections.time.items.map((item) => (
+            <li key={item} className="flex items-start gap-3 p-3 bg-neutral-50 border-2 border-neutral-300">
+              <span className="text-xl shrink-0">•</span>
+              <span className="font-medium text-neutral-800">{item}</span>
+            </li>
+          ))}
+        </ul>
+        {SHIPPING_PAGE.sections.time.note && (
+          <div className="p-3 bg-neutral-100 border-2 border-neutral-400">
+            <p className="text-sm font-medium text-neutral-700">ℹ️ {SHIPPING_PAGE.sections.time.note}</p>
           </div>
-          <SectionList items={SHIPPING_PAGE.sections.time.items} bulletClass="bg-indigo-500" />
-          <p className="mt-3 text-sm text-neutral-500">{SHIPPING_PAGE.sections.time.note}</p>
-        </section>
-      </div>
+        )}
+      </section>
 
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Link href={ROUTES.products} className="inline-flex items-center gap-2 rounded-full bg-black px-4 py-2 text-white hover:bg-black/90">
-          {SHIPPING_PAGE.links.products}
-          <ArrowRight className="size-4" aria-hidden />
-        </Link>
-        <Link href={ROUTES.return} className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-4 py-2 text-neutral-800 hover:bg-neutral-50">
-          {SHIPPING_PAGE.links.return}
-        </Link>
-        <Link href={ROUTES.help} className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-4 py-2 text-neutral-800 hover:bg-neutral-50">
-          {SHIPPING_PAGE.links.help}
-        </Link>
+      <div className="flex flex-wrap gap-3">
+        <Link href={ROUTES.return} className="px-6 py-3 bg-white text-black border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{SHIPPING_PAGE.links.return}</Link>
+        <Link href={ROUTES.help} className="px-6 py-3 bg-white text-black border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{SHIPPING_PAGE.links.help}</Link>
+        <Link href={ROUTES.products} className="px-6 py-3 bg-black text-white border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1">{SHIPPING_PAGE.links.products} →</Link>
       </div>
     </main>
   );
