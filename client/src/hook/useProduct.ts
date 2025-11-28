@@ -105,7 +105,7 @@ export function useDeleteProduct() {
   });
 }
 
-export function useBestSellers(limit = 10, categoryId?: string) {
+export function useBestSellers(limit = 12, categoryId?: string) {
   return useQuery({
     queryKey: ["products", "best-sellers", limit, categoryId],
     queryFn: () => productService.bestSellers({ page: 1, limit, categoryId }),

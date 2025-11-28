@@ -16,7 +16,7 @@ const setAuthFlag = (v: boolean) => {
   try {
     if (v) globalThis.localStorage?.setItem(AUTH_FLAG_KEY, "1");
     else globalThis.localStorage?.removeItem(AUTH_FLAG_KEY);
-  } catch {}
+  } catch { }
 };
 
 if (!isServer) {
@@ -33,7 +33,7 @@ if (!isServer) {
     globalThis.addEventListener("auth:logout", () => setAuthFlag(false));
     globalThis.addEventListener("auth:refresh-success", () => setAuthFlag(true));
     globalThis.addEventListener("auth:refresh-failed", () => setAuthFlag(false));
-  } catch {}
+  } catch { }
 }
 
 export const isLikelyAuthenticated = () => getAuthFlag();
@@ -68,7 +68,7 @@ const SSR_BASE = (process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "") || "htt
 const ensureTrailingSlash = (v: string) => (v.endsWith('/') ? v : `${v}/`);
 export const API_BASE = ensureTrailingSlash(isServer ? `${SSR_BASE}${API_PREFIX}` : PUBLIC_BASE);
 
-  
+
 export const api = axios.create({
   baseURL: API_BASE,
   withCredentials: true,
@@ -94,6 +94,13 @@ api.interceptors.response.use(
     if (status !== 401) return Promise.reject(error);
 
     const url = String(originalRequest?.url || "");
+
+    // Allow POST to cart endpoints for guest users
+    if ((url.startsWith("/cart") || url.includes("/cart/")) && method === 'POST') {
+      // Backend handles guest cart - don't reject
+      return Promise.resolve(response);
+    }
+
     if (
       url.startsWith("/cart") || url.includes("/cart/") ||
       url.startsWith("/products") || url.includes("/products/") ||
@@ -102,7 +109,7 @@ api.interceptors.response.use(
       url.includes('/auth/profile') || url.includes('/auth/me')
     ) {
       if (typeof window !== "undefined") {
-        try { window.dispatchEvent(new CustomEvent("cart:unauthorized")); } catch {}
+        try { window.dispatchEvent(new CustomEvent("cart:unauthorized")); } catch { }
       }
       return Promise.reject(error);
     }
@@ -136,12 +143,12 @@ api.interceptors.response.use(
               withCredentials: true,
               headers: cookieHeader
                 ? {
-                    Cookie: cookieHeader,
-                  }
+                  Cookie: cookieHeader,
+                }
                 : undefined,
             },
           )
-          .then(() => {})
+          .then(() => { })
           .finally(() => {
             isRefreshing = false;
           });
