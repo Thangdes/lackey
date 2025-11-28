@@ -56,8 +56,8 @@ export default function Home() {
     <div>
       <BannerLoader />
       <PromoStripLoader />
-      
-      <RetroValueProps 
+
+      <RetroValueProps
         title="VÌ SAO CHỌN LẮC KEY?"
         subtitle="Móc khóa chất lượng cao - Thiết kế độc đáo - Giao hàng nhanh"
         items={[
@@ -69,14 +69,14 @@ export default function Home() {
             ctaLabel: "Đặt custom ngay",
           },
           {
-            icon: "⚡",
+            icon: "🎁",
             title: "GIAO HÀNG SIÊU TỐC",
             description: "Giao hàng toàn quốc 1-3 ngày. Đóng gói cẩn thận, an toàn tuyệt đối.",
             ctaHref: "/shipping",
             ctaLabel: "Xem chi tiết",
           },
           {
-            icon: "💯",
+            icon: "⭐",
             title: "CHẤT LƯỢNG CAO CẤP",
             description: "Acrylic trong suốt, bền đẹp. In offset chất lượng cao, không phai màu theo thời gian.",
             ctaHref: "/about",
@@ -91,16 +91,16 @@ export default function Home() {
           },
         ]}
       />
-      
+
       <BestSellers />
-      
+
       <CustomKeychainCTA />
-      
+
       <MarqueeBanner />
-            
+
       <TopCollections />
       <RetroSaleBanner />
-    
+
       <ClientOnly>
         <CategoriesGrid
           title="Danh mục nổi bật"
@@ -110,14 +110,14 @@ export default function Home() {
           showDescription
         />
       </ClientOnly>
-      
+
       <TestimonialsLoader />
-      
-      <RetroFAQ 
+
+      <RetroFAQ
         title="CÂU HỎI THƯỜNG GẶP"
         subtitle="Giải đáp mọi thắc mắc của bạn về móc khóa LắcKey"
       />
-      
+
     </div>
   )
 }

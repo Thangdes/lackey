@@ -13,6 +13,7 @@ import AuthModal from "@/components/auth/AuthModal";
 import CartBootstrap from "@/components/providers/CartBootstrap";
 import TopProgress from "@/components/progress/TopProgress";
 import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
+import ChristmasSnow from "@/components/seasonal/ChristmasSnow";
 import SkipToContent from "@/components/common/SkipToContent";
 import AccessibilityPanel from "@/components/dev/AccessibilityPanel";
 import { Suspense } from "react";
@@ -75,6 +76,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <TopProgress />
         </Suspense>
+        <ChristmasSnow />
         <QueryProvider>
           <AuthProvider>
             <TooltipProvider>
@@ -85,7 +87,7 @@ export default function RootLayout({
               <AuthModal />
               <ChristmasPopup />
               <CartBootstrap />
-              <Toaster richColors position="top-right" duration={3000}/>
+              <Toaster richColors position="top-right" duration={3000} />
               <AccessibilityPanel />
             </TooltipProvider>
           </AuthProvider>
