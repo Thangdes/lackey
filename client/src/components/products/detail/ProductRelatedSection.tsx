@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import SectionHeader from "@/components/common/SectionHeader";
 import ProductCard from "@/components/common/ProductCard";
-import { productGridClass } from "@/components/common/grid";
 import { ROUTES } from "@/constant/route";
 import { buildProductsByCategory } from "@/constant/route";
 import type { Product } from "@/type/product";
@@ -35,8 +34,8 @@ const ProductRelatedSection: React.FC<ProductRelatedSectionProps> = ({ related, 
           Sản phẩm liên quan
         </h2>
       </div>
-      
-      <div className={productGridClass}>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {related.map((prod, i) => (
           <ProductCard
             key={prod.id || `${prod.slug}-${i}`}
@@ -48,11 +47,11 @@ const ProductRelatedSection: React.FC<ProductRelatedSectionProps> = ({ related, 
           />
         ))}
       </div>
-      
+
       {categorySlug && (
         <div className="mt-8 text-center">
-          <Link 
-            href={buildProductsByCategory(categorySlug)} 
+          <Link
+            href={buildProductsByCategory(categorySlug)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
           >
             Xem tất cả →
