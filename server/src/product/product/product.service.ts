@@ -454,7 +454,7 @@ export class ProductService {
         include: {
           category: { select: { name: true } },
           supplier: { select: { name: true } },
-          variants: { select: { price: true, discountPrice: true } },
+          variants: { select: { price: true, discountPrice: true, stockQuantity: true } },
           _count: { select: { variants: true } },
         },
         orderBy: [
