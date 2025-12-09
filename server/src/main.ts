@@ -1,41 +1,30 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as passport from 'passport';
-import { Request, Response, NextFunction } from 'express';
-
-class CustomLogger extends ConsoleLogger {
-  log(message: string, context?: string) {
-    super.log(`[LOG] ${message}`, context || 'App');
-  }
-
-  error(message: string, trace?: string, context?: string) {
-    super.error(`[ERROR] ${message}`, trace, context || 'App');
-  }
-
-  warn(message: string, context?: string) {
-    super.warn(`[WARN] ${message}`, context || 'App');
-  }
-
-  debug(message: string, context?: string) {
-    super.debug(`[DEBUG] ${message}`, context || 'App');
-  }
-
-  verbose(message: string, context?: string) {
-    super.verbose(`[VERBOSE] ${message}`, context || 'App');
-  }
-}
+import { LoggerService } from './infrastructure/common/logger/logger.service';
+import { HttpLoggingInterceptor } from './infrastructure/common/interceptors/http-logging.interceptor';
+import { TransformInterceptor } from './infrastructure/common/interceptors/transform.interceptor';
+import { TimeoutInterceptor } from './infrastructure/common/interceptors/timeout.interceptor';
+import { HttpExceptionFilter } from './infrastructure/common/filters/http-exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const logger = new CustomLogger();
-
+  // Create app with logger
   const app = await NestFactory.create(AppModule, {
-    logger, // dùng custom logger
+    bufferLogs: true,
   });
 
+  // Get logger service from DI container
+  const logger = app.get(LoggerService);
+  logger.setContext('Bootstrap');
+  app.useLogger(logger);
+
+  // Global prefix
   app.setGlobalPrefix('api/v1');
 
+  // CORS configuration
   app.enableCors({
     origin: [
       'http://localhost',
@@ -51,8 +40,8 @@ async function bootstrap() {
       'http://client:3000',
       'http://client',
       'http://client:80',
-      '*'
-    ],
+      process.env.NODE_ENV === 'development' ? '*' : '',
+    ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: [
       'Content-Type',
@@ -63,19 +52,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Middleware log HTTP
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    const start = Date.now();
-    res.on('finish', () => {
-      const duration = Date.now() - start;
-      logger.log(
-        `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`,
-        'HTTP',
-      );
-    });
-    next();
-  });
-
+  // Global pipes for validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -84,12 +61,43 @@ async function bootstrap() {
     }),
   );
 
+  // Global interceptors
+  app.useGlobalInterceptors(
+    new HttpLoggingInterceptor(logger),
+    new TransformInterceptor(),
+    new TimeoutInterceptor(30000), // 30 seconds timeout
+  );
+
+  // Global exception filter
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
+
+  // Middleware
   app.use(cookieParser());
   app.use(passport.initialize());
 
-  const port = 8000;
+  // Swagger documentation
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('CVF API')
+      .setDescription('CVF E-commerce API Documentation')
+      .setVersion('1.0')
+      .addTag('cvf')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+
+    logger.log('Swagger documentation available at /api/docs', 'Bootstrap');
+  }
+
+  // Start server
+  const port = process.env.PORT || 8000;
   await app.listen(port, '0.0.0.0');
+
   logger.log(`🚀 Server running on http://localhost:${port}`, 'Bootstrap');
+  logger.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`, 'Bootstrap');
+  logger.log(`🌐 API Base URL: http://localhost:${port}/api/v1`, 'Bootstrap');
 }
 
 bootstrap();
