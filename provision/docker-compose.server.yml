@@ -1,0 +1,39 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: cvf-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - cvf_mongo_data:/data/db
+    env_file:
+      - .env.docker
+
+  redis:
+    image: redis:6-alpine
+    container_name: cvf-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - cvf_redis_data:/data
+
+  app:
+    container_name: cvf-app
+    build:
+      context: ../cvf-server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+      - .env
+    depends_on:
+      - mongo
+      - redis
+
+volumes:
+  cvf_mongo_data:
+  cvf_redis_data:
