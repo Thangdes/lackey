@@ -1,0 +1,114 @@
+[
+  {
+    "id": "cat-keycap",
+    "name": "Keycap",
+    "slug": "keycap",
+    "description": "Keycap PBT, ABS, Artisan handmade - Đa dạng profile và màu sắc",
+    "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&h=400&fit=crop",
+    "productCount": 45
+  },
+  {
+    "id": "cat-switch",
+    "name": "Switch",
+    "slug": "switch",
+    "description": "Switch Linear, Tactile, Clicky - Gateron, Cherry MX, Akko",
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop",
+    "productCount": 38
+  },
+  {
+    "id": "cat-keyboard",
+    "name": "Bàn Phím",
+    "slug": "keyboard",
+    "description": "Bàn phím cơ build sẵn - 60%, 65%, 75%, TKL, Full size",
+    "image": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop",
+    "productCount": 28
+  },
+  {
+    "id": "cat-kit",
+    "name": "Kit Barebone",
+    "slug": "kit-barebone",
+    "description": "Kit bàn phím nhôm CNC, nhựa PC - Hotswap, Gasket mount",
+    "image": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=400&h=400&fit=crop",
+    "productCount": 22
+  },
+  {
+    "id": "cat-cable",
+    "name": "Dây Cáp",
+    "slug": "cable",
+    "description": "Dây cáp custom coiled - USB-C, Aviator connector",
+    "image": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400&h=400&fit=crop",
+    "productCount": 18
+  },
+  {
+    "id": "cat-accessories",
+    "name": "Phụ Kiện",
+    "slug": "accessories",
+    "description": "Kê tay, foam mod, lube kit, sticker - Hoàn thiện setup",
+    "image": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=400&h=400&fit=crop",
+    "productCount": 32
+  },
+  {
+    "id": "brand-gateron",
+    "name": "Gateron",
+    "slug": "gateron",
+    "description": "Switch Gateron - Yellow, Red, Brown, Blue - Giá tốt, chất lượng cao",
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop",
+    "productCount": 15
+  },
+  {
+    "id": "brand-cherry",
+    "name": "Cherry MX",
+    "slug": "cherry-mx",
+    "description": "Switch Cherry MX chính hãng - Chuẩn mực của bàn phím cơ",
+    "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&h=400&fit=crop",
+    "productCount": 12
+  },
+  {
+    "id": "brand-akko",
+    "name": "Akko",
+    "slug": "akko",
+    "description": "Bàn phím & Switch Akko - Thiết kế đẹp, giá phải chăng",
+    "image": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop",
+    "productCount": 20
+  },
+  {
+    "id": "brand-keychron",
+    "name": "Keychron",
+    "slug": "keychron",
+    "description": "Bàn phím Keychron - Wireless, hotswap, đa nền tảng",
+    "image": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=400&h=400&fit=crop",
+    "productCount": 18
+  },
+  {
+    "id": "brand-gmk",
+    "name": "GMK Keycap",
+    "slug": "gmk-keycap",
+    "description": "Keycap GMK & Clone - Double-shot ABS cao cấp",
+    "image": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400&h=400&fit=crop",
+    "productCount": 14
+  },
+  {
+    "id": "theme-anime",
+    "name": "Anime Theme",
+    "slug": "anime-theme",
+    "description": "Keycap & Artisan anime - Nezuko, Naruto, One Piece, Genshin",
+    "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&h=400&fit=crop",
+    "productCount": 25
+  },
+  {
+    "id": "theme-kpop",
+    "name": "Kpop Theme",
+    "slug": "kpop-theme",
+    "description": "Keycap & Artisan Kpop - BTS, Blackpink, NewJeans, Seventeen",
+    "image": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=400&h=400&fit=crop",
+    "productCount": 18
+  },
+  {
+    "id": "theme-minimal",
+    "name": "Minimal Theme",
+    "slug": "minimal-theme",
+    "description": "Keycap & Keyboard tối giản - Đen trắng, pastel, monochrome",
+    "image": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop",
+    "productCount": 22
+  }
+]

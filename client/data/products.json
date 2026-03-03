@@ -1,0 +1,422 @@
+[
+  {
+    "id": "KB001",
+    "name": "Keycap Artisan Anime Nezuko",
+    "slug": "keycap-artisan-anime-nezuko",
+    "description": "Keycap artisan resin handmade hình Nezuko Kamado từ Demon Slayer. Độ chi tiết cao, màu sắc sống động. Tương thích Cherry MX.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB001",
+        "name": "1 keycap",
+        "sku": "SKU-KB001",
+        "price": 350000,
+        "stockQuantity": 45
+      }
+    ],
+    "ratingAvg": 4.9,
+    "ratingCount": 127,
+    "buyCount": 340
+  },
+  {
+    "id": "KB002",
+    "name": "Set Keycap PBT Pastel Rainbow",
+    "slug": "set-keycap-pbt-pastel-rainbow",
+    "description": "Bộ keycap PBT 108 phím màu pastel cầu vồng. Công nghệ dye-sub không phai màu. Profile Cherry, tương thích 60%-100%.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB002",
+        "name": "108 phím",
+        "sku": "SKU-KB002",
+        "price": 580000,
+        "stockQuantity": 68
+      }
+    ],
+    "ratingAvg": 4.7,
+    "ratingCount": 89,
+    "buyCount": 256
+  },
+  {
+    "id": "KB003",
+    "name": "Gateron Yellow Switch (10 cái)",
+    "slug": "gateron-yellow-switch-10-cai",
+    "description": "Switch linear êm ái, phổ biến nhất cho gaming và typing. Lực nhấn 50g, hành trình 4mm. Âm thanh thấp, gõ mượt.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB003",
+        "name": "10 switch",
+        "sku": "SKU-KB003",
+        "price": 50000,
+        "stockQuantity": 200
+      }
+    ],
+    "ratingAvg": 4.8,
+    "ratingCount": 312,
+    "buyCount": 890
+  },
+  {
+    "id": "KB004",
+    "name": "Dây Cáp Custom Coiled - Pastel Pink",
+    "slug": "day-cap-custom-coiled-pastel-pink",
+    "description": "Dây cáp USB-C to USB-A cuộn xoắn thủ công. Dài 1.5m, màu hồng pastel. Aviator connector sang trọng.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB004",
+        "name": "1.5m",
+        "sku": "SKU-KB004",
+        "price": 420000,
+        "stockQuantity": 32
+      }
+    ],
+    "ratingAvg": 4.6,
+    "ratingCount": 54,
+    "buyCount": 145
+  },
+  {
+    "id": "KB005",
+    "name": "Kit Bàn Phím Lucky65 - Nhôm CNC",
+    "slug": "kit-ban-phim-lucky65-nhom-cnc",
+    "description": "Kit barebone 65% nhôm nguyên khối CNC. Hotswap PCB, gasket mount, RGB underglow. Màu xám titan cao cấp.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB005",
+        "name": "Kit (chưa switch/keycap)",
+        "sku": "SKU-KB005",
+        "price": 2850000,
+        "stockQuantity": 15
+      }
+    ],
+    "ratingAvg": 4.9,
+    "ratingCount": 43,
+    "buyCount": 78
+  },
+  {
+    "id": "KB006",
+    "name": "Keycap Artisan Kpop Blackpink",
+    "slug": "keycap-artisan-kpop-blackpink",
+    "description": "Keycap resin handmade logo Blackpink với hiệu ứng holographic. Độ sắc nét cao, phủ UV bảo vệ.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB006",
+        "name": "1 keycap",
+        "sku": "SKU-KB006",
+        "price": 380000,
+        "stockQuantity": 28
+      }
+    ],
+    "ratingAvg": 5,
+    "ratingCount": 96,
+    "buyCount": 234
+  },
+  {
+    "id": "KB007",
+    "name": "Akko CS Jelly Switch - Tactile (45 cái)",
+    "slug": "akko-cs-jelly-switch-tactile-45-cai",
+    "description": "Switch tactile trong suốt độc đáo. Bump rõ ràng, âm thanh poppy. Lực nhấn 55g, tuyệt vời cho typing.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB007",
+        "name": "45 switch",
+        "sku": "SKU-KB007",
+        "price": 270000,
+        "stockQuantity": 120
+      }
+    ],
+    "ratingAvg": 4.7,
+    "ratingCount": 178,
+    "buyCount": 456
+  },
+  {
+    "id": "KB008",
+    "name": "Bàn Phím Build Sẵn - Pastel Dream 75%",
+    "slug": "ban-phim-build-san-pastel-dream-75",
+    "description": "Bàn phím 75% build hoàn chỉnh. Gateron Yellow lubed, keycap PBT pastel, case nhựa ABS. Âm thanh thocky.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB008",
+        "name": "Bàn phím hoàn chỉnh",
+        "sku": "SKU-KB008",
+        "price": 1680000,
+        "stockQuantity": 22
+      }
+    ],
+    "ratingAvg": 4.8,
+    "ratingCount": 67,
+    "buyCount": 189
+  },
+  {
+    "id": "KB009",
+    "name": "Kê Tay Gỗ Walnut - Ergonomic",
+    "slug": "ke-tay-go-walnut-ergonomic",
+    "description": "Kê tay bàn phím gỗ óc chó tự nhiên. Thiết kế ergonomic, bề mặt nhám chống trượt. Kích thước 36x8cm.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB009",
+        "name": "36x8cm",
+        "sku": "SKU-KB009",
+        "price": 320000,
+        "stockQuantity": 48
+      }
+    ],
+    "ratingAvg": 4.6,
+    "ratingCount": 92,
+    "buyCount": 267
+  },
+  {
+    "id": "KB010",
+    "name": "Foam Mod Kit - Chống Ồn",
+    "slug": "foam-mod-kit-chong-on",
+    "description": "Bộ foam EVA chống ồn cho bàn phím. Gồm case foam, plate foam, PCB foam. Giảm tiếng kêu, tăng âm thocky.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB010",
+        "name": "1 bộ (3 miếng)",
+        "sku": "SKU-KB010",
+        "price": 180000,
+        "stockQuantity": 85
+      }
+    ],
+    "ratingAvg": 4.5,
+    "ratingCount": 134,
+    "buyCount": 378
+  },
+  {
+    "id": "KB011",
+    "name": "Set Keycap GMK Clone - Olivia",
+    "slug": "set-keycap-gmk-clone-olivia",
+    "description": "Bộ keycap PBT double-shot clone GMK Olivia. Màu hồng pastel sang trọng. Profile Cherry, 139 phím.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB011",
+        "name": "139 phím",
+        "sku": "SKU-KB011",
+        "price": 720000,
+        "stockQuantity": 34
+      }
+    ],
+    "ratingAvg": 4.9,
+    "ratingCount": 156,
+    "buyCount": 423
+  },
+  {
+    "id": "KB012",
+    "name": "Keycap Spacebar Artisan - Dragon",
+    "slug": "keycap-spacebar-artisan-dragon",
+    "description": "Keycap spacebar 6.25u resin rồng 3D. Hiệu ứng trong suốt với glitter vàng. Handmade cao cấp.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB012",
+        "name": "1 spacebar",
+        "sku": "SKU-KB012",
+        "price": 450000,
+        "stockQuantity": 19
+      }
+    ],
+    "ratingAvg": 5,
+    "ratingCount": 78,
+    "buyCount": 167
+  },
+  {
+    "id": "KB013",
+    "name": "Cherry MX Red Switch (10 cái)",
+    "slug": "cherry-mx-red-switch-10-cai",
+    "description": "Switch linear chính hãng Cherry MX. Lực nhấn 45g, độ bền 100 triệu lần nhấn. Chuẩn mực cho gaming.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB013",
+        "name": "10 switch",
+        "sku": "SKU-KB013",
+        "price": 120000,
+        "stockQuantity": 156
+      }
+    ],
+    "ratingAvg": 4.8,
+    "ratingCount": 245,
+    "buyCount": 678
+  },
+  {
+    "id": "KB014",
+    "name": "Sticker Decor Setup - Anime Mix",
+    "slug": "sticker-decor-setup-anime-mix",
+    "description": "Bộ 50 sticker anime mix để decor góc setup. Chống nước, không phai màu. Nhiều nhân vật hot.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB014",
+        "name": "50 sticker",
+        "sku": "SKU-KB014",
+        "price": 85000,
+        "stockQuantity": 240
+      }
+    ],
+    "ratingAvg": 4.4,
+    "ratingCount": 189,
+    "buyCount": 567
+  },
+  {
+    "id": "KB015",
+    "name": "Combo Full Set - Starter Pack",
+    "slug": "combo-full-set-starter-pack",
+    "description": "Combo bàn phím 60% hoàn chỉnh cho người mới. Gồm: Kit nhựa + Gateron Yellow + Keycap PBT basic. Giá siêu hời!",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB015",
+        "name": "Combo đầy đủ",
+        "sku": "SKU-KB015",
+        "price": 1280000,
+        "stockQuantity": 38
+      }
+    ],
+    "ratingAvg": 4.7,
+    "ratingCount": 203,
+    "buyCount": 512
+  },
+  {
+    "id": "KB016",
+    "name": "Keycap Artisan Mèo Meme",
+    "slug": "keycap-artisan-meo-meme",
+    "description": "Keycap resin hình mèo meme viral. Biểu cảm hài hước, màu sắc đa dạng. Độ chi tiết cao, handmade.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB016",
+        "name": "1 keycap",
+        "sku": "SKU-KB016",
+        "price": 320000,
+        "stockQuantity": 67
+      }
+    ],
+    "ratingAvg": 4.9,
+    "ratingCount": 287,
+    "buyCount": 789
+  },
+  {
+    "id": "KB017",
+    "name": "Bộ Lube Kit - Switch Mod",
+    "slug": "bo-lube-kit-switch-mod",
+    "description": "Bộ dụng cụ lube switch chuyên nghiệp. Gồm: Krytox 205g0, brush, switch opener, stem holder. Đủ cho 100 switch.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB017",
+        "name": "1 bộ",
+        "sku": "SKU-KB017",
+        "price": 380000,
+        "stockQuantity": 52
+      }
+    ],
+    "ratingAvg": 4.8,
+    "ratingCount": 124,
+    "buyCount": 345
+  },
+  {
+    "id": "KB018",
+    "name": "Set Keycap Retro 8-bit",
+    "slug": "set-keycap-retro-8-bit",
+    "description": "Bộ keycap PBT theme retro gaming 8-bit. Màu sắc pixel art độc đáo. Profile XDA, 104 phím.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB018",
+        "name": "104 phím",
+        "sku": "SKU-KB018",
+        "price": 650000,
+        "stockQuantity": 41
+      }
+    ],
+    "ratingAvg": 4.6,
+    "ratingCount": 98,
+    "buyCount": 278
+  },
+  {
+    "id": "KB019",
+    "name": "Keycap Enter Artisan - BTS Logo",
+    "slug": "keycap-enter-artisan-bts-logo",
+    "description": "Keycap Enter 2.25u resin logo BTS. Hiệu ứng holographic tím. Handmade cho fan Kpop.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB019",
+        "name": "1 keycap",
+        "sku": "SKU-KB019",
+        "price": 360000,
+        "stockQuantity": 33
+      }
+    ],
+    "ratingAvg": 5,
+    "ratingCount": 142,
+    "buyCount": 398
+  },
+  {
+    "id": "KB020",
+    "name": "Bàn Phím TKL Build Sẵn - Pro Gaming",
+    "slug": "ban-phim-tkl-build-san-pro-gaming",
+    "description": "Bàn phím TKL (80%) build sẵn cho gaming. Cherry MX Red, keycap PBT đen, case nhôm. RGB per-key.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB020",
+        "name": "Bàn phím hoàn chỉnh",
+        "sku": "SKU-KB020",
+        "price": 2350000,
+        "stockQuantity": 18
+      }
+    ],
+    "ratingAvg": 4.9,
+    "ratingCount": 87,
+    "buyCount": 234
+  },
+  {
+    "id": "KB021",
+    "name": "Bàn phím cơ E-Dra không dây EK368L Beta",
+    "slug": "ban-phim-co-e-dra-khong-day-ek368l-beta",
+    "description": "Bàn phím cơ E-Dra EK368L Beta 68 phím với kết nối không dây 2.4G + Bluetooth 5.0. Switch Huano bền bỉ 50 triệu lần nhấn, keycap ABS DoubleShot in rõ nét. Layout mini-size tiết kiệm không gian, thời gian sử dụng lên đến 6 tháng. Tương thích đa nền tảng Windows và MacOS.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB021-yellow",
+        "name": "Yellow Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-YELLOW",
+        "price": 499000,
+        "stockQuantity": 35
+      },
+      {
+        "id": "v-KB021-blue",
+        "name": "Blue Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-BLUE",
+        "price": 499000,
+        "stockQuantity": 42
+      },
+      {
+        "id": "v-KB021-red",
+        "name": "Red Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-RED",
+        "price": 499000,
+        "stockQuantity": 38
+      },
+      {
+        "id": "v-KB021-brown",
+        "name": "Brown Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-BROWN",
+        "price": 499000,
+        "stockQuantity": 40
+      }
+    ],
+    "ratingAvg": 4,
+    "ratingCount": 1,
+    "buyCount": 0
+  }
+]
