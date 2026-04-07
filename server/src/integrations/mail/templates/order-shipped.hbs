@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
+        <h2>Chào {{fullName}},</h2>
+        <p>Đơn hàng <strong>#{{orderCode}}</strong> của bạn tại Hạt Trường Xuân Ltd đã được bàn giao cho đơn vị vận chuyển.</p>
+        <p>Mã vận đơn của bạn là: <strong>{{deliveryCode}}</strong></p>
+        <p>Bạn có thể theo dõi hành trình đơn hàng của mình bằng cách nhấn vào nút bên dưới:</p>
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{trackingUrl}}" style="background-color: #d35400; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Theo Dõi Đơn Hàng
+            </a>
+        </div>
+        <p>Hoặc truy cập link: <a href="{{trackingUrl}}">{{trackingUrl}}</a></p>
+        <p>Cảm ơn bạn đã mua sắm tại Hạt Trường Xuân Ltd!</p>
+    </div>
+</body>
+</html>
