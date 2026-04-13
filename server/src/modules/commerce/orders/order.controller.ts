@@ -1,0 +1,220 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Req,
+  applyDecorators,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
+import { OrderService } from './order.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderStatusDto } from './dto/update-order.dto';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
+import { AdminGuard } from '@/modules/auth/admin.gaurd';
+import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { ShippingService } from '@/modules/commerce/shipping/shipping.service';
+import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { UpdateDeliveryCodeDto } from './dto/update-delivery-code.dto';
+import { OrderStatus } from '@prisma/client';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+interface UserPayload {
+  id: string;
+}
+
+const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
+
+@ApiTags('Orders')
+@ApiBearerAuth()
+@Controller('orders')
+export class OrderController {
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly shippingService: ShippingService,
+    private prisma: PrismaService,
+  ) {}
+
+  @Post('/checkout')
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @CurrentUser() user: UserPayload,
+    @Body() createOrderDto: CreateOrderDto,
+  ) {
+    const customer = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true },
+    });
+    createOrderDto.customerId = customer.customerId;
+
+    return this.orderService.create(createOrderDto);
+  }
+
+  @Post(':id/placed')
+  async markPlaced(
+    @Param('id', ParseObjectIdPipe) id: string,
+  ) {
+    return this.orderService.markPlaced(id);
+  }
+
+  @Get('/lookup')
+  async lookupOrder(
+    @Query('code') code?: string,
+    @Query('email') email?: string,
+    @Query('phone') phone?: string,
+  ) {
+    if (code) {
+      const order = await this.orderService.findByCode(code);
+      return [order];
+    }
+    if (email || phone) {
+      return this.orderService.lookupOrders({ email, phone });
+    }
+    throw new BadRequestException(
+      'Query parameter "code", "email", or "phone" is required',
+    );
+  }
+
+  @Get()
+  @AdminAccess()
+  findAll(
+    @Query() query: PaginationQueryDto,
+    @Query('status') status?: string,
+    @Query('search') search?: string,
+    @Query('code') code?: string,
+    @Query('email') email?: string,
+    @Query('deliveryCode') deliveryCode?: string,
+    @Query('isGuest') isGuest?: string,
+  ) {
+    return this.orderService.findAll({
+      page: query.page,
+      limit: query.limit,
+      status: status as any,
+      search,
+      code,
+      email,
+      deliveryCode,
+      isGuest,
+    });
+  }
+
+  @Patch(':id/status')
+  @AdminAccess()
+  updateStatus(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateDto: UpdateOrderStatusDto,
+  ) {
+    return this.orderService.updateStatus(id, updateDto);
+  }
+
+  @Get('/my-history')
+  @UseGuards(JwtAuthGuard)
+  async findMyOrders(
+    @CurrentUser() user: UserPayload,
+    @Query() query: PaginationQueryDto,
+    @Query('status') status?: OrderStatus,
+    @Query('search') search?: string,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+  ) {
+    const customer = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true },
+    });
+    return this.orderService.findMyOrdersPaginated(customer.customerId, {
+      page: query.page,
+      limit: query.limit,
+      status,
+      search,
+      fromDate,
+      toDate,
+    });
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async findOne(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: UserPayload,
+  ) {
+    const loggedInUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true, role: true },
+    });
+    const customerIdToCheck =
+      loggedInUser.role === 'ADMIN' ? undefined : loggedInUser.customerId;
+    return this.orderService.findOne(id, customerIdToCheck);
+  }
+
+  @Post(':id/cancel')
+  async cancelPending(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body('orderCode') orderCode?: string,
+    @CurrentUser() user?: UserPayload | null,
+  ) {
+    const order = await this.orderService.findOne(id);
+    if (user) {
+      const loggedInUser = await this.prisma.user.findUnique({
+        where: { id: user.id },
+        select: { customerId: true },
+      });
+      if (!loggedInUser || order.customerId !== loggedInUser.customerId) {
+        throw new BadRequestException('You cannot cancel this order.');
+      }
+    } else {
+      if (!orderCode || orderCode !== order.orderCode) {
+        throw new BadRequestException('Invalid orderCode for cancellation.');
+      }
+    }
+    return this.orderService.cancelPending(id);
+  }
+
+  @Patch(':id/delivery-code')
+  @AdminAccess()
+  updateDeliveryCode(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateDeliveryCodeDto: UpdateDeliveryCodeDto,
+  ) {
+    return this.orderService.updateDeliveryCode(
+      id,
+      updateDeliveryCodeDto.deliveryCode,
+    );
+  }
+
+  /**
+   * [ADMIN] Tạo đơn vận chuyển GHN tự động từ order
+   * Order phải ở trạng thái CONFIRMED hoặc PREPARING_SHIPMENT
+   */
+  @Post(':id/create-ghn-shipment')
+  @AdminAccess()
+  createGhnShipment(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.shippingService.createGhnShipmentForOrder(id);
+  }
+
+  /**
+   * [ADMIN / Customer] Xem trạng thái vận chuyển GHN theo orderId
+   */
+  @Get(':id/tracking')
+  @UseGuards(JwtAuthGuard)
+  async getGhnTracking(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: UserPayload,
+  ) {
+    const loggedInUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true, role: true },
+    });
+    // Customer chỉ xem được tracking của order mình
+    const customerIdToCheck =
+      loggedInUser.role === 'ADMIN' ? undefined : loggedInUser.customerId;
+    // Verify order ownership trước khi lấy tracking
+    await this.orderService.findOne(id, customerIdToCheck);
+    return this.shippingService.getGhnTracking(id);
+  }
+}
