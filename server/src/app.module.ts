@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { PrismaModule } from './infrastructure/database/prisma.module';
@@ -32,6 +33,7 @@ import { LoggerModule } from './infrastructure/common/logger/logger.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '.env.docker'] }),
     CacheModule.register({

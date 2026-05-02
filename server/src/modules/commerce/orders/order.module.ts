@@ -6,6 +6,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ShippingModule } from '@/modules/commerce/shipping/shipping.module';
 import { MailModule } from '@/integrations/mail/mail.module';
 import { OrderRepository } from './repositories/order.repository';
+import { OrderNotificationListener } from './listeners/order-notification.listener';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { OrderRepository } from './repositories/order.repository';
     MailModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderRepository],
+  providers: [OrderService, OrderRepository, OrderNotificationListener],
   exports: [OrderService],
 })
 export class OrderModule {}

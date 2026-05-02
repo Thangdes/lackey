@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { SupplierDashboardService } from './supplier-dashboard.service';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
-import { UserRole, User } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,9 +16,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetSupplierOrdersDto } from './dto/get-supplier-orders.dto';
-import { GetUser } from '@/modules/auth/decorators/get-user.decorator';
 import { RolesGuard } from '@/modules/auth/roles.guard';
 import { Roles } from '@/modules/auth/decorators/roles.decorator';
+import { CurrentSupplierId } from '@/modules/auth/decorators/current-supplier.decorator';
 
 @ApiTags('Supplier Dashboard')
 @ApiBearerAuth()
@@ -33,8 +33,8 @@ export class SupplierDashboardController {
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get supplier profile for current user' })
   @ApiResponse({ status: 200, description: 'Supplier profile retrieved.' })
-  getSupplierProfile(@GetUser() user: User) {
-    return this.supplierDashboardService.getSupplierProfile(user);
+  getSupplierProfile(@CurrentSupplierId() supplierId: string | null) {
+    return this.supplierDashboardService.getSupplierProfile(supplierId);
   }
 
   @Get('summary')
@@ -45,64 +45,64 @@ export class SupplierDashboardController {
     description: 'Summary data retrieved successfully.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  getSummaryStats(@GetUser() user: User) {
-    return this.supplierDashboardService.getSummaryStats(user);
+  getSummaryStats(@CurrentSupplierId() supplierId: string | null) {
+    return this.supplierDashboardService.getSummaryStats(supplierId);
   }
 
   @Get('top-selling-products')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get top 5 selling products for the supplier' })
-  getTopSellingProducts(@GetUser() user: User) {
-    return this.supplierDashboardService.getTopSellingProducts(user);
+  getTopSellingProducts(@CurrentSupplierId() supplierId: string | null) {
+    return this.supplierDashboardService.getTopSellingProducts(supplierId);
   }
 
   @Get('recent-orders')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get recent orders containing supplier’s products' })
-  getRecentOrders(@GetUser() user: User) {
-    return this.supplierDashboardService.getRecentOrders(user);
+  getRecentOrders(@CurrentSupplierId() supplierId: string | null) {
+    return this.supplierDashboardService.getRecentOrders(supplierId);
   }
 
   @Get('inventory-report')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get an inventory report of all products' })
-  getInventoryReport(@GetUser() user: User) {
-    return this.supplierDashboardService.getInventoryReport(user);
+  getInventoryReport(@CurrentSupplierId() supplierId: string | null) {
+    return this.supplierDashboardService.getInventoryReport(supplierId);
   }
 
   @Get('revenue-over-time')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get revenue aggregated by day for the last N days' })
   revenueOverTime(
-    @GetUser() user: User,
+    @CurrentSupplierId() supplierId: string | null,
     @Query('days') days?: string,
   ) {
     const n = Math.max(1, Math.min(90, Number(days) || 30));
-    return this.supplierDashboardService.revenueOverTime(user, n);
+    return this.supplierDashboardService.revenueOverTime(supplierId, n);
   }
 
   @Get('orders-count')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get count of supplier-related orders in the last N days' })
   ordersCount(
-    @GetUser() user: User,
+    @CurrentSupplierId() supplierId: string | null,
     @Query('days') days?: string,
   ) {
     const n = Math.max(1, Math.min(90, Number(days) || 30));
-    return this.supplierDashboardService.ordersCountLastNDays(user, n);
+    return this.supplierDashboardService.ordersCountLastNDays(supplierId, n);
   }
 
   @Get('restock-candidates')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Top variants with low stock and high recent sales' })
   restockCandidates(
-    @GetUser() user: User,
+    @CurrentSupplierId() supplierId: string | null,
     @Query('limit') limit?: string,
     @Query('lowThreshold') lowThreshold?: string,
   ) {
     const l = Math.max(1, Math.min(50, Number(limit) || 10));
     const th = Math.max(0, Math.min(1000, Number(lowThreshold) || 5));
-    return this.supplierDashboardService.restockCandidates(user, l, th);
+    return this.supplierDashboardService.restockCandidates(supplierId, l, th);
   }
 
   @Get('orders')
@@ -112,8 +112,8 @@ export class SupplierDashboardController {
     status: 200,
     description: 'List of orders retrieved successfully.',
   })
-  getAllOrders(@GetUser() user: User, @Query() query: GetSupplierOrdersDto) {
-    return this.supplierDashboardService.getAllOrders(user, query);
+  getAllOrders(@CurrentSupplierId() supplierId: string | null, @Query() query: GetSupplierOrdersDto) {
+    return this.supplierDashboardService.getAllOrders(supplierId, query);
   }
 
   @Get('orders/:orderId')
@@ -128,9 +128,9 @@ export class SupplierDashboardController {
     description: 'Order not found or access denied.',
   })
   getOrderDetails(
-    @GetUser() user: User,
+    @CurrentSupplierId() supplierId: string | null,
     @Param('orderId', ParseUUIDPipe) orderId: string,
   ) {
-    return this.supplierDashboardService.getOrderDetails(user, orderId);
+    return this.supplierDashboardService.getOrderDetails(supplierId, orderId);
   }
 }

@@ -3,15 +3,15 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { OrderCreatedEvent, OrderShippedEvent } from '@/infrastructure/events/commerce.events';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order.dto';
 import { OrderStatus, PaymentStatus, PaymentMethod, Prisma } from '@prisma/client';
 import { ShippingService } from '../shipping/shipping.service';
 import { buildPagination, buildPaginationMeta, PaginatedResult } from '@/infrastructure/common/pagination';
-import { MailService } from '@/integrations/mail/mail.service';
+
 import { OrderRepository } from './repositories/order.repository';
 import { OrderCalculator } from './calculators/order.calculator';
 import { OrderQueryBuilder } from './builders/order-query.builder';
@@ -22,8 +22,7 @@ export class OrderService {
     private readonly prisma: PrismaService,
     private readonly orderRepository: OrderRepository,
     private readonly shippingService: ShippingService,
-    private readonly mailService: MailService,
-    @InjectQueue('notifications') private notificationsQueue: Queue,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -235,19 +234,7 @@ export class OrderService {
     });
 
     if (finalOrder) {
-      await this.notificationsQueue.add(
-        'send-new-order-telegram',
-        { orderId: finalOrder.id },
-        {
-          attempts: 3,
-          backoff: {
-            type: 'exponential',
-            delay: 5000,
-          },
-          removeOnComplete: true,
-          removeOnFail: 1000,
-        },
-      );
+      this.eventEmitter.emit('order.created', new OrderCreatedEvent(finalOrder.id));
     }
 
     return finalOrder;
@@ -480,18 +467,15 @@ export class OrderService {
       orderId,
       deliveryCode,
     );
-    this.mailService
-      .sendOrderShippedEmail(order.customer.email, {
-        orderCode: updatedOrder.orderCode,
-        deliveryCode: updatedOrder.deliveryCode,
-        fullName: order.customer.fullName,
-      })
-      .catch((err) => {
-        console.error(
-          `Failed to send shipped notification email for order ${order.orderCode}`,
-          err,
-        );
-      });
+    this.eventEmitter.emit(
+      'order.shipped',
+      new OrderShippedEvent(
+        order.customer.email,
+        updatedOrder.orderCode,
+        updatedOrder.deliveryCode,
+        order.customer.fullName,
+      )
+    );
 
     return updatedOrder;
   }
@@ -538,16 +522,7 @@ export class OrderService {
     });
     if (!order) throw new NotFoundException('Order not found');
 
-    await this.notificationsQueue.add(
-      'send-new-order-telegram',
-      { orderId: order.id },
-      {
-        attempts: 3,
-        backoff: { type: 'exponential', delay: 5000 },
-        removeOnComplete: true,
-        removeOnFail: 1000,
-      },
-    );
+    this.eventEmitter.emit('order.created', new OrderCreatedEvent(order.id));
     return { ok: true };
   }
 }

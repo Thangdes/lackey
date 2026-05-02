@@ -3,7 +3,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
-import { User, OrderStatus, UserRole } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { GetSupplierOrdersDto } from './dto/get-supplier-orders.dto';
 
@@ -11,15 +11,7 @@ import { GetSupplierOrdersDto } from './dto/get-supplier-orders.dto';
 export class SupplierDashboardService {
   constructor(private prisma: PrismaService) {}
 
-  private getSupplierId(user: User): string | null {
-    return user.supplierId ?? null;
-  }
-
-  async ordersCountLastNDays(user: User, days: number) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return { count: 0 };
-    }
+  async ordersCountLastNDays(supplierId: string | null, days: number) {
     const start = dayjs().startOf('day').subtract(days - 1, 'day').toDate();
     const count = await this.prisma.order.count({
       where: {
@@ -34,13 +26,12 @@ export class SupplierDashboardService {
     return { count };
   }
 
-  async getSupplierProfile(user: User) {
-    const supplierId = this.getSupplierId(user);
-    if (!supplierId && user.role !== UserRole.ADMIN) {
+  async getSupplierProfile(supplierId: string | null) {
+    if (!supplierId) {
       return null;
     }
     const s = await this.prisma.supplier.findUnique({
-      where: { id: supplierId ?? undefined },
+      where: { id: supplierId },
       select: {
         id: true,
         name: true,
@@ -57,11 +48,7 @@ export class SupplierDashboardService {
     return s;
   }
 
-  async revenueOverTime(user: User, days: number) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return [] as { date: string; revenue: number }[];
-    }
+  async revenueOverTime(supplierId: string | null, days: number) {
     const start = dayjs().startOf('day').subtract(days - 1, 'day').toDate();
     const items = await this.prisma.orderItem.findMany({
       where: {
@@ -94,11 +81,7 @@ export class SupplierDashboardService {
     return out;
   }
 
-  async restockCandidates(user: User, limit: number, lowThreshold: number) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return [] as { productId: string; variantId: string; productName: string; variantName: string; sku: string; stockQuantity: number; totalSold30d: number }[];
-    }
+  async restockCandidates(supplierId: string | null, limit: number, lowThreshold: number) {
     const variants = await this.prisma.productVariant.findMany({
       where: {
         product: supplierId ? { supplierId } : {},
@@ -140,11 +123,7 @@ export class SupplierDashboardService {
       .slice(0, limit);
   }
 
-  async getSummaryStats(user: User) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return { totalRevenue: 0, revenueThisMonth: 0, totalProducts: 0, pendingOrdersCount: 0 };
-    }
+  async getSummaryStats(supplierId: string | null) {
     const startOfMonth = dayjs().startOf('month').toDate();
 
     const completedOrderItems = await this.prisma.orderItem.findMany({
@@ -188,12 +167,7 @@ export class SupplierDashboardService {
     };
   }
 
-  async getTopSellingProducts(user: User) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return [];
-    }
-
+  async getTopSellingProducts(supplierId: string | null) {
     const productsSold = await this.prisma.orderItem.groupBy({
       by: ['productVariantId'],
       where: {
@@ -204,6 +178,8 @@ export class SupplierDashboardService {
       orderBy: { _sum: { quantity: 'desc' } },
       take: 5,
     });
+
+    if (productsSold.length === 0) return [];
 
     const topVariants = await this.prisma.productVariant.findMany({
       where: { id: { in: productsSold.map((p) => p.productVariantId) } },
@@ -221,12 +197,7 @@ export class SupplierDashboardService {
     });
   }
 
-  async getRecentOrders(user: User) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return [];
-    }
-
+  async getRecentOrders(supplierId: string | null) {
     const orders = await this.prisma.order.findMany({
       where: {
         orderItems: { some: { productVariant: { product: supplierId ? { supplierId } : {} } } },
@@ -269,12 +240,7 @@ export class SupplierDashboardService {
     });
   }
 
-  async getInventoryReport(user: User) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return [];
-    }
-
+  async getInventoryReport(supplierId: string | null) {
     return this.prisma.product.findMany({
       where: supplierId ? { supplierId } : {},
       select: {
@@ -294,11 +260,7 @@ export class SupplierDashboardService {
     });
   }
 
-  async getAllOrders(user: User, query: GetSupplierOrdersDto) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      return { data: [], meta: { total: 0, page: query.page, limit: query.limit, lastPage: 0 } };
-    }
+  async getAllOrders(supplierId: string | null, query: GetSupplierOrdersDto) {
     const { page, limit, status, from, to } = query;
 
     const gte = from ? dayjs(from).startOf('day').toDate() : undefined;
@@ -364,12 +326,7 @@ export class SupplierDashboardService {
     };
   }
 
-  async getOrderDetails(user: User, orderId: string) {
-    const supplierId = this.getSupplierId(user);
-    if (supplierId === null && user.role !== UserRole.ADMIN) {
-      throw new NotFoundException(`Order with ID ${orderId} not found or you don't have permission to view it.`);
-    }
-
+  async getOrderDetails(supplierId: string | null, orderId: string) {
     const order = await this.prisma.order
       .findFirstOrThrow({
         where: {

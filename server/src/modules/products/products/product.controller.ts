@@ -22,6 +22,7 @@ import {
   DefaultValuePipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { ProductQueryService } from './services/product-query.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from '../../auth/auth.gaurd';
@@ -35,7 +36,10 @@ const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly productQueryService: ProductQueryService,
+  ) {}
 
   @Post()
   @AdminAccess()
@@ -45,7 +49,7 @@ export class ProductController {
 
   @Get('suppliers')
   getSuppliers() {
-    return this.productService.findSuppliers();
+    return this.productQueryService.findSuppliers();
   }
 
   @Post(':id/thumbnail')
@@ -71,14 +75,14 @@ export class ProductController {
   findBestSellers(
     @Query() query: ProductQueryDto,
   ) {
-    return this.productService.findBestSellers({ page: query.page, limit: query.limit, categoryId: query.categoryId });
+    return this.productQueryService.findBestSellers({ page: query.page, limit: query.limit, categoryId: query.categoryId });
   }
 
   @Get('top-rated')
   findTopRated(
     @Query() query: ProductQueryDto,
   ) {
-    return this.productService.findTopRated({ page: query.page, limit: query.limit, categoryId: query.categoryId });
+    return this.productQueryService.findTopRated({ page: query.page, limit: query.limit, categoryId: query.categoryId });
   }
   
   @Get('search')
@@ -86,13 +90,13 @@ export class ProductController {
     @Query('q') q: string,
     @Query('limit', new DefaultValuePipe(6), ParseIntPipe) limit: number,
   ) {
-    return this.productService.searchQuick({ q, limit });
+    return this.productQueryService.searchQuick({ q, limit });
   }
   @Get()
   findAll(
     @Query() query: ProductQueryDto,
   ) {
-    return this.productService.findAll({
+    return this.productQueryService.findAll({
       page: query.page,
       limit: query.limit,
       categoryId: query.categoryId,
@@ -115,7 +119,7 @@ export class ProductController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query('limit', new DefaultValuePipe(8), ParseIntPipe) limit: number,
   ) {
-    return this.productService.findRelated(id, limit);
+    return this.productQueryService.findRelated(id, limit);
   }
 
   @Get('slug/:slug')

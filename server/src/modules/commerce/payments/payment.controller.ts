@@ -1,5 +1,6 @@
 import { Controller, Post, Body, UseGuards, Param, ParseUUIDPipe, Get, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { PaymentService } from './payment.service';
+import { PaymentReconciliationService } from './payment-reconciliation.service';
 import { CreatePaymentLinkDto } from './dto/create-payment-link.dto';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
@@ -12,7 +13,10 @@ interface UserPayload {
 
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly paymentService: PaymentService,
+    private readonly paymentReconciliationService: PaymentReconciliationService,
+  ) {}
 
   @Post('create-link')
   async createPaymentLink(@Body() createPaymentLinkDto: CreatePaymentLinkDto) {
@@ -47,6 +51,6 @@ export class PaymentController {
     if (!file || !file.buffer) {
       throw new Error('Missing CSV file');
     }
-    return this.paymentService.reconcileCsv(file.buffer, user.id);
+    return this.paymentReconciliationService.reconcileCsv(file.buffer, user.id);
   }
 }
