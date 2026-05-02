@@ -18,3 +18,9 @@ export interface Customer {
   createdAt: string;
   addresses?: CustomerAddress[];
 }
+
+export type CustomerListParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+};

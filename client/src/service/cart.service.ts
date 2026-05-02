@@ -1,22 +1,16 @@
 import { http } from "@/utils/http";
 import { API } from "@/constant/api";
-import type { ServerCart } from "@/type/cart";
+import type { ServerCart, CartItemPayload, UpdateCartItemPayload } from "@/type/cart";
 
-export type CartItemPayload = {
-  productVariantId: string;
-  quantity: number;
-};
-
-export type UpdateCartItemPayload = {
-  quantity: number;
-};
+// Re-export for consumers
+export type { CartItemPayload, UpdateCartItemPayload };
 
 export const cartService = {
   // GET /cart
   getCart: async () => {
     try {
       return await http.get<ServerCart>(API.cart.root);
-    } catch  {
+    } catch {
       return { items: [] } as ServerCart;
     }
   },

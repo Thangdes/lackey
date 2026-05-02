@@ -1,48 +1,38 @@
 import { http } from "@/utils/http";
+import { unwrapData, unwrapDataArray, buildQueryString } from "@/utils/response";
 import { API } from "@/constant/api";
 import type { Paginated } from "@/type/common";
 import type { CheckoutPayload, OrderDetail, OrderSummary, UpdateOrderStatusPayload } from "@/type/order";
 
-type WithData<T> = { data: T };
-function isObject(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null;
-}
-function hasData<T>(x: unknown): x is WithData<T> {
-  return isObject(x) && "data" in x;
-}
-function hasDataArray<T>(x: unknown): x is WithData<T[]> {
-  return isObject(x) && Array.isArray((x as Record<string, unknown>).data as unknown);
-}
-
 export const orderService = {
   // POST /orders/checkout
   checkout: async (payload: CheckoutPayload) => {
-    type Resp = OrderDetail | WithData<OrderDetail>;
-    const body: Resp = await http.post<Resp>(API.order.checkout, payload);
-    return hasData<OrderDetail>(body) ? body.data : body;
+    const body = await http.post<unknown>(API.order.checkout, payload);
+    return unwrapData<OrderDetail>(body);
   },
 
   // GET /orders/my-history?status=&page=&limit= (auth)
   myHistoryPaginated: async (params?: { status?: string; page?: number; limit?: number; search?: string; fromDate?: string; toDate?: string }) => {
-    const qp = new URLSearchParams();
-    if (params?.status) qp.set("status", params.status);
-    if (params?.page) qp.set("page", String(params.page));
-    if (params?.limit) qp.set("limit", String(params.limit));
-    if (params?.search) qp.set("search", params.search);
-    if (params?.fromDate) qp.set("fromDate", params.fromDate);
-    if (params?.toDate) qp.set("toDate", params.toDate);
-    const qs = qp.toString();
-    type Resp = Paginated<OrderSummary> | (Paginated<OrderSummary> & { data?: OrderSummary[] }) | OrderSummary[] | { data: OrderSummary[] };
+    const qs = buildQueryString({
+      status: params?.status,
+      page: params?.page,
+      limit: params?.limit,
+      search: params?.search,
+      fromDate: params?.fromDate,
+      toDate: params?.toDate,
+    });
     try {
-      const body: Resp = await http.get<Resp>(`${API.order.myHistory}${qs ? `?${qs}` : ""}`);
-      if (Array.isArray(body)) {
-        return { items: body, total: body.length, page: params?.page ?? 1, pageSize: params?.limit ?? body.length } as Paginated<OrderSummary>;
+      const body = await http.get<unknown>(`${API.order.myHistory}${qs ? `?${qs}` : ""}`);
+      const items = unwrapDataArray<OrderSummary>(body);
+      if (items !== (body as unknown)) {
+        // was wrapped in { data: [] }
+        return { items, total: items.length, page: params?.page ?? 1, pageSize: params?.limit ?? items.length } as Paginated<OrderSummary>;
       }
-      if (hasDataArray<OrderSummary>(body)) {
-        const arr = body.data;
-        return { items: arr, total: arr.length, page: params?.page ?? 1, pageSize: params?.limit ?? arr.length } as Paginated<OrderSummary>;
+      // Check if it's already a Paginated shape
+      if (body && typeof body === "object" && "items" in (body as object)) {
+        return body as Paginated<OrderSummary>;
       }
-      return body as Paginated<OrderSummary>;
+      return { items, total: items.length, page: params?.page ?? 1, pageSize: params?.limit ?? items.length } as Paginated<OrderSummary>;
     } catch {
       return { items: [], total: 0, page: params?.page ?? 1, pageSize: params?.limit ?? 10 } as Paginated<OrderSummary>;
     }
@@ -50,59 +40,49 @@ export const orderService = {
 
   // GET /orders (admin)
   list: async (params?: { page?: number; limit?: number; status?: string; search?: string; code?: string; email?: string; deliveryCode?: string; customerType?: "guest" | "registered" }) => {
-    const qp = new URLSearchParams();
-    if (params?.page) qp.set("page", String(params.page));
-    if (params?.limit) qp.set("limit", String(params.limit));
-    if (params?.status) qp.set("status", params.status);
-    if (params?.search) qp.set("search", params.search);
-    if (params?.code) qp.set("code", params.code);
-    if (params?.email) qp.set("email", params.email);
-    if (params?.deliveryCode) qp.set("deliveryCode", params.deliveryCode);
-    if (params?.customerType === "guest") qp.set("isGuest", "true");
-    if (params?.customerType === "registered") qp.set("isGuest", "false");
-    const qs = qp.toString();
-    type Resp =
-      | Paginated<OrderSummary>
-      | WithData<Paginated<OrderSummary>
-      >
-      | OrderSummary[]
-      | WithData<OrderSummary[]>;
-    const body: Resp = await http.get<Resp>(`${API.order.root}${qs ? `?${qs}` : ""}`);
-    if (Array.isArray(body)) {
-      return {
-        items: body,
-        total: body.length,
-        page: params?.page ?? 1,
-        pageSize: params?.limit ?? body.length,
-      } satisfies Paginated<OrderSummary>;
+    const isGuestParam =
+      params?.customerType === "guest" ? true :
+      params?.customerType === "registered" ? false :
+      undefined;
+
+    const qs = buildQueryString({
+      page: params?.page,
+      limit: params?.limit,
+      status: params?.status,
+      search: params?.search,
+      code: params?.code,
+      email: params?.email,
+      deliveryCode: params?.deliveryCode,
+      isGuest: isGuestParam,
+    });
+
+    const body = await http.get<unknown>(`${API.order.root}${qs ? `?${qs}` : ""}`);
+
+    // Check if it's a Paginated<OrderSummary> shape with `items`
+    if (body && typeof body === "object" && "items" in (body as object)) {
+      return body as Paginated<OrderSummary>;
     }
-    if (hasDataArray<OrderSummary>(body)) {
-      const arr = body.data;
-      return {
-        items: arr,
-        total: arr.length,
-        page: params?.page ?? 1,
-        pageSize: params?.limit ?? arr.length,
-      } satisfies Paginated<OrderSummary>;
-    }
-    return hasData<Paginated<OrderSummary>>(body) ? body.data : (body as Paginated<OrderSummary>);
+
+    const items = unwrapDataArray<OrderSummary>(body);
+    return {
+      items,
+      total: items.length,
+      page: params?.page ?? 1,
+      pageSize: params?.limit ?? items.length,
+    } satisfies Paginated<OrderSummary>;
   },
 
   // GET /orders/:id (auth)
   getById: async (id: string) => {
-    type Resp = OrderDetail | WithData<OrderDetail>;
-    const body: Resp = await http.get<Resp>(API.order.byId(id));
-    return hasData<OrderDetail>(body) ? body.data : body;
+    const body = await http.get<unknown>(API.order.byId(id));
+    return unwrapData<OrderDetail>(body);
   },
 
   // GET /orders/my-history (auth)
   myHistory: async () => {
-    type Resp = OrderSummary[] | WithData<OrderSummary[]> | (Paginated<OrderSummary> & WithData<OrderSummary[]>);
     try {
-      const body: Resp = await http.get<Resp>(API.order.myHistory);
-      if (Array.isArray(body)) return body;
-      if (hasDataArray<OrderSummary>(body)) return body.data;
-      return [] as OrderSummary[];
+      const body = await http.get<unknown>(API.order.myHistory);
+      return unwrapDataArray<OrderSummary>(body);
     } catch {
       return [] as OrderSummary[];
     }
@@ -111,12 +91,12 @@ export const orderService = {
   // GET /orders/lookup?code=... | ?email=... | ?phone=... (public)
   // Always normalize to a list of orders for UI simplicity
   lookup: async (params: { code?: string; email?: string; phone?: string }) => {
-    type Resp = OrderDetail | WithData<OrderDetail> | OrderDetail[] | WithData<OrderDetail[]>;
-    const body: Resp = await http.get<Resp>(API.order.lookupGeneric(params));
+    const body = await http.get<unknown>(API.order.lookupGeneric(params));
     if (Array.isArray(body)) return body as OrderDetail[];
-    if (hasDataArray<OrderDetail>(body)) return body.data as OrderDetail[];
-    if (hasData<OrderDetail>(body)) return [body.data as OrderDetail];
-    return [body as OrderDetail];
+    const arr = unwrapDataArray<OrderDetail>(body);
+    if (arr.length > 0) return arr;
+    // single object wrapped or plain
+    return [unwrapData<OrderDetail>(body)];
   },
 
   // GET /orders/lookup?code=... (public) - kept for backward compatibility

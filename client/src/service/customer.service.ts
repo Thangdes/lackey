@@ -1,12 +1,9 @@
 import { http } from "@/utils/http";
+import { normalizePaginationMeta } from "@/utils/response";
 import { API } from "@/constant/api";
-import type { Customer, CustomerAddress } from "@/type/customer";
+import type { Customer, CustomerAddress, CustomerListParams } from "@/type/customer";
 
-export type CustomerListParams = {
-  page?: number;
-  limit?: number;
-  search?: string;
-};
+export type { CustomerListParams };
 
 export const customerService = {
   // GET /customers?page=1&limit=10&search=...
@@ -28,19 +25,11 @@ export const customerService = {
           return [] as Customer[];
         })();
 
-    // Normalize meta similar to productService.list
-    const m: Record<string, unknown> = Array.isArray(raw)
-      ? {}
-      : ((raw as { meta?: unknown } | Record<string, unknown> | undefined)?.meta as Record<string, unknown> | undefined) ??
-        ((raw as Record<string, unknown>) || {});
-    const page = (m.page as number) ?? (m.currentPage as number) ?? (params.page ?? 1);
-    const limit = (m.limit as number) ?? (m.pageSize as number) ?? (m.perPage as number) ?? (params.limit ?? 10);
-    const total =
-      (m.total as number) ??
-      (m.totalItems as number) ??
-      (typeof m.totalPages === "number" ? (m.totalPages as number) * ((m.limit as number) ?? (m.pageSize as number) ?? (m.perPage as number) ?? limit) : undefined);
+    // Normalize pagination meta
+    const rawMeta = Array.isArray(raw) ? {} : (raw as { meta?: unknown } | undefined)?.meta ?? raw;
+    const meta = normalizePaginationMeta(rawMeta, { page: params.page ?? 1, limit: params.limit ?? 10 });
 
-    return { data, meta: { page, limit, total } } as { data: Customer[]; meta?: { page?: number; limit?: number; total?: number } };
+    return { data, meta } as { data: Customer[]; meta?: { page?: number; limit?: number; total?: number } };
   },
 
   // GET /customers/:id

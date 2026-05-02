@@ -1,15 +1,10 @@
-import { http, httpSuccess } from "@/utils/http";
-import { api } from "@/utils/http";
+import { http, httpSuccess, api } from "@/utils/http";
 import { API } from "@/constant/api";
 import type { Product } from "@/type/product";
+import type { Category } from "@/type/category";
 
-export type Category = {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string | null;
-  thumbnailUrl?: string | null;
-};
+// Re-export for consumers
+export type { Category };
 
 export const categoryService = {
   list: async () => {
@@ -23,7 +18,7 @@ export const categoryService = {
   },
   getById: (id: string) => httpSuccess.getData<Category>(API.category.byId(id)),
   getWithProducts: (id: string) =>
-    httpSuccess.getData<{ category: Category & { image?: string | null } ; products: Product[] }>(API.category.products(id)),
+    httpSuccess.getData<{ category: Category & { image?: string | null }; products: Product[] }>(API.category.products(id)),
   // Server returns a plain Category object on create, not { data: Category }
   create: (payload: Partial<Category>) => http.post<Category>(API.category.root, payload),
   update: (id: string, payload: Partial<Category>) => httpSuccess.patchData<Category>(API.category.byId(id), payload),

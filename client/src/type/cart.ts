@@ -70,3 +70,12 @@ export interface SmartCartItem {
   isOutOfStock?: boolean;
   supplierName?: string;
 }
+
+export type CartItemPayload = {
+  productVariantId: string;
+  quantity: number;
+};
+
+export type UpdateCartItemPayload = {
+  quantity: number;
+};
