@@ -178,9 +178,9 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         <Link href="/contact" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Liên hệ
         </Link>
-        <Link href="/custom-keychain" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
+        {/* <Link href="/custom-keychain" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Custom Keychain
-        </Link>
+        </Link> */}
       </nav>
 
       <div className="flex items-center gap-3 shrink-0">

@@ -89,7 +89,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({
     );
   }
 
-  if (cats.length === 0) return null;
+  if (!Array.isArray(cats) || cats.length === 0) return null;
 
   return (
     <div className="w-full bg-white">

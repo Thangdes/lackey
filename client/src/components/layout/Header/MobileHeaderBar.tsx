@@ -418,7 +418,7 @@ const MenuContent: React.FC = () => {
 
       <Section title="Bộ sưu tập nổi bật" icon={<Star className="h-4 w-4" />}>
         <div className="grid grid-cols-2 gap-1 px-1">
-          <Link
+          {/* <Link
             href="/custom-keychain"
             className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white border-2 border-black hover:bg-[#AE1C2C] hover:text-white text-black transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] group"
           >
@@ -426,7 +426,7 @@ const MenuContent: React.FC = () => {
               <Flame className="h-4 w-4 text-neutral-700" />
             </span>
             <span className="truncate text-xs font-bold uppercase tracking-wide">Custom Keychain</span>
-          </Link>
+          </Link> */}
           <CollectionLink label="Bán chạy" icon={<Star className="h-4 w-4 text-neutral-700" />} params={{ sort: 'popular' }} />
           <CollectionLink label="Hàng mới" icon={<Sparkles className="h-4 w-4 text-neutral-700" />} params={{ sort: 'new' }} />
           <CollectionLink label="Giá tốt" icon={<TagPill />} params={{ sort: 'price_asc' }} />
