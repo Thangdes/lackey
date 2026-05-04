@@ -8,6 +8,73 @@ import { ProductCalculatorUtil } from '../utilities/product-calculator.util';
 export class ProductQueryService {
   constructor(private prisma: PrismaService) {}
 
+  private computePricingFromAgg(agg?: { minPrice?: Prisma.Decimal | null; minDiscountPrice?: Prisma.Decimal | null }) {
+    const minPrice = agg?.minPrice != null ? Number(agg.minPrice.toString()) : null;
+    const minDisc = agg?.minDiscountPrice != null ? Number(agg.minDiscountPrice.toString()) : null;
+    if ((minPrice == null || !Number.isFinite(minPrice) || minPrice <= 0) && (minDisc == null || !Number.isFinite(minDisc) || minDisc <= 0)) {
+      return {
+        priceEffective: null,
+        priceOriginal: null,
+        compareAt: null,
+        isOnSale: false,
+        discountPercent: null,
+      } as const;
+    }
+    const original = (minPrice != null && Number.isFinite(minPrice) && minPrice > 0) ? minPrice : (minDisc as number);
+    const effective = (minDisc != null && Number.isFinite(minDisc) && minDisc > 0)
+      ? Math.min(original, minDisc)
+      : original;
+    const isOnSale = (minDisc != null && Number.isFinite(minDisc) && minDisc > 0) && (minPrice != null && Number.isFinite(minPrice) && minPrice > 0) && minDisc < minPrice;
+    const compareAt = isOnSale ? original : null;
+    const discountPercent = isOnSale && original > 0
+      ? Math.max(1, Math.min(90, Math.round(((original - effective) / original) * 100)))
+      : null;
+    return {
+      priceEffective: effective,
+      priceOriginal: original,
+      compareAt,
+      isOnSale,
+      discountPercent,
+    } as const;
+  }
+
+  private async buildVariantAggMaps(productIds: string[]) {
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+      return {
+        aggMap: new Map<string, { minPrice?: Prisma.Decimal | null; minDiscountPrice?: Prisma.Decimal | null; totalStock?: number }>(),
+        primaryVariantMap: new Map<string, string>(),
+      };
+    }
+
+    const grouped = await this.prisma.productVariant.groupBy({
+      by: ['productId'],
+      where: { productId: { in: productIds } },
+      _min: { price: true, discountPrice: true },
+      _sum: { stockQuantity: true },
+    });
+
+    const aggMap = new Map<string, { minPrice?: Prisma.Decimal | null; minDiscountPrice?: Prisma.Decimal | null; totalStock?: number }>();
+    for (const g of grouped as unknown as Array<{ productId: string; _min: { price: Prisma.Decimal | null; discountPrice: Prisma.Decimal | null }; _sum: { stockQuantity: number | null } }>) {
+      aggMap.set(g.productId, {
+        minPrice: g._min?.price ?? null,
+        minDiscountPrice: g._min?.discountPrice ?? null,
+        totalStock: g._sum?.stockQuantity != null ? Number(g._sum.stockQuantity) : 0,
+      });
+    }
+
+    const primaryVariantRows = await this.prisma.productVariant.findMany({
+      where: { productId: { in: productIds }, stockQuantity: { gt: 0 } },
+      orderBy: [{ stockQuantity: 'desc' }, { price: 'asc' }],
+      select: { id: true, productId: true },
+    });
+    const primaryVariantMap = new Map<string, string>();
+    for (const r of primaryVariantRows) {
+      if (!primaryVariantMap.has(r.productId)) primaryVariantMap.set(r.productId, r.id);
+    }
+
+    return { aggMap, primaryVariantMap };
+  }
+
   async findAll(query: { page?: number; limit?: number; categoryId?: string; categoryIds?: string[]; supplierId?: string; supplierIds?: string[]; supplier?: string; supplierSlug?: string; supplierSlugs?: string[]; q?: string; inStock?: string | boolean; minPrice?: string; maxPrice?: string; sort?: 'name_asc' | 'name_desc' | 'buy_desc' | 'rating_desc' | 'price_asc' | 'price_desc' }): Promise<PaginatedResult<any>> {
     const { page, limit, skip, take } = buildPagination(query.page, query.limit);
     const search = query.q?.trim();
@@ -107,13 +174,45 @@ export class ProductQueryService {
           include: {
             category: { select: { name: true } },
             supplier: { select: { name: true } },
-            variants: true,
+            _count: { select: { variants: true } },
           },
           orderBy,
         }),
         this.prisma.product.count({ where }),
       ]);
-      const formattedItems = items.map(p => ProductCalculatorUtil.enrichProductWithCalculatedFields(p));
+      const ids = items.map((p: any) => p.id);
+      const { aggMap, primaryVariantMap } = await this.buildVariantAggMaps(ids);
+      const formattedItems = items.map((p: any) => {
+        const agg = aggMap.get(p.id);
+        const pricing = this.computePricingFromAgg(agg);
+        const totalStock = typeof agg?.totalStock === 'number' ? agg.totalStock : 0;
+        const buy = Number(p.buyCount ?? 0);
+        const initial = Number(p.initialBuyCount ?? 0);
+        const totalBuyCount = buy + initial;
+        const badges: string[] = [];
+        if (totalBuyCount >= 500) badges.push('BEST');
+        if (pricing.isOnSale) badges.push('SALE');
+        const variantCount = p._count?.variants;
+        const inStock = totalStock > 0;
+        const { _count, ...rest } = p;
+        return {
+          ...rest,
+          variantCount,
+          totalBuyCount,
+          minEffectivePrice: pricing.priceEffective,
+          priceEffective: pricing.priceEffective,
+          priceOriginal: pricing.priceOriginal,
+          compareAt: pricing.compareAt,
+          isOnSale: pricing.isOnSale,
+          discountPercent: pricing.discountPercent,
+          badges,
+          soldDisplay: ProductCalculatorUtil.formatSoldDisplay(totalBuyCount),
+          totalStock,
+          inStock,
+          isOutOfStock: !inStock,
+          primaryVariantId: primaryVariantMap.get(p.id) ?? null,
+        };
+      });
       return { data: formattedItems, meta: buildPaginationMeta(total, page, limit) };
     }
 
@@ -187,7 +286,7 @@ export class ProductQueryService {
       include: {
         category: { select: { name: true } },
         supplier: { select: { name: true } },
-        variants: true,
+        _count: { select: { variants: true } },
       },
     });
 
@@ -205,6 +304,7 @@ export class ProductQueryService {
       ]),
     );
 
+    const { aggMap, primaryVariantMap } = await this.buildVariantAggMaps(idsInOrder);
     const items = idsInOrder
       .map((id) => productMap.get(id))
       .filter((p): p is NonNullable<typeof p> => !!p)
@@ -227,7 +327,37 @@ export class ProductQueryService {
         }
         return a.name.localeCompare(b.name);
       })
-      .map(p => ProductCalculatorUtil.enrichProductWithCalculatedFields(p));
+      .map((p: any) => {
+        const agg = aggMap.get(p.id);
+        const pricing = this.computePricingFromAgg(agg);
+        const totalStock = typeof agg?.totalStock === 'number' ? agg.totalStock : 0;
+        const buy = Number(p.buyCount ?? 0);
+        const initial = Number(p.initialBuyCount ?? 0);
+        const totalBuyCount = buy + initial;
+        const badges: string[] = [];
+        if (totalBuyCount >= 500) badges.push('BEST');
+        if (pricing.isOnSale) badges.push('SALE');
+        const variantCount = p._count?.variants;
+        const inStock = totalStock > 0;
+        const { _count, ...rest } = p;
+        return {
+          ...rest,
+          variantCount,
+          totalBuyCount,
+          minEffectivePrice: pricing.priceEffective,
+          priceEffective: pricing.priceEffective,
+          priceOriginal: pricing.priceOriginal,
+          compareAt: pricing.compareAt,
+          isOnSale: pricing.isOnSale,
+          discountPercent: pricing.discountPercent,
+          badges,
+          soldDisplay: ProductCalculatorUtil.formatSoldDisplay(totalBuyCount),
+          totalStock,
+          inStock,
+          isOutOfStock: !inStock,
+          primaryVariantId: primaryVariantMap.get(p.id) ?? null,
+        };
+      });
 
     return { data: items, meta: buildPaginationMeta(total, page, limit) };
   }
