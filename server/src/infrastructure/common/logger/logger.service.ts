@@ -8,8 +8,7 @@ export class LoggerService implements NestLoggerService {
     private logger: winston.Logger;
     private context?: string;
 
-    constructor(context?: string) {
-        this.context = context;
+    constructor() {
         this.logger = this.createLogger();
     }
 

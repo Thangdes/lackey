@@ -14,7 +14,7 @@ import { CartModule } from './modules/commerce/cart/cart.module';
 import { OrderModule } from './modules/commerce/orders/order.module';
 import { PaymentModule } from './modules/commerce/payments/payment.module';
 import { PdfModule } from './integrations/pdf/pdf.module';
-import { TelegramModule } from './integrations/telegram/telegram.module';
+// import { TelegramModule } from './integrations/telegram/telegram.module';
 import { WorkersModule } from './infrastructure/workers/workers.module';
 import { ShippingModule } from './modules/commerce/shipping/shipping.module';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -28,8 +28,9 @@ import { SupplierDashboardModule } from './modules/dashboards/supplier-dashboard
 import { SupplierModule } from './modules/admin/suppliers/supplier.module';
 import { SiteContentModule } from './modules/content/site-content/site-content.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import { GhnModule } from './integrations/ghn/ghn.module';
+// import { GhnModule } from './integrations/ghn/ghn.module';
 import { LoggerModule } from './infrastructure/common/logger/logger.module';
+import { SiteSettingsModule } from './modules/content/site-settings/site-settings.module';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { LoggerModule } from './infrastructure/common/logger/logger.module';
       isGlobal: true,
       ttl: 60 * 60 * 24,
     }),
-    GhnModule,
+    // GhnModule,
     LoggerModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -67,7 +68,7 @@ import { LoggerModule } from './infrastructure/common/logger/logger.module';
     OrderModule,
     PaymentModule,
     PdfModule,
-    TelegramModule,
+    // TelegramModule,
     WorkersModule,
     ShippingModule,
     TasksModule,
@@ -78,6 +79,7 @@ import { LoggerModule } from './infrastructure/common/logger/logger.module';
     SupplierDashboardModule,
     SupplierModule,
     SiteContentModule,
+    SiteSettingsModule,
   ],
   controllers: [HealthController],
 })

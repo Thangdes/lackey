@@ -1,6 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Logger } from '@nestjs/common';
+import { Logger, Optional } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { TelegramService } from '@/integrations/telegram/telegram.service';
 import { PaymentService } from '@/modules/commerce/payments/payment.service';
@@ -13,7 +13,7 @@ export class NotificationsWorkerService extends WorkerHost {
 
   constructor(
     private prisma: PrismaService,
-    private telegramService: TelegramService,
+    @Optional() private telegramService: TelegramService,
     private paymentService: PaymentService,
     private orderService: OrderService,
   ) {
