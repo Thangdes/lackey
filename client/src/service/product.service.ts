@@ -112,18 +112,36 @@ export const productService = {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 10;
     const qs = buildQueryString({ page, limit, categoryId: params?.categoryId });
-    return http.get<{ data: Product[]; meta?: { page?: number; limit?: number; total?: number } }>(
-      `${API.product.root}/best-sellers?${qs}`
-    );
+    return http
+      .get<
+        | { data: Product[]; meta?: Record<string, unknown> }
+        | { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } }
+      >(`${API.product.root}/best-sellers?${qs}`)
+      .then((res) => {
+        const wrapped = res as { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } };
+        const unwrapped = (wrapped?.data && !Array.isArray(wrapped.data)) ? wrapped.data : (res as { data?: Product[]; meta?: Record<string, unknown> });
+        const data = (unwrapped as { data?: Product[] })?.data ?? [];
+        const meta = normalizePaginationMeta((unwrapped as { meta?: Record<string, unknown> })?.meta, { page, limit });
+        return { data, meta } as { data: Product[]; meta?: { page?: number; limit?: number; total?: number } };
+      });
   },
 
   topRated: (params?: { page?: number; limit?: number; categoryId?: string }) => {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 10;
     const qs = buildQueryString({ page, limit, categoryId: params?.categoryId });
-    return http.get<{ data: Product[]; meta?: { page?: number; limit?: number; total?: number } }>(
-      `${API.product.root}/top-rated?${qs}`
-    );
+    return http
+      .get<
+        | { data: Product[]; meta?: Record<string, unknown> }
+        | { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } }
+      >(`${API.product.root}/top-rated?${qs}`)
+      .then((res) => {
+        const wrapped = res as { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } };
+        const unwrapped = (wrapped?.data && !Array.isArray(wrapped.data)) ? wrapped.data : (res as { data?: Product[]; meta?: Record<string, unknown> });
+        const data = (unwrapped as { data?: Product[] })?.data ?? [];
+        const meta = normalizePaginationMeta((unwrapped as { meta?: Record<string, unknown> })?.meta, { page, limit });
+        return { data, meta } as { data: Product[]; meta?: { page?: number; limit?: number; total?: number } };
+      });
   },
 
   create: (payload: CreateProductPayload) => http.post<Product>(API.product.root, payload),

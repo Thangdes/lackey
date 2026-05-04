@@ -45,23 +45,34 @@ const mapValueProp = (it: SiteContentDto): ValuePropItem => ({
 
 export const siteContentService = {
   getBanners: async (): Promise<BannerItem[]> => {
-    const data = await http.get<SiteContentDto[]>(API.siteContent.banners);
-    return (data || [])
-      .filter((d) => !!d?.thumbnailUrl)
-      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-      .map(mapBanner);
+    try {
+      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.banners);
+      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      return data
+        .filter((d) => !!d?.thumbnailUrl)
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map(mapBanner);
+    } catch {
+      return [];
+    }
   },
   getTestimonials: async (): Promise<TestimonialItem[]> => {
-    const data = await http.get<SiteContentDto[]>(API.siteContent.testimonials);
-    return (data || [])
-      .filter((d) => !!(d?.content) && (d?.authorName || d?.testimonial_name))
-      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-      .map(mapTestimonial);
+    try {
+      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.testimonials);
+      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      return data
+        .filter((d) => !!(d?.content) && (d?.authorName || d?.testimonial_name))
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map(mapTestimonial);
+    } catch {
+      return [];
+    }
   },
   getValueProps: async (): Promise<ValuePropItem[]> => {
     try {
-      const data = await http.get<SiteContentDto[]>(`${API.siteContent.banners}?type=VALUE_PROP`);
-      return (data || [])
+      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(`${API.siteContent.banners}?type=VALUE_PROP`);
+      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      return data
         .filter((d) => d?.type === "VALUE_PROP" && !!d?.title && !!d?.content)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
         .map(mapValueProp);
@@ -71,8 +82,9 @@ export const siteContentService = {
   },
   getHeroSlides: async (): Promise<HeroSlide[]> => {
     try {
-      const data = await http.get<SiteContentDto[]>(API.siteContent.banners);
-      return (data || [])
+      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.banners);
+      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      return data
         .filter((d) => d?.type === "BANNER" && !!d?.thumbnailUrl && !!d?.title)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
         .map(mapHeroSlide);
@@ -82,8 +94,9 @@ export const siteContentService = {
   },
   getKeychainGallery: async (): Promise<Array<{ imageUrl: string; title?: string }>> => {
     try {
-      const data = await http.get<SiteContentDto[]>(API.siteContent.gallery);
-      return (data || [])
+      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.gallery);
+      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      return data
         .filter((d) => !!d?.thumbnailUrl)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
         .map((it) => ({ imageUrl: it.thumbnailUrl as string, title: it.title }));
