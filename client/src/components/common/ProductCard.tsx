@@ -43,27 +43,46 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const addMutation = useAddToCart();
   const cart = useSmartCart();
 
-  const img = p.thumbnailUrl || p.images?.[0] || "/logo/logo.jpg";
+  const img = p.thumbnailUrl || p.images?.[0];
   const v0 = (p.variants && p.variants[0]) || undefined;
-  const { price, compareAt, isSale, discountPercent } = useProductPricing(v0);
-  const priceDisplay = typeof p.minEffectivePrice === 'number' ? p.minEffectivePrice : price;
+  const computedPricing = useProductPricing(v0);
+  const priceDisplay =
+    typeof p.priceEffective === 'number'
+      ? p.priceEffective
+      : typeof p.minEffectivePrice === 'number'
+        ? p.minEffectivePrice
+        : computedPricing.price;
+  const compareAt =
+    typeof p.compareAt === 'number'
+      ? p.compareAt
+      : computedPricing.compareAt;
+  const isSale =
+    typeof p.isOnSale === 'boolean'
+      ? p.isOnSale
+      : computedPricing.isSale;
+  const discountPercent =
+    typeof p.discountPercent === 'number'
+      ? p.discountPercent
+      : computedPricing.discountPercent;
   const totalSold = (p as Product).totalBuyCount ?? p.buyCount ?? 0;
-  const isBestSeller = totalSold >= 500;
-  const soldText = (() => {
+  const isBestSeller = Array.isArray(p.badges) ? p.badges.includes('BEST') : totalSold >= 500;
+  const soldText = p.soldDisplay ?? (() => {
     const n = Number(totalSold) || 0;
     const formatted = n.toLocaleString('vi-VN');
     return n >= 1000 ? `${formatted}+` : formatted;
   })();
-  const ratingValue = Math.max(0, Math.min(5, Number(4)));
-  const totalStock = Array.isArray(p.variants)
-    ? p.variants.reduce((sum, v) => sum + Math.max(0, Number(v.stockQuantity ?? 0)), 0)
-    : 0;
-  const outOfStock = totalStock <= 0;
+  const ratingValue = Math.max(0, Math.min(5, Number(p.ratingAvg ?? 0)));
+  const totalStock = typeof p.totalStock === 'number'
+    ? p.totalStock
+    : Array.isArray(p.variants)
+      ? p.variants.reduce((sum, v) => sum + Math.max(0, Number(v.stockQuantity ?? 0)), 0)
+      : 0;
+  const outOfStock = typeof p.isOutOfStock === 'boolean' ? p.isOutOfStock : totalStock <= 0;
 
   const linkHref = href ?? buildProductDetailPath(p.slug || p.id || "");
 
   const firstInStock = Array.isArray(p.variants) ? p.variants.find(v => (v.stockQuantity ?? 0) > 0) : undefined;
-  const primaryVariantId = firstInStock?.id || p.variants?.[0]?.id;
+  const primaryVariantId = p.primaryVariantId || firstInStock?.id || p.variants?.[0]?.id;
 
   const existingItem = cart.items.find(it => it.variantId === primaryVariantId) || cart.items.find(it => it.productId === p.id);
 
@@ -119,13 +138,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
       aria-label={`Xem sản phẩm ${p.name}`}
     >
       <div className={`relative aspect-square overflow-hidden bg-gray-100`}>
-        <Image
-          src={img}
-          alt={p.name}
-          fill
-          sizes="(max-width: 768px) 56vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+        {img ? (
+          <Image
+            src={img}
+            alt={(typeof p.name === "string" && p.name.trim() !== "") ? p.name : "Sản phẩm"}
+            fill
+            sizes="(max-width: 768px) 56vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-xs text-neutral-500">
+            Không có ảnh
+          </div>
+        )}
         {outOfStock ? (
           <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" aria-hidden="true" />
         ) : null}

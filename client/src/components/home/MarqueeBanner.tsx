@@ -9,8 +9,9 @@ export default function MarqueeBanner() {
     <section className="relative w-full bg-[#fff100] py-12 md:py-16 overflow-hidden">
       {/* Marquee Container */}
       <div className="relative">
-        {/* Scrolling Text */}
+        {/* Scrolling Text - Duplicate content for seamless loop */}
         <div className="flex whitespace-nowrap animate-marquee">
+          <MarqueeContent />
           <MarqueeContent />
           <MarqueeContent />
         </div>
@@ -46,12 +47,13 @@ export default function MarqueeBanner() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-33.333%);
           }
         }
 
         .animate-marquee {
-          animation: marquee 20s linear infinite;
+          animation: marquee 30s linear infinite;
+          will-change: transform;
         }
 
         .animate-marquee:hover {

@@ -9,6 +9,15 @@ import { productGridClass } from "@/components/common/grid";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import ProductCard from "./ProductCard";
 
+function useDebouncedValue<T>(value: T, delayMs: number) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebounced(value), delayMs);
+    return () => window.clearTimeout(t);
+  }, [value, delayMs]);
+  return debounced;
+}
+
 export type ProductGridProps = {
   title?: string;
   query?: ProductQuery;
@@ -51,59 +60,63 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     }
   };
 
-  const uniqueById = (arr: Product[]) => {
-    const seen = new Set<string>();
-    const out: Product[] = [];
-    for (const p of arr) {
-      const k = p.id || p.slug || "";
-      if (!k) { out.push(p); continue; }
-      if (!seen.has(k)) { seen.add(k); out.push(p); }
-    }
-    return out;
-  };
+  const normalizedQuery = useMemo(() => {
+    const categorySlugs = Array.isArray(query?.categorySlugs) ? query?.categorySlugs.filter(Boolean) : [];
+    const categoryIds = Array.isArray(query?.categoryIds) ? query?.categoryIds.filter(Boolean) : [];
+    const supplierIds = Array.isArray(query?.supplierIds) ? query?.supplierIds.filter(Boolean) : [];
+    return {
+      q: query?.q ?? null,
+      sort: query?.sort ?? null,
+      offers: Array.isArray(query?.offers) ? query?.offers.filter(Boolean) : [],
+      categorySlugs,
+      categoryIds,
+      categoryId:
+        categorySlugs.length === 0 && categoryIds.length === 0
+          ? (query?.categoryId ?? query?.category ?? null)
+          : null,
+      supplierIds,
+    } as const;
+  }, [
+    query?.q,
+    query?.sort,
+    query?.category,
+    query?.categoryId,
+    query?.categoryIds,
+    query?.categorySlugs,
+    query?.supplierIds,
+    query?.offers,
+  ]);
+
+  const debouncedQuery = useDebouncedValue(normalizedQuery, 250);
+
+  const infiniteQueryKey = useMemo(
+    () => ["products", "infinite", debouncedQuery, effectivePageSize] as const,
+    [debouncedQuery, effectivePageSize]
+  );
+
+  const calcLoaded = (pages: Array<{ data?: Product[] }>) =>
+    pages.reduce((sum, p) => sum + (p.data?.length ?? 0), 0);
 
   const infinite = useInfiniteQuery({
-    queryKey: [
-      "products",
-      "infinite",
-      {
-        q: query?.q ?? null,
-        category: query?.category ?? null,
-        categoryId: query?.categoryId ?? null,
-        categoryIds: Array.isArray(query?.categoryIds) ? query?.categoryIds : [],
-        supplierIds: Array.isArray(query?.supplierIds) ? query?.supplierIds : [],
-        offers: Array.isArray(query?.offers) ? query?.offers : [],
-        categorySlugs: Array.isArray(query?.categorySlugs) ? query?.categorySlugs : [],
-        sort: query?.sort ?? null,
-        pageSize: effectivePageSize,
-      },
-    ],
+    queryKey: infiniteQueryKey,
     enabled: !initialProducts,
     initialPageParam: 1 as number,
     queryFn: async ({ pageParam }) => {
-      const res = await productService.list({
+      return productService.list({
         page: pageParam as number,
         limit: effectivePageSize,
-        categorySlugs: query?.categorySlugs && query.categorySlugs.length > 0 
-          ? query.categorySlugs 
-          : undefined,
-        categoryIds: query?.categoryIds && query.categoryIds.length > 0 
-          ? query.categoryIds 
-          : undefined,
-        categoryId: (!query?.categorySlugs || query.categorySlugs.length === 0) && 
-                   (!query?.categoryIds || query.categoryIds.length === 0)
-          ? query?.categoryId ?? query?.category
-          : undefined,
-        supplierId: query?.supplierIds,
-        offers: query?.offers,
-        q: query?.q,
-        sort: query?.sort,
+        categorySlugs: debouncedQuery.categorySlugs.length > 0 ? debouncedQuery.categorySlugs : undefined,
+        categoryIds: debouncedQuery.categoryIds.length > 0 ? debouncedQuery.categoryIds : undefined,
+        categoryId: debouncedQuery.categoryId ?? undefined,
+        supplierId: debouncedQuery.supplierIds,
+        offers: debouncedQuery.offers,
+        q: debouncedQuery.q ?? undefined,
+        sort: debouncedQuery.sort ?? undefined,
       });
-      return res;
     },
     getNextPageParam: (lastPage, allPages) => {
       const total = lastPage.meta?.total ?? 0;
-      const loaded = allPages.reduce((sum, p) => sum + (p.data?.length ?? 0), 0);
+      const loaded = calcLoaded(allPages as Array<{ data?: Product[] }>);
       const hasNext = total > 0 ? loaded < total : (lastPage.data?.length ?? 0) === effectivePageSize;
       if (!hasNext) return undefined;
       return (allPages.length + 1);
@@ -115,23 +128,66 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     setLoading(infinite.isLoading || infinite.isFetching && !infinite.isFetchingNextPage);
   }, [initialProducts, infinite.isLoading, infinite.isFetching, infinite.isFetchingNextPage]);
 
-  const infiniteItems = useMemo(() => {
-    if (initialProducts) return [] as Product[];
-    const flat = uniqueById((infinite.data?.pages ?? []).flatMap((p) => p.data ?? []));
-    return flat;
-  }, [initialProducts, infinite.data?.pages]);
+  const seenRef = useRef<Set<string>>(new Set());
+  const mergedRef = useRef<Product[]>([]);
+  const lastPageCountRef = useRef(0);
 
   useEffect(() => {
     if (initialProducts) return;
-    setItems(infiniteItems);
+    setItems([]);
+    setHasMore(true);
+    seenRef.current = new Set();
+    mergedRef.current = [];
+    lastPageCountRef.current = 0;
+  }, [initialProducts, debouncedQuery, effectivePageSize]);
+
+  useEffect(() => {
+    if (initialProducts) return;
+    const pages = infinite.data?.pages ?? [];
+    const pageCount = pages.length;
+
+    if (pageCount === 0) {
+      setItems([]);
+      lastPageCountRef.current = 0;
+      seenRef.current = new Set();
+      mergedRef.current = [];
+      return;
+    }
+
+    const prevCount = lastPageCountRef.current;
+    if (pageCount < prevCount) {
+      lastPageCountRef.current = 0;
+      seenRef.current = new Set();
+      mergedRef.current = [];
+    }
+
+    const start = Math.min(lastPageCountRef.current, pageCount);
+    for (let pi = start; pi < pageCount; pi++) {
+      const page = pages[pi] as { data?: Product[] };
+      const data = page?.data ?? [];
+      for (const p of data) {
+        const k = p.id || p.slug || '';
+        if (!k) {
+          mergedRef.current.push(p);
+          continue;
+        }
+        if (seenRef.current.has(k)) continue;
+        seenRef.current.add(k);
+        mergedRef.current.push(p);
+      }
+    }
+
+    lastPageCountRef.current = pageCount;
+    setItems([...mergedRef.current]);
+
     const total = infinite.data?.pages?.[0]?.meta?.total;
     if (typeof total === "number" && total > 0) {
-      setHasMore(infiniteItems.length < total);
+      setHasMore(mergedRef.current.length < total);
     } else {
       const lastLen = infinite.data?.pages?.[infinite.data.pages.length - 1]?.data?.length ?? 0;
       setHasMore(lastLen === effectivePageSize);
     }
-  }, [initialProducts, infiniteItems, infinite.data?.pages, effectivePageSize]);
+  }, [initialProducts, infinite.data?.pages, effectivePageSize]);
 
   const slicedItems = useMemo(() => {
     if (!initialProducts) return items;
@@ -201,11 +257,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       ) : (initialProducts ? slicedItems.length === 0 : items.length === 0) ? (
         <div className="text-sm text-neutral-600">Không có sản phẩm phù hợp.</div>
       ) : (
-        <div className={productGridClass}>
-          {(initialProducts ? slicedItems : items).map((p, i) => (
-            <ProductCard key={`${p.id || p.slug || 'item'}-${i}`} product={p} index={i} variant={compact ? "compact" : "default"} className="!w-full"/>
-          ))}
-        </div>
+        (() => {
+          const list = (initialProducts ? slicedItems : items);
+          return (
+            <div className={productGridClass}>
+              {list.map((p, i) => (
+                <ProductCard key={`${p.id || p.slug || 'item'}-${i}`} product={p} index={i} variant={compact ? "compact" : "default"} />
+              ))}
+            </div>
+          );
+        })()
       )}
       {enableInfinite ? (
         <div ref={sentinelRef} className="h-12 flex items-center justify-center">
@@ -227,6 +288,5 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     </section>
   );
 }
-;
 
 export default ProductGrid;

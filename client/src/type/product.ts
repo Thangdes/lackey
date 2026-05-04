@@ -30,6 +30,17 @@ export type Product = {
   gtin?: string;
   mpn?: string;
   minEffectivePrice?: number | null;
+  priceEffective?: number | null;
+  priceOriginal?: number | null;
+  compareAt?: number | null;
+  isOnSale?: boolean;
+  discountPercent?: number | null;
+  badges?: string[];
+  soldDisplay?: string;
+  inStock?: boolean;
+  totalStock?: number;
+  isOutOfStock?: boolean;
+  primaryVariantId?: string | null;
   category?: {
     id?: string;
     name?: string;

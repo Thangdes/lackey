@@ -10,8 +10,9 @@ import TopCollections from "@/components/home/TopCollections";
 import MarqueeBanner from "@/components/home/MarqueeBanner";
 import RetroSaleBanner from "@/components/home/RetroSaleBanner";
 import RetroValueProps from "@/components/home/RetroValueProps";
-import CustomKeychainCTA from "@/components/home/CustomKeychainCTA";
+// import CustomKeychainCTA from "@/components/home/CustomKeychainCTA";
 import RetroFAQ from "@/components/home/RetroFAQ";
+import { Gift, Star, RotateCcw } from "lucide-react";
 
 export const metadata: Metadata = {
   title: siteConfig.default.title,
@@ -61,29 +62,29 @@ export default function Home() {
         title="VÌ SAO CHỌN LẮC KEY?"
         subtitle="Móc khóa chất lượng cao - Thiết kế độc đáo - Giao hàng nhanh"
         items={[
+          // {
+          //   icon: <Palette className="w-8 h-8" />,
+          //   title: "CUSTOM THEO Ý TƯỞNG",
+          //   description: "Thiết kế móc khóa theo hình ảnh, nhân vật yêu thích của bạn. In sắc nét, chất liệu cao cấp.",
+          //   ctaHref: "/custom-keychain",
+          //   ctaLabel: "Đặt custom ngay",
+          // },
           {
-            icon: "🎨",
-            title: "CUSTOM THEO Ý TƯỞNG",
-            description: "Thiết kế móc khóa theo hình ảnh, nhân vật yêu thích của bạn. In sắc nét, chất liệu cao cấp.",
-            ctaHref: "/custom-keychain",
-            ctaLabel: "Đặt custom ngay",
-          },
-          {
-            icon: "🎁",
+            icon: <Gift className="w-8 h-8" />,
             title: "GIAO HÀNG SIÊU TỐC",
             description: "Giao hàng toàn quốc 1-3 ngày. Đóng gói cẩn thận, an toàn tuyệt đối.",
             ctaHref: "/shipping",
             ctaLabel: "Xem chi tiết",
           },
           {
-            icon: "⭐",
+            icon: <Star className="w-8 h-8" />,
             title: "CHẤT LƯỢNG CAO CẤP",
             description: "Acrylic trong suốt, bền đẹp. In offset chất lượng cao, không phai màu theo thời gian.",
             ctaHref: "/about",
             ctaLabel: "Cam kết",
           },
           {
-            icon: "🔄",
+            icon: <RotateCcw className="w-8 h-8" />,
             title: "ĐỔI TRẢ DỄ DÀNG",
             description: "Đổi trả trong 7 ngày. Hoàn tiền 100% nếu có lỗi từ nhà sản xuất.",
             ctaHref: "/return",
@@ -94,7 +95,7 @@ export default function Home() {
 
       <BestSellers />
 
-      <CustomKeychainCTA />
+      {/* <CustomKeychainCTA /> */}
 
       <MarqueeBanner />
 

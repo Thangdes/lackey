@@ -8,7 +8,7 @@ import ProductCard from "@/components/common/ProductCard";
 
 export default function BestSellers() {
   const { data, isLoading } = useBestSellers(12);
-  const products = data?.data || [];
+  const products = Array.isArray(data?.data) ? data?.data : [];
   if (isLoading) {
     return (
       <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24">
@@ -22,6 +22,23 @@ export default function BestSellers() {
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-gray-200 animate-pulse rounded-none border border-black aspect-square" />
             ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+        <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center">
+            <h2 className="font-[family-name:var(--font-retro)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-neutral-900 mb-3 sm:mb-4 tracking-wider uppercase">
+              Bán chạy nhất
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto px-4">
+              Hiện chưa có sản phẩm bán chạy.
+            </p>
           </div>
         </div>
       </section>

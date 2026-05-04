@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown, HelpCircle, Palette, Zap, Lightbulb, RotateCcw, DollarSign, Sparkles } from "lucide-react";
 
 export type FAQItem = {
   question: string;
   answer: string;
-  icon?: string;
+  icon?: React.ReactNode;
 };
 
 export type RetroFAQProps = {
@@ -19,32 +19,32 @@ const defaultFAQs: FAQItem[] = [
   {
     question: "Móc khóa được làm từ chất liệu gì?",
     answer: "Móc khóa của chúng tôi được làm từ acrylic trong suốt cao cấp, dày 3-4mm. In offset với mực chất lượng cao, bền màu, không phai theo thời gian. An toàn, không độc hại.",
-    icon: "🎨",
+    icon: <Palette className="w-5 h-5" />,
   },
   {
     question: "Thời gian giao hàng mất bao lâu?",
     answer: "Đơn hàng sẵn có: 1-3 ngày toàn quốc. Đơn custom design: 3-5 ngày (bao gồm thời gian thiết kế và sản xuất). Giao hàng nhanh, đóng gói cẩn thận, bảo hành trong quá trình vận chuyển.",
-    icon: "⚡",
+    icon: <Zap className="w-5 h-5" />,
   },
   {
     question: "Làm sao để custom móc khóa theo ý tưởng?",
     answer: "Rất đơn giản! Bạn chỉ cần: (1) Gửi hình ảnh/concept qua Zalo/Facebook, (2) Trao đổi với team design về kích thước, màu sắc, (3) Xác nhận thiết kế mẫu, (4) Thanh toán và nhận hàng. Thiết kế hoàn toàn MIỄN PHÍ!",
-    icon: "💡",
+    icon: <Lightbulb className="w-5 h-5" />,
   },
   {
     question: "Chính sách đổi trả như thế nào?",
     answer: "Đổi trả trong 7 ngày nếu sản phẩm bị lỗi từ nhà sản xuất (in lỗi, vỡ, phai màu). Hoàn tiền 100% hoặc đổi sản phẩm mới. Lưu ý: Không áp dụng với đơn custom đã được xác nhận thiết kế.",
-    icon: "🔄",
+    icon: <RotateCcw className="w-5 h-5" />,
   },
   {
     question: "Giá móc khóa bao nhiêu?",
     answer: "Móc khóa có sẵn: 35.000₫ - 75.000₫/chiếc. Custom design: 45.000₫ - 120.000₫/chiếc tùy kích thước và độ phức tạp. Giảm giá khi mua số lượng lớn (từ 10 chiếc trở lên).",
-    icon: "💰",
+    icon: <DollarSign className="w-5 h-5" />,
   },
   {
     question: "Làm thế nào để bảo quản móc khóa?",
     answer: "Tránh tiếp xúc trực tiếp với nước trong thời gian dài, không để dưới ánh nắng mặt trời gắt. Lau nhẹ bằng khăn mềm khi bám bụi. Bảo quản ở nơi khô ráo, thoáng mát để móc khóa giữ được màu sắc lâu dài.",
-    icon: "✨",
+    icon: <Sparkles className="w-5 h-5" />,
   },
 ];
 
