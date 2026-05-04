@@ -1,0 +1,68 @@
+{
+  "title": "Promotion Gift Wholesale Cute Car Cartoon Animal Custom Logo Blank Soft Hard Enamel Metal Key Chain Custom Keychain",
+  "product_id": "WwAGTbfPVltL",
+  "price_tiers": [
+    {
+      "quantity": "300-799 Pieces",
+      "price_usd": "US$0.78",
+      "price_vnd": "19.500 VND",
+      "vnd_value": 19500
+    },
+    {
+      "quantity": "800-1,499 Pieces",
+      "price_usd": "US$0.75",
+      "price_vnd": "18.750 VND",
+      "vnd_value": 18750
+    },
+    {
+      "quantity": "1,500-2,999 Pieces",
+      "price_usd": "US$0.65",
+      "price_vnd": "16.250 VND",
+      "vnd_value": 16250
+    },
+    {
+      "quantity": "3,000+ Pieces",
+      "price_usd": "US$0.45",
+      "price_vnd": "11.250 VND",
+      "vnd_value": 11250
+    }
+  ],
+  "sample_price": {
+    "usd": "US$9.99/Piece",
+    "vnd": "249.750 VND",
+    "vnd_value": 249750
+  },
+  "specifications": {
+    "customization": "Available",
+    "usage": "Promotion Gifts",
+    "metal_type": "Zinc Alloy"
+  },
+  "supplier": {
+    "name": "Zhongshan Niya Metal Manufacture Co., Ltd.",
+    "url": "https://zsniya-gift.en.made-in-china.com",
+    "location": "Guangdong, China"
+  },
+  "payment_methods": [
+    "T/T",
+    "PayPal",
+    "ApplePay",
+    "GooglePay",
+    "visa",
+    "mastercard",
+    "american express",
+    "discover",
+    "JCB",
+    "diners club",
+    "PIX",
+    "SPEI",
+    "OXXO",
+    "PSE",
+    "OZOW"
+  ],
+  "rating": 5,
+  "images": [],
+  "currency_rate": {
+    "usd_to_vnd": 25000,
+    "note": "Exchange rate used for conversion"
+  }
+}
