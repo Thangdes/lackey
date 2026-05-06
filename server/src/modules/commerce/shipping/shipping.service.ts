@@ -1,5 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GhnService } from '@/integrations/ghn/ghn.service';
+import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { OrderShippedEvent } from '@/infrastructure/events/commerce.events';
+import { OrderStatus } from '@prisma/client';
 
 const DEFAULT_SHIPPING_FEE = 35000;
 const DEFAULT_WEIGHT_PER_ITEM = 200;
@@ -8,7 +12,11 @@ const DEFAULT_WEIGHT_PER_ITEM = 200;
 export class ShippingService {
   private readonly logger = new Logger(ShippingService.name);
 
-  constructor(private readonly ghnService: GhnService) {}
+  constructor(
+    private readonly ghnService: GhnService,
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   private normalizeString(str: string): string {
     if (!str) return '';
@@ -24,6 +32,143 @@ export class ShippingService {
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  async createGhnShipmentForOrder(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        customer: true,
+        shippingAddress: true,
+        orderItems: { include: { productVariant: true } },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.status !== OrderStatus.CONFIRMED && order.status !== OrderStatus.PREPARING_SHIPMENT) {
+      throw new BadRequestException('Order must be CONFIRMED or PREPARING_SHIPMENT to create shipment');
+    }
+
+    if (order.deliveryCode) {
+      return { success: true, message: 'Shipment already created', deliveryCode: order.deliveryCode };
+    }
+
+    const city = order.shippingAddress?.city;
+    const district = order.shippingAddress?.district;
+    const ward = order.shippingAddress?.ward;
+    const street = order.shippingAddress?.street;
+    const phoneNumber = order.shippingAddress?.phoneNumber;
+    const recipientName = order.shippingAddress?.recipientName;
+
+    if (!city || !district || !ward || !street || !phoneNumber || !recipientName) {
+      throw new BadRequestException('Shipping address is incomplete for GHN shipment creation');
+    }
+
+    const provinces = await this.ghnService.getProvinces();
+    const province = provinces.find((p) =>
+      this.normalizeString(city).includes(this.normalizeString(p.ProvinceName)),
+    );
+    if (!province) {
+      throw new BadRequestException(`Cannot map city to GHN province: ${city}`);
+    }
+
+    const districts = await this.ghnService.getDistricts(province.ProvinceID);
+    const districtData = districts.find(
+      (d) => this.normalizeString(d.DistrictName) === this.normalizeString(district),
+    );
+    if (!districtData) {
+      throw new BadRequestException(`Cannot map district to GHN district: ${district}`);
+    }
+
+    const wards = await this.ghnService.getWards(districtData.DistrictID);
+    const wardData = wards.find(
+      (w) => this.normalizeString(w.WardName) === this.normalizeString(ward),
+    );
+    if (!wardData) {
+      throw new BadRequestException(`Cannot map ward to GHN ward: ${ward}`);
+    }
+
+    const totalWeight = order.orderItems.reduce(
+      (sum, item) => sum + (item.quantity || 0) * DEFAULT_WEIGHT_PER_ITEM,
+      0,
+    );
+
+    const payload: Record<string, unknown> = {
+      to_name: recipientName,
+      to_phone: phoneNumber,
+      to_address: street,
+      to_ward_code: wardData.WardCode,
+      to_district_id: districtData.DistrictID,
+      weight: Math.max(1, totalWeight),
+      insurance_value: Math.max(0, Math.floor(Number(order.subtotalAmount) || 0)),
+      cod_amount: 0,
+      payment_type_id: 1,
+      required_note: 'KHONGCHOXEMHANG',
+      note: `Order ${order.orderCode}`,
+      client_order_code: order.orderCode,
+      items: order.orderItems.map((item) => ({
+        name: item.productVariant?.name || 'Item',
+        quantity: item.quantity,
+        weight: DEFAULT_WEIGHT_PER_ITEM,
+      })),
+    };
+
+    const result = await this.ghnService.createShippingOrder(payload);
+    const ghnOrderCode = result?.data?.order_code || result?.data?.orderCode;
+    if (!ghnOrderCode) {
+      throw new BadRequestException('GHN did not return order_code');
+    }
+
+    const updated = await this.prisma.order.update({
+      where: { id: order.id },
+      data: {
+        deliveryCode: String(ghnOrderCode),
+        status: OrderStatus.PREPARING_SHIPMENT,
+      },
+      select: { id: true, orderCode: true, deliveryCode: true, status: true },
+    });
+
+    // Emit event để gửi email thông báo vận chuyển cho khách
+    try {
+      const customer = await this.prisma.customer.findUnique({
+        where: { id: order.customerId },
+        select: { email: true, fullName: true },
+      });
+      if (customer?.email) {
+        this.eventEmitter.emit(
+          'order.shipped',
+          new OrderShippedEvent(
+            customer.email,
+            updated.orderCode,
+            updated.deliveryCode,
+            customer.fullName,
+          ),
+        );
+      }
+    } catch (emitErr) {
+      this.logger.warn(`Could not emit order.shipped event for order ${orderId}: ${emitErr?.message}`);
+    }
+
+    return { success: true, message: 'GHN shipment created', data: updated, ghn: result };
+  }
+
+  async getGhnTracking(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      select: { id: true, orderCode: true, deliveryCode: true },
+    });
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+    if (!order.deliveryCode) {
+      throw new BadRequestException('Order has no deliveryCode yet');
+    }
+
+    const detail = await this.ghnService.getShippingOrderDetail(order.deliveryCode);
+    return { success: true, order, ghn: detail };
   }
 
   async calculateFee(params: {

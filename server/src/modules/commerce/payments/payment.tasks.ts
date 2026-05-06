@@ -2,17 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentTasks {
   private readonly logger = new Logger(PaymentTasks.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
 
   // Runs every hour to cancel unpaid orders older than grace period
   @Cron(CronExpression.EVERY_HOUR)
   async autoCancelUnpaidOrders() {
-    const graceHours = Number(process.env.UNPAID_CANCEL_GRACE_HOURS || 48);
+    const graceHours = Number(this.configService.get<number>('UNPAID_CANCEL_GRACE_HOURS', 48));
     const cutoff = new Date(Date.now() - graceHours * 60 * 60 * 1000);
 
     this.logger.log(`Auto-cancel job running. Grace hours=${graceHours}, cutoff=${cutoff.toISOString()}`);

@@ -3,7 +3,9 @@ import { ShippingService } from './shipping.service';
 import { CalculateFeeDto } from './dto/calculate-fee.dto';
 import { GetDistrictsDto } from './dto/get-districts.dto';
 import { GetWardsDto } from './dto/get-wards.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Shipping')
 @Controller('shipping')
 export class ShippingController {
   constructor(private readonly shippingService: ShippingService) {}

@@ -19,10 +19,12 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { ShippingService } from '@/modules/commerce/shipping/shipping.service';
 import { Request } from 'express';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
 import { UpdateDeliveryCodeDto } from './dto/update-delivery-code.dto';
 import { OrderStatus } from '@prisma/client';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface UserPayload {
   id: string;
@@ -30,10 +32,13 @@ interface UserPayload {
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('orders')
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,
+    private readonly shippingService: ShippingService,
     private prisma: PrismaService,
   ) {}
 
@@ -185,5 +190,36 @@ export class OrderController {
       id,
       updateDeliveryCodeDto.deliveryCode,
     );
+  }
+
+  /**
+   * [ADMIN] Tạo đơn vận chuyển GHN tự động từ order
+   * Order phải ở trạng thái CONFIRMED hoặc PREPARING_SHIPMENT
+   */
+  @Post(':id/create-ghn-shipment')
+  @AdminAccess()
+  createGhnShipment(@Param('id', ParseUUIDPipe) id: string) {
+    return this.shippingService.createGhnShipmentForOrder(id);
+  }
+
+  /**
+   * [ADMIN / Customer] Xem trạng thái vận chuyển GHN theo orderId
+   */
+  @Get(':id/tracking')
+  @UseGuards(JwtAuthGuard)
+  async getGhnTracking(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: UserPayload,
+  ) {
+    const loggedInUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true, role: true },
+    });
+    // Customer chỉ xem được tracking của order mình
+    const customerIdToCheck =
+      loggedInUser.role === 'ADMIN' ? undefined : loggedInUser.customerId;
+    // Verify order ownership trước khi lấy tracking
+    await this.orderService.findOne(id, customerIdToCheck);
+    return this.shippingService.getGhnTracking(id);
   }
 }

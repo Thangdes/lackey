@@ -53,14 +53,7 @@ export class PaymentService {
       description: `Thanh toan don hang ${order.orderCode}`,
     };
 
-    const encodedDescription = encodeURIComponent(vietQRData.description);
-    const encodedAccountName = encodeURIComponent(vietQRData.accountName || '');
-    const finalAmount = Math.max(0, Math.floor(Number(vietQRData.amount) || 0));
-
-
-    const qrCodeImageUrl = `https://img.vietqr.io/image/${vietQRData.bankCode}-${vietQRData.accountNumber}-compact.png?amount=${finalAmount}&addInfo=${encodedDescription}&accountName=${encodedAccountName}`;
-
-    const windowMinutes = Math.max(1, Number(process.env.ORDER_IDEMPOTENCY_MINUTES || 10));
+    const windowMinutes = Math.max(1, Number(this.configService.get<number>('ORDER_IDEMPOTENCY_MINUTES', 10)));
     const expiresAt = new Date(order.createdAt.getTime() + windowMinutes * 60 * 1000);
     const now = new Date();
     const expiresInSeconds = Math.max(0, Math.floor((expiresAt.getTime() - now.getTime()) / 1000));
@@ -88,11 +81,162 @@ export class PaymentService {
       bankCode: vietQRData.bankCode,
       bankName: this.configService.get<string>('VIETQR_BANK_NAME'),
       amount: order.totalAmount,
-      qrCodeImageUrl: qrCodeImageUrl,
       paymentId: pendingPayment.id,
       expiresAt: expiresAt.toISOString(),
       expiresInSeconds,
     };
+  }
+
+  async confirmPaymentBySepay(params: {
+    orderCode: string;
+    receivedAmount: number;
+    externalTxnId: string;
+    paidAt?: Date;
+    metadata?: Record<string, unknown>;
+  }) {
+    const { orderCode, receivedAmount, externalTxnId, paidAt, metadata } = params;
+
+    this.logger.log(
+      `SePay payment confirmation attempt | orderCode=${orderCode} | txn=${externalTxnId} | amount=${receivedAmount}`,
+    );
+
+    const alreadyProcessed = await this.prisma.payment.findFirst({
+      where: { externalTxnId },
+      select: { id: true },
+    });
+    if (alreadyProcessed) {
+      return { success: true, message: 'Already processed' };
+    }
+
+    const { updatedPayment } = await this.prisma.$transaction(async (tx) => {
+      const order = await tx.order.findFirst({
+        where: { orderCode },
+        include: {
+          payments: true,
+          orderItems: { include: { productVariant: true } },
+        },
+      });
+
+      if (!order) {
+        return { updatedPayment: null };
+      }
+
+      const pendingPayment = order.payments.find(
+        (p) => p.status === PaymentStatus.PENDING,
+      );
+      if (!pendingPayment) {
+        return { updatedPayment: null };
+      }
+
+      const expectedAmount = Number(pendingPayment.amount);
+      const tolerance = 1000;
+      if (Math.abs(receivedAmount - expectedAmount) > tolerance) {
+        throw new BadRequestException(
+          `Amount mismatch: expected ${expectedAmount}, received ${receivedAmount}`,
+        );
+      }
+
+      const transition = await tx.payment.updateMany({
+        where: { id: pendingPayment.id, status: PaymentStatus.PENDING },
+        data: {
+          status: PaymentStatus.SUCCESS,
+          paidAt: paidAt ?? new Date(),
+          confirmedBy: 'sepay-webhook',
+          confirmedAt: new Date(),
+          externalTxnId,
+          transactionCode: externalTxnId,
+        },
+      });
+
+      if (transition.count === 0) {
+        throw new BadRequestException('Payment already processed.');
+      }
+
+      const updatedPayment = await tx.payment.findUnique({
+        where: { id: pendingPayment.id },
+      });
+
+      await tx.order.updateMany({
+        where: { id: order.id, status: OrderStatus.PENDING_CONFIRMATION },
+        data: { status: OrderStatus.CONFIRMED, confirmedAt: new Date() },
+      });
+
+      const isVietQr = pendingPayment.method === PaymentMethod.VIETQR;
+      if (isVietQr) {
+        for (const item of order.orderItems) {
+          await tx.productVariant.update({
+            where: { id: item.productVariantId },
+            data: { stockQuantity: { decrement: item.quantity } },
+          });
+        }
+      }
+
+      await tx.paymentEvent.create({
+        data: {
+          paymentId: updatedPayment.id,
+          orderId: order.id,
+          type: 'CONFIRMED',
+          metadata: {
+            actor: 'sepay-webhook',
+            externalTxnId,
+            receivedAmount,
+            ...(metadata || {}),
+          },
+        },
+      });
+
+      return { updatedPayment };
+    });
+
+    if (!updatedPayment) {
+      return { success: true, message: `Order ${orderCode} not found` };
+    }
+
+    const detailedOrder = await this.prisma.order.findFirst({
+      where: { orderCode },
+      include: {
+        customer: true,
+        shippingAddress: true,
+        orderItems: { include: { productVariant: true } },
+        payments: true,
+        discount: true,
+      },
+    });
+
+    if (!detailedOrder) {
+      return { success: true, message: `Order ${orderCode} not found` };
+    }
+
+    try {
+      const existingInvoice = await this.prisma.invoice.findUnique({
+        where: { orderId: detailedOrder.id },
+      });
+      if (!existingInvoice) {
+        await this.prisma.invoice.create({
+          data: {
+            orderId: detailedOrder.id,
+            paymentId: updatedPayment.id,
+            invoiceNumber: `INV-${detailedOrder.orderCode}`,
+          },
+        });
+      }
+
+      this.eventEmitter.emit(
+        'payment.confirmed',
+        new PaymentConfirmedEvent(
+          detailedOrder.id,
+          detailedOrder.customer.email,
+          detailedOrder,
+        ),
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error during post-confirmation tasks for order ${detailedOrder.id}`,
+        error,
+      );
+    }
+
+    return { success: true, message: `Order ${orderCode} confirmed` };
   }
 
   async confirmPaymentManually(orderId: string, confirmedByUsername: string) {

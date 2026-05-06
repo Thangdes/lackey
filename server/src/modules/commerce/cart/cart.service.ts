@@ -190,30 +190,39 @@ export class CartService {
       userItems.map((item) => [item.productVariantId, item]),
     );
 
+    // ✅ Batch query để tránh N+1 problem
+    const variantIds = guestItems.map(i => i.productVariantId);
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: variantIds } },
+      select: { id: true, stockQuantity: true },
+    });
+    const variantMap = new Map(variants.map(v => [v.id, v]));
+
     for (const guestItem of guestItems) {
       const userItem = userItemMap.get(guestItem.productVariantId);
-      const variant = await this.prisma.productVariant.findUnique({
-        where: { id: guestItem.productVariantId },
-        select: { stockQuantity: true },
-      });
+      const variant = variantMap.get(guestItem.productVariantId);
       const stock = variant?.stockQuantity ?? 0;
+      
       if (userItem) {
+        // User đã có item này, cộng dồn quantity
         const finalQty = Math.max(1, Math.min(userItem.quantity + guestItem.quantity, stock));
         await this.cartRepository.updateCartItemQuantity(userItem.id, finalQty);
+        // Xóa guest item vì đã merge vào user item
+        await this.cartRepository.deleteCartItem(guestItem.id);
       } else {
+        // User chưa có item này, chuyển ownership
         const finalQty = Math.max(1, Math.min(guestItem.quantity, stock));
-        await this.cartRepository.updateCartItemQuantity(guestItem.id, finalQty);
         await this.prisma.cartItem.update({
           where: { id: guestItem.id },
-          data: { customerId, guestCartId: null },
+          data: { 
+            customerId, 
+            guestCartId: null,
+            quantity: finalQty,
+          },
         });
       }
     }
 
-    await this.cartRepository.deleteGuestCartItems(
-      guestCartId,
-      guestItems.map((i) => i.id),
-    );
     return this.getCart({ customerId }, discountCode);
   }
 

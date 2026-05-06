@@ -18,9 +18,12 @@ import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
+@ApiTags('Discounts')
+@ApiBearerAuth()
 @Controller('discounts')
 export class DiscountController {
   constructor(private readonly discountService: DiscountService) {}

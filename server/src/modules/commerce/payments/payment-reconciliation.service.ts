@@ -40,7 +40,7 @@ export class PaymentReconciliationService {
         results.push({ transactionId, status: 'skipped', reason: 'Invalid amount' });
         continue;
       }
-      const match = description.match(/(CVF-\d{10,})/i);
+      const match = description.match(/(LK-\d{10,})/i);
       if (!match) {
         results.push({ transactionId, status: 'skipped', reason: 'No order code in description' });
         continue;

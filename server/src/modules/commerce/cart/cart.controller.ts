@@ -20,11 +20,14 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { BulkSetCartDto } from './dto/bulk-set-cart.dto';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface UserPayload {
   id: string;
 }
 
+@ApiTags('Cart')
+@ApiBearerAuth()
 @Controller('cart')
 export class CartController {
   constructor(

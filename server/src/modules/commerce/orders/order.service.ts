@@ -166,7 +166,7 @@ export class OrderService {
         data: {
           customerId: finalCustomerId,
           shippingAddressId: finalAddressId,
-          orderCode: `CVF-${Date.now()}`,
+          orderCode: `LK-${Date.now()}`,
           status: OrderStatus.PENDING_CONFIRMATION,
           subtotalAmount,
           shippingFee,
@@ -206,6 +206,8 @@ export class OrderService {
             priceAtPurchase: effectivePrice,
           },
         });
+        
+        // Giảm stock cho COD ngay lập tức
         if (createOrderDto.paymentMethod === PaymentMethod.COD) {
           await tx.productVariant.update({
             where: { id: item.productVariantId },
@@ -218,9 +220,8 @@ export class OrderService {
         }
       }
 
-      if (createOrderDto.paymentMethod === PaymentMethod.COD) {
-        await tx.cartItem.deleteMany({ where: cartIdentifier });
-      }
+      // Xóa cart items sau khi tạo order thành công (cho cả COD và VIETQR)
+      await tx.cartItem.deleteMany({ where: cartIdentifier });
 
       return tx.order.findUnique({
         where: { id: order.id },

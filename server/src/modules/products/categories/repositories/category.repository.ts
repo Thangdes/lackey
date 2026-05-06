@@ -48,16 +48,18 @@ export class CategoryRepository extends BaseRepository<Category> {
   }
 
   async findTopByProductCount(limit: number) {
-    const rows: Array<{ category_id: string; cnt: number }> = await this.prisma.$queryRaw`
-      SELECT "category_id", COUNT(*) AS cnt
-      FROM "products"
-      WHERE "is_active" = true AND "category_id" IS NOT NULL
-      GROUP BY "category_id"
-      ORDER BY cnt DESC
-      LIMIT ${limit}
-    `;
+    const grouped = (await (this.prisma.product as any).groupBy({
+      by: ['categoryId'],
+      where: {
+        isActive: true,
+        categoryId: { not: null },
+      },
+      _count: { _all: true },
+      orderBy: { _count: { _all: 'desc' } },
+      take: limit,
+    })) as Array<{ categoryId: string | null; _count: { _all: number } }>;
 
-    const ids = rows.map((r) => String(r.category_id)).filter(Boolean);
+    const ids = grouped.map((r) => String(r.categoryId)).filter(Boolean);
     if (ids.length === 0) return [];
 
     const categories = await this.model.findMany({

@@ -117,10 +117,10 @@ export class ProductQueryService {
 
     const variantAndFilters: Prisma.ProductVariantWhereInput[] = [];
     if (minPriceNum !== undefined) {
-      variantAndFilters.push({ price: { gte: new Prisma.Decimal(minPriceNum) } });
+      variantAndFilters.push({ price: { gte: minPriceNum } });
     }
     if (maxPriceNum !== undefined) {
-      variantAndFilters.push({ price: { lte: new Prisma.Decimal(maxPriceNum) } });
+      variantAndFilters.push({ price: { lte: maxPriceNum } });
     }
     if (wantInStock) {
       variantAndFilters.push({ stockQuantity: { gt: 0 } });
@@ -218,10 +218,10 @@ export class ProductQueryService {
 
     const variantGroupingAnd: Prisma.ProductVariantWhereInput[] = [];
     if (minPriceNum !== undefined) {
-      variantGroupingAnd.push({ price: { gte: new Prisma.Decimal(minPriceNum) } });
+      variantGroupingAnd.push({ price: { gte: minPriceNum } });
     }
     if (maxPriceNum !== undefined) {
-      variantGroupingAnd.push({ price: { lte: new Prisma.Decimal(maxPriceNum) } });
+      variantGroupingAnd.push({ price: { lte: maxPriceNum } });
     }
     if (wantInStock) {
       variantGroupingAnd.push({ stockQuantity: { gt: 0 } });

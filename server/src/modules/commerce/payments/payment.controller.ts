@@ -6,11 +6,14 @@ import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface UserPayload {
   id: string;
 }
 
+@ApiTags('Payments')
+@ApiBearerAuth()
 @Controller('payments')
 export class PaymentController {
   constructor(
