@@ -19,18 +19,20 @@ export class HttpLoggingInterceptor implements NestInterceptor {
         const response = context.switchToHttp().getResponse();
         const { method, originalUrl, body, query, params, ip, headers } = request;
         const userAgent = headers['user-agent'] || '';
+        const requestId = request?.requestId ? String(request.requestId) : undefined;
+        const prefix = requestId ? `[${requestId}] ` : '';
 
         const startTime = Date.now();
 
         // Log request
         this.logger.log(
-            `Incoming Request: ${method} ${originalUrl}`,
+            `${prefix}Incoming Request: ${method} ${originalUrl}`,
             'HTTP',
         );
 
         // Log request details in debug mode
         this.logger.debug(
-            `Request Details - IP: ${ip}, User-Agent: ${userAgent}`,
+            `${prefix}Request Details - IP: ${ip}, User-Agent: ${userAgent}`,
             'HTTP',
         );
 
@@ -38,14 +40,14 @@ export class HttpLoggingInterceptor implements NestInterceptor {
         if (body && Object.keys(body).length > 0) {
             const sanitizedBody = this.sanitizeData(body);
             this.logger.debug(
-                `Request Body: ${JSON.stringify(sanitizedBody)}`,
+                `${prefix}Request Body: ${JSON.stringify(sanitizedBody)}`,
                 'HTTP',
             );
         }
 
         if (query && Object.keys(query).length > 0) {
             this.logger.debug(
-                `Query Params: ${JSON.stringify(query)}`,
+                `${prefix}Query Params: ${JSON.stringify(query)}`,
                 'HTTP',
             );
         }
@@ -57,7 +59,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
                     const statusCode = response.statusCode;
 
                     this.logger.log(
-                        `Outgoing Response: ${method} ${originalUrl} ${statusCode} - ${duration}ms`,
+                        `${prefix}Outgoing Response: ${method} ${originalUrl} ${statusCode} - ${duration}ms`,
                         'HTTP',
                     );
 
@@ -68,7 +70,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
                             ? responseStr.substring(0, 1000) + '...'
                             : responseStr;
                         this.logger.debug(
-                            `Response Data: ${truncated}`,
+                            `${prefix}Response Data: ${truncated}`,
                             'HTTP',
                         );
                     }
@@ -78,7 +80,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
                     const statusCode = error.status || 500;
 
                     this.logger.error(
-                        `Error Response: ${method} ${originalUrl} ${statusCode} - ${duration}ms`,
+                        `${prefix}Error Response: ${method} ${originalUrl} ${statusCode} - ${duration}ms`,
                         error.stack,
                         'HTTP',
                     );

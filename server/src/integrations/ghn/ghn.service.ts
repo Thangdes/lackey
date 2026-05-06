@@ -149,4 +149,42 @@ export class GhnService {
       return null;
     }
   }
+
+  async createShippingOrder(payload: Record<string, unknown>) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          `${this.apiUrl}/v2/shipping-order/create`,
+          payload,
+          { headers: this.getHeaders() },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(
+        'Failed to create GHN shipping order',
+        error.response?.data,
+      );
+      throw error;
+    }
+  }
+
+  async getShippingOrderDetail(orderCode: string) {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          `${this.apiUrl}/v2/shipping-order/detail`,
+          { order_code: orderCode },
+          { headers: this.getHeaders() },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch GHN order detail for ${orderCode}`,
+        error.response?.data,
+      );
+      throw error;
+    }
+  }
 }

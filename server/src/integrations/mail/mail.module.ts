@@ -10,8 +10,8 @@ const templateDir = path.resolve(process.cwd(), 'src', 'mail', 'templates');
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: Number(process.env.EMAIL_PORT) || 587,
         secure: false,
         auth: {
           user: process.env.EMAIL_USER,
@@ -19,7 +19,7 @@ const templateDir = path.resolve(process.cwd(), 'src', 'mail', 'templates');
         },
       },
       defaults: {
-        from: '"Hạt Trường Xuân Ltd" <no-reply@hatx.com>',
+        from: process.env.EMAIL_FROM || '"Lackey" <no-reply@lackey.vn>',
       },
       template: {
         dir: templateDir,

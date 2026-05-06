@@ -8,6 +8,7 @@ import { HttpLoggingInterceptor } from './infrastructure/common/interceptors/htt
 import { TransformInterceptor } from './infrastructure/common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './infrastructure/common/interceptors/timeout.interceptor';
 import { HttpExceptionFilter } from './infrastructure/common/filters/http-exception.filter';
+import { RequestLoggerMiddleware } from './infrastructure/common/middleware/request-logger.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -65,7 +66,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(
     new HttpLoggingInterceptor(logger),
     new TransformInterceptor(),
-    new TimeoutInterceptor(30000), // 30 seconds timeout
+    new TimeoutInterceptor(Number(process.env.REQUEST_TIMEOUT_MS) || 30000),
   );
 
   // Global exception filter
@@ -75,13 +76,16 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(passport.initialize());
 
+  const requestLogger = new RequestLoggerMiddleware(logger);
+  app.use((req, res, next) => requestLogger.use(req, res, next));
+
   // Swagger documentation
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('CVF API')
-      .setDescription('CVF E-commerce API Documentation')
+      .setTitle('Lackey API')
+      .setDescription('Lackey E-commerce API Documentation')
       .setVersion('1.0')
-      .addTag('cvf')
+      .addTag('lackey')
       .addBearerAuth()
       .build();
 

@@ -31,6 +31,13 @@ import { CacheModule } from '@nestjs/cache-manager';
 // import { GhnModule } from './integrations/ghn/ghn.module';
 import { LoggerModule } from './infrastructure/common/logger/logger.module';
 import { SiteSettingsModule } from './modules/content/site-settings/site-settings.module';
+import { InventoryModule } from './modules/commerce/inventory/inventory.module';
+import { WishlistModule } from './modules/commerce/wishlist/wishlist.module';
+import { AttributeModule } from './modules/products/attributes/attribute.module';
+import { BrandModule } from './modules/products/brands/brand.module';
+import { TagModule } from './modules/products/tags/tag.module';
+import { GuestCartAdminModule } from './modules/admin/guest-carts/guest-cart-admin.module';
+import { SepayModule } from './modules/sepay/subscription.module';
 
 @Module({
   imports: [
@@ -39,7 +46,7 @@ import { SiteSettingsModule } from './modules/content/site-settings/site-setting
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '.env.docker'] }),
     CacheModule.register({
       isGlobal: true,
-      ttl: 60 * 60 * 24,
+      ttl: Number(process.env.CACHE_TTL_SECONDS) || 60 * 60 * 24, // default 1 day
     }),
     // GhnModule,
     LoggerModule,
@@ -47,10 +54,32 @@ import { SiteSettingsModule } from './modules/content/site-settings/site-setting
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('REDIS_HOST', 'localhost'),
-          port: configService.get<number>('REDIS_PORT', 6379),
-        },
+        connection: (() => {
+          const redisUrl = configService.get<string>('REDIS_URL');
+          if (redisUrl) {
+            const u = new URL(redisUrl);
+            const isTls = u.protocol === 'rediss:';
+            return {
+              host: u.hostname,
+              port: u.port ? Number(u.port) : 6379,
+              username: u.username || undefined,
+              password: u.password || undefined,
+              tls: isTls ? {} : undefined,
+            };
+          }
+
+          const host = configService.get<string>('REDIS_HOST', 'localhost');
+          const port = configService.get<number>('REDIS_PORT', 6379);
+          const password = configService.get<string>('REDIS_PASSWORD');
+          const tlsEnabled = configService.get<string>('REDIS_TLS', '0') === '1';
+
+          return {
+            host,
+            port,
+            password: password || undefined,
+            tls: tlsEnabled ? {} : undefined,
+          };
+        })(),
       }),
     }),
     BullModule.registerQueue({
@@ -80,6 +109,13 @@ import { SiteSettingsModule } from './modules/content/site-settings/site-setting
     SupplierModule,
     SiteContentModule,
     SiteSettingsModule,
+    InventoryModule,
+    WishlistModule,
+    AttributeModule,
+    BrandModule,
+    TagModule,
+    GuestCartAdminModule,
+    SepayModule,
   ],
   controllers: [HealthController],
 })

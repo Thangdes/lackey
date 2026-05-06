@@ -18,6 +18,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
+        const requestId: string | undefined = (request as any)?.requestId;
+        if (requestId) {
+            try {
+                response?.setHeader?.('X-Request-Id', requestId);
+            } catch { }
+        }
 
         const status =
             exception instanceof HttpException
@@ -53,6 +59,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const errorResponse: any = {
             success: false,
             statusCode: status,
+            requestId,
             timestamp: new Date().toISOString(),
             path: request.url,
             message: this.getErrorMessage(errorDetails),

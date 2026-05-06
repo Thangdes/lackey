@@ -10,8 +10,10 @@ export class RequestLoggerMiddleware implements NestMiddleware {
     }
 
     use(req: Request, res: Response, next: NextFunction) {
-        const requestId = uuidv4();
+        const incoming = req.get('x-request-id');
+        const requestId = (incoming && String(incoming).trim()) ? String(incoming).trim() : uuidv4();
         req['requestId'] = requestId;
+        res.setHeader('X-Request-Id', requestId);
 
         const { method, originalUrl, ip } = req;
         const userAgent = req.get('user-agent') || '';

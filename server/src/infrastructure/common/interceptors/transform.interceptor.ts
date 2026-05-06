@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 export interface Response<T> {
     success: boolean;
     data: T;
+    requestId?: string;
     message?: string;
     timestamp: string;
 }
@@ -21,6 +22,16 @@ export class TransformInterceptor<T>
         context: ExecutionContext,
         next: CallHandler,
     ): Observable<Response<T>> {
+        const http = context.switchToHttp();
+        const req = http.getRequest();
+        const res = http.getResponse();
+        const requestId: string | undefined = req?.requestId;
+        if (requestId) {
+            try {
+                res?.setHeader?.('X-Request-Id', requestId);
+            } catch { }
+        }
+
         return next.handle().pipe(
             map((data) => {
                 // If data already has the response structure, return as-is
@@ -32,6 +43,7 @@ export class TransformInterceptor<T>
                 return {
                     success: true,
                     data,
+                    requestId,
                     message: data?.message || 'Success',
                     timestamp: new Date().toISOString(),
                 };
