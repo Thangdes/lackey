@@ -73,8 +73,8 @@ export default function SupplierLoginPrettyPage() {
               className="font-gumicons font-bold text-3xl xl:text-4xl leading-none tracking-[-0.02em] select-none logo-strong"
               aria-label="LắcKey"
             >
-              <span className="mr-1">HẠT TRƯỜNG</span>
-              <span className="">XUÂN</span>
+              <span className="mr-1">LẮC</span>
+              <span className="">KEY</span>
             </Link>
             <h1 className="mt-2 text-[22px] font-semibold">Đăng nhập Nhà cung cấp</h1>
             <p className="text-[15px] text-neutral-700 mt-1">Vui lòng nhập thông tin của bạn để tiếp tục.</p>

@@ -10,8 +10,8 @@ import { postService } from "@/service/post.service";
 
 export const metadata: Metadata = {
   title: `Blog | ${siteConfig.name}`,
-  description: `Tin tức, kiến thức và cảm hứng về móc khóa từ ${siteConfig.name}. Khám phá xu hướng mới nhất và hướng dẫn bảo quản.`,
-  keywords: [...siteConfig.default.keywords, "blog", "tin tức", "kiến thức móc khóa"],
+  description: `Tin tức, kiến thức và cảm hứng về bàn phím cơ từ ${siteConfig.name}. Khám phá xu hướng mới nhất và hướng dẫn build/mod.`,
+  keywords: [...siteConfig.default.keywords, "blog", "tin tức", "kiến thức bàn phím cơ"],
   alternates: { canonical: `${siteConfig.url}/blog` },
   robots: { index: true, follow: true },
   openGraph: {
@@ -71,8 +71,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             Blog
           </h1>
           <p className="text-base md:text-lg text-neutral-600 max-w-2xl">
-            Tin tức, kiến thức và cảm hứng về móc khóa. Khám phá những xu hướng mới nhất, 
-            hướng dẫn bảo quản và cách phối đồ cùng móc khóa yêu thích.
+            Tin tức, kiến thức và cảm hứng về bàn phím cơ. Khám phá những xu hướng mới nhất, 
+            hướng dẫn build/mod và tips chọn switch, keycap phù hợp.
           </p>
         </header>
         <nav className="mb-8" aria-label="Breadcrumb">

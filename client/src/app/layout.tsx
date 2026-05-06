@@ -15,6 +15,7 @@ import TopProgress from "@/components/progress/TopProgress";
 // import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
 // import ChristmasSnow from "@/components/seasonal/ChristmasSnow";
 import SkipToContent from "@/components/common/SkipToContent";
+import FloatingWidget from "@/components/common/FloatingWidget";
 import AccessibilityPanel from "@/components/dev/AccessibilityPanel";
 import { Suspense } from "react";
 const geistSans = Geist({
@@ -87,6 +88,7 @@ export default function RootLayout({
               <AuthModal />
               {/* <ChristmasPopup /> */}
               <CartBootstrap />
+              <FloatingWidget />
               <Toaster richColors position="top-right" duration={3000} />
               <AccessibilityPanel />
             </TooltipProvider>

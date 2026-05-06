@@ -1,18 +1,27 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/constant/site";
 import BannerLoader from "@/components/home/BannerLoader";
-import CategoriesGrid from "@/components/home/CategoriesGrid";
 import ClientOnly from "@/components/common/ClientOnly";
 import TestimonialsLoader from "@/components/home/TestimonialsLoader";
 import PromoStripLoader from "@/components/home/PromoStripLoader";
-import BestSellers from "@/components/home/BestSellers";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
+import ProductSection from "@/components/home/ProductSection";
 import TopCollections from "@/components/home/TopCollections";
 import MarqueeBanner from "@/components/home/MarqueeBanner";
 import RetroSaleBanner from "@/components/home/RetroSaleBanner";
-import RetroValueProps from "@/components/home/RetroValueProps";
+import CategoryIcons from "@/components/home/CategoryIcons";
+import TechNews from "@/components/home/TechNews";
 // import CustomKeychainCTA from "@/components/home/CustomKeychainCTA";
-import RetroFAQ from "@/components/home/RetroFAQ";
-import { Gift, Star, RotateCcw } from "lucide-react";
+import { 
+  KEYCAP_BRANDS, 
+  SWITCH_BRANDS, 
+  KIT_BRANDS, 
+  ACCESSORY_BRANDS,
+  KEYCAPS,
+  SWITCHES,
+  KITS,
+  ACCESSORIES
+} from "@/data/featuredProducts";
 
 export const metadata: Metadata = {
   title: siteConfig.default.title,
@@ -58,66 +67,47 @@ export default function Home() {
       <BannerLoader />
       <PromoStripLoader />
 
-      <RetroValueProps
-        title="VÌ SAO CHỌN LẮC KEY?"
-        subtitle="Móc khóa chất lượng cao - Thiết kế độc đáo - Giao hàng nhanh"
-        items={[
-          // {
-          //   icon: <Palette className="w-8 h-8" />,
-          //   title: "CUSTOM THEO Ý TƯỞNG",
-          //   description: "Thiết kế móc khóa theo hình ảnh, nhân vật yêu thích của bạn. In sắc nét, chất liệu cao cấp.",
-          //   ctaHref: "/custom-keychain",
-          //   ctaLabel: "Đặt custom ngay",
-          // },
-          {
-            icon: <Gift className="w-8 h-8" />,
-            title: "GIAO HÀNG SIÊU TỐC",
-            description: "Giao hàng toàn quốc 1-3 ngày. Đóng gói cẩn thận, an toàn tuyệt đối.",
-            ctaHref: "/shipping",
-            ctaLabel: "Xem chi tiết",
-          },
-          {
-            icon: <Star className="w-8 h-8" />,
-            title: "CHẤT LƯỢNG CAO CẤP",
-            description: "Acrylic trong suốt, bền đẹp. In offset chất lượng cao, không phai màu theo thời gian.",
-            ctaHref: "/about",
-            ctaLabel: "Cam kết",
-          },
-          {
-            icon: <RotateCcw className="w-8 h-8" />,
-            title: "ĐỔI TRẢ DỄ DÀNG",
-            description: "Đổi trả trong 7 ngày. Hoàn tiền 100% nếu có lỗi từ nhà sản xuất.",
-            ctaHref: "/return",
-            ctaLabel: "Chính sách",
-          },
-        ]}
+      <FeaturedProducts />
+
+      <ProductSection 
+        title="Keycap bán chạy"
+        brands={KEYCAP_BRANDS}
+        products={KEYCAPS}
       />
 
-      <BestSellers />
+      <ProductSection 
+        title="Switch bán chạy"
+        brands={SWITCH_BRANDS}
+        products={SWITCHES}
+      />
+
+      <ProductSection 
+        title="Kit & Combo bán chạy"
+        brands={KIT_BRANDS}
+        products={KITS}
+      />
+
+      <ProductSection 
+        title="Phụ kiện setup"
+        brands={ACCESSORY_BRANDS}
+        products={ACCESSORIES}
+      />
 
       {/* <CustomKeychainCTA /> */}
 
       <MarqueeBanner />
 
       <TopCollections />
+      
       <RetroSaleBanner />
 
       <ClientOnly>
-        <CategoriesGrid
-          title="Danh mục nổi bật"
-          subtitle="Khám phá bộ sưu tập móc khóa đa dạng từ Anime, Kpop đến Game. Tìm món đồ yêu thích của bạn!"
-          viewAllText="Xem tất cả danh mục"
-          mobileLayout="grid"
-          showDescription
-        />
+        <TestimonialsLoader />
       </ClientOnly>
 
-      <TestimonialsLoader />
+      <CategoryIcons />
 
-      <RetroFAQ
-        title="CÂU HỎI THƯỜNG GẶP"
-        subtitle="Giải đáp mọi thắc mắc của bạn về móc khóa LắcKey"
-      />
+      <TechNews />
 
     </div>
   )

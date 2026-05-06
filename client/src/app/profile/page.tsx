@@ -169,40 +169,43 @@ export default function ProfilePage() {
 
   return (
     <div className="px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-4 sm:py-6 md:py-8 xl:py-10 2xl:py-12">
+      {/* Breadcrumb */}
       <nav className="mb-6" aria-label="Breadcrumb">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black">
-          <Link href="/" className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors">Trang chủ</Link>
-          <span className="text-black font-bold">/</span>
+        <div className="inline-flex items-center gap-2 text-sm">
+          <Link href="/" className="text-neutral-600 hover:text-black transition-colors">Trang chủ</Link>
+          <span className="text-neutral-400">/</span>
           {section === "orders" ? (
             <>
-              <span className="text-sm font-bold uppercase tracking-wide text-black">Tài khoản</span>
-              <span className="text-black font-bold">/</span>
-              <span className="text-sm font-bold uppercase tracking-wide text-black">{orderTabs.find(t => t.key === activeOrderTab)?.label || "Tất cả"}</span>
+              <span className="text-black font-medium">Tài khoản</span>
+              <span className="text-neutral-400">/</span>
+              <span className="text-black font-medium">{orderTabs.find(t => t.key === activeOrderTab)?.label || "Tất cả"}</span>
             </>
           ) : (
-            <span className="text-sm font-bold uppercase tracking-wide text-black">Tài khoản</span>
+            <span className="text-black font-medium">Tài khoản</span>
           )}
         </div>
       </nav>
-      <div className="mb-8 bg-[#fff100] border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_#B5CCBC] flex items-center gap-4">
-        <div className="w-12 h-12 md:w-16 md:h-16 bg-black flex items-center justify-center border-2 border-black shrink-0">
-          <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-[#fff100]" />
+
+      {/* Header */}
+      <div className="mb-8 p-6 md:p-8 bg-white border-b-2 border-neutral-200 flex items-center gap-4">
+        <div className="w-12 h-12 md:w-16 md:h-16 bg-black flex items-center justify-center shrink-0">
+          <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-white" />
         </div>
         <div>
-          <h1 className="font-[family-name:var(--font-retro)] text-2xl md:text-3xl lg:text-4xl font-bold tracking-wider uppercase text-black">{section === "orders" ? "Đơn mua" : T.title}</h1>
-          <p className="text-black font-medium text-sm md:text-base mt-1">{section === "orders" ? "Quản lý đơn hàng của bạn" : T.subtitle}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-black">{section === "orders" ? "Đơn mua" : T.title}</h1>
+          <p className="text-neutral-600 text-sm md:text-base mt-1">{section === "orders" ? "Quản lý đơn hàng của bạn" : T.subtitle}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <ProfileSidebar
           section={section}
           onSelect={(next) => { setSection(next); updateUrl(next, activeOrderTab); }}
         />
 
-        <div className="md:col-span-2 bg-white border-4 border-black p-4 md:p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
+        <div className="md:col-span-2 bg-white p-6 md:p-8 border border-neutral-200">
           {section === "account" ? (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <AccountForm
                 form={form}
                 meEmail={me?.email ?? null}
@@ -214,30 +217,32 @@ export default function ProfilePage() {
                 onEditAddress={() => setAddrModalOpen(true)}
               />
 
-              <div className="border-4 border-black p-4 bg-neutral-50">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b-4 border-black">
+              <div className="border-t-2 border-neutral-200 pt-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
                   <div>
-                    <h3 className="text-base font-bold uppercase tracking-wide">Sổ địa chỉ</h3>
-                    <p className="text-xs text-black/70 mt-1">Quản lý các địa chỉ giao hàng đã lưu</p>
+                    <h3 className="text-lg font-bold text-black">Sổ địa chỉ</h3>
+                    <p className="text-sm text-neutral-600 mt-1">Quản lý các địa chỉ giao hàng đã lưu</p>
                   </div>
                   <button
                     onClick={() => setAddrModalOpen(true)}
-                    className="inline-flex items-center gap-2 border-2 border-black bg-black text-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-white hover:text-black transition-all shrink-0"
+                    className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-medium hover:bg-neutral-800 transition-colors shrink-0"
                   >
-                    <Plus size={14} /> <span>Thêm địa chỉ</span>
+                    <Plus size={16} /> <span>Thêm địa chỉ</span>
                   </button>
                 </div>
-                <div className="mt-3 space-y-2 text-sm">
+                <div className="space-y-3">
                   {dedupedAddresses.length === 0 && (
-                    <div className="p-3 bg-white border-2 border-neutral-300 text-neutral-600">Chưa có địa chỉ nào. Nhấn &quot;Thêm địa chỉ&quot; để lưu địa chỉ mới.</div>
+                    <div className="p-4 bg-neutral-50 border border-neutral-200 text-neutral-600 text-sm">Chưa có địa chỉ nào. Nhấn &quot;Thêm địa chỉ&quot; để lưu địa chỉ mới.</div>
                   )}
                   {dedupedAddresses.map((a) => (
-                    <div key={a.id} className="border-2 border-black p-3 bg-white">
-                      <div className="font-bold text-sm line-clamp-2">{a.fullAddress || `${a.street}, ${a.ward}, ${a.district}, ${a.city}`}</div>
-                      <div className="text-neutral-700 text-xs mt-1.5 flex flex-wrap gap-2">
-                        <span>👤 {a.recipientName}</span>
+                    <div key={a.id} className="border border-neutral-200 p-4 bg-white hover:border-black transition-colors">
+                      <div className="font-semibold text-sm mb-2">{a.fullAddress || `${a.street}, ${a.ward}, ${a.district}, ${a.city}`}</div>
+                      <div className="text-neutral-600 text-xs flex flex-wrap gap-3">
+                        <span className="flex items-center gap-1">
+                          <UserCircle className="w-3 h-3" /> {a.recipientName}
+                        </span>
                         <span>📞 {a.phoneNumber}</span>
-                        {a.isDefault && <span className="px-2 py-0.5 bg-[#fff100] border border-black text-xs font-bold">MẶC ĐỊNH</span>}
+                        {a.isDefault && <span className="px-2 py-0.5 bg-black text-white text-xs font-medium">MẶC ĐỊNH</span>}
                       </div>
                     </div>
                   ))}
@@ -292,41 +297,41 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div>
-              <div className="mb-4 pb-3 border-b-4 border-black">
-                <h2 className="text-lg md:text-xl font-bold uppercase tracking-wide">Đơn mua</h2>
-                <p className="text-xs sm:text-sm text-black/70 mt-1">Quản lý đơn hàng của bạn theo trạng thái</p>
+              <div className="mb-6 pb-4 border-b-2 border-neutral-200">
+                <h2 className="text-xl font-bold text-black">Đơn mua</h2>
+                <p className="text-sm text-neutral-600 mt-1">Quản lý đơn hàng của bạn theo trạng thái</p>
               </div>
               <Suspense
                 fallback={
                   <div className="space-y-4">
                     <div className="no-scrollbar overflow-x-auto pb-2">
-                      <div className="inline-flex items-center gap-1.5 sm:gap-2 border-b-2 border-black/10 min-w-full">
+                      <div className="inline-flex items-center gap-2 border-b-2 border-neutral-200 min-w-full">
                         {Array.from({ length: 7 }).map((_, i) => (
-                          <div key={i} className="h-10 w-20 sm:w-28 rounded-t-lg bg-gray-200 animate-pulse" />
+                          <div key={i} className="h-10 w-24 bg-gray-200 animate-pulse" />
                         ))}
                       </div>
                     </div>
                     <div className="space-y-3">
                       {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-32 sm:h-28 rounded-xl bg-gray-200 animate-pulse" />
+                        <div key={i} className="h-32 bg-gray-200 animate-pulse" />
                       ))}
                     </div>
                   </div>
                 }
               >
-                <div role="tablist" aria-label="Trạng thái đơn hàng" className="no-scrollbar overflow-x-auto -mx-4 md:-mx-6 px-4 md:px-6 pb-2">
-                  <div className="inline-flex items-center gap-2 border-b-4 border-black min-w-full">
+                <div role="tablist" aria-label="Trạng thái đơn hàng" className="no-scrollbar overflow-x-auto -mx-6 md:-mx-8 px-6 md:px-8 pb-2 mb-6">
+                  <div className="inline-flex items-center gap-2 border-b-2 border-neutral-200 min-w-full">
                     {orderTabs.map((t) => (
                       <button
                         key={t.key}
                         role="tab"
                         aria-selected={activeOrderTab === t.key}
-                        className={`relative px-3 py-2.5 text-xs font-bold uppercase whitespace-nowrap transition-all border-2 ${activeOrderTab === t.key ? "bg-black text-white border-black -mb-[2px]" : "bg-white text-black border-black hover:bg-black hover:text-white"}`}
+                        className={`relative px-4 py-3 text-sm font-medium whitespace-nowrap transition-all ${activeOrderTab === t.key ? "text-black border-b-2 border-black -mb-[2px]" : "text-neutral-600 hover:text-black"}`}
                         onClick={() => { setActiveOrderTab(t.key); setPage(1); updateUrl("orders", t.key, 1, limit); }}
                       >
-                        <span className="relative z-10">{t.label}</span>
-                        {activeOrderTab === t.key && (
-                          <span className="ml-2 inline-flex items-center bg-[#fff100] text-black px-2 py-0.5 text-[10px] font-bold border border-black relative z-10">
+                        <span>{t.label}</span>
+                        {activeOrderTab === t.key && activeTabTotal > 0 && (
+                          <span className="ml-2 inline-flex items-center bg-black text-white px-2 py-0.5 text-xs font-medium rounded-full">
                             {activeTabTotal}
                           </span>
                         )}

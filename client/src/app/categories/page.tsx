@@ -10,41 +10,41 @@ import type { Category } from '@/service/category.service'
 const MOCK_CATEGORIES: (Category & { productCount?: number })[] = [
   {
     id: '1',
-    name: 'Anime',
-    slug: 'anime',
-    description: 'Móc khóa nhân vật anime yêu thích từ các bộ phim nổi tiếng',
+    name: 'Keycap Artisan',
+    slug: 'keycap-artisan',
+    description: 'Keycap resin/epoxy handmade độc đáo với theme anime, Kpop, game',
     thumbnailUrl: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800',
     productCount: 156,
   },
   {
     id: '2',
-    name: 'Kpop',
-    slug: 'kpop',
-    description: 'Móc khóa idol Kpop, lightstick và merchandise chính hãng',
+    name: 'Switch',
+    slug: 'switch',
+    description: 'Switch bàn phím: Gateron, Cherry MX, Akko và các loại switch chất lượng',
     thumbnailUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
     productCount: 89,
   },
   {
     id: '3',
-    name: 'Game',
-    slug: 'game',
-    description: 'Móc khóa nhân vật game, logo team esports và gaming gear',
+    name: 'Bàn Phím Custom',
+    slug: 'custom-keyboard',
+    description: 'Kit barebone, bàn phím build sẵn và dịch vụ custom theo yêu cầu',
     thumbnailUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
     productCount: 124,
   },
   {
     id: '4',
-    name: 'Cartoon',
-    slug: 'cartoon',
-    description: 'Móc khóa hoạt hình Disney, Marvel, DC và cartoon nổi tiếng',
+    name: 'Phụ Kiện',
+    slug: 'accessories',
+    description: 'Dây cáp coiled, kê tay, foam mod, sticker và phụ kiện setup',
     thumbnailUrl: 'https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=800',
     productCount: 98,
   },
   {
     id: '5',
-    name: 'Custom',
-    slug: 'custom',
-    description: 'Thiết kế móc khóa theo yêu cầu, in hình cá nhân hoá',
+    name: 'Dịch Vụ',
+    slug: 'services',
+    description: 'Build theo yêu cầu, mod bàn phím, lube switch chuyên nghiệp',
     thumbnailUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',
     productCount: 45,
   },
@@ -93,7 +93,7 @@ export default function CategoriesPage() {
                 Danh Mục Sản Phẩm
               </h1>
               <p className="text-neutral-700 mt-1 font-medium">
-                Khám phá {categoryList.length} danh mục móc khóa đa dạng
+                Khám phá {categoryList.length} danh mục bàn phím cơ và phụ kiện đa dạng
               </p>
             </div>
           </div>

@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       }
     }
 
-    const title = `${category.name} | Móc Khóa LắcKey`
-    const description = category.description || `Khám phá bộ sưu tập ${category.name} tại LắcKey. Móc khóa chất lượng cao, thiết kế độc đáo.`
+    const title = `${category.name} | LắcKey`
+    const description = category.description || `Khám phá bộ sưu tập ${category.name} tại LắcKey. Bàn phím cơ, keycap chất lượng cao, thiết kế độc đáo.`
     const imageUrl = category.thumbnailUrl || 'https://res.cloudinary.com/dbonwxmgl/image/upload/v1759287451/yaq8lcv2ukostr99ofoq.jpg'
 
     return {
@@ -26,12 +26,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       keywords: [
         category.name,
-        'móc khóa',
-        'keychain',
+        'bàn phím cơ',
+        'mechanical keyboard',
+        'keycap',
         'LắcKey',
-        'móc khóa custom',
-        'phụ kiện',
-        'quà tặng',
+        'custom keyboard',
+        'phụ kiện setup',
+        'switch bàn phím',
       ],
       openGraph: {
         title,
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             alt: category.name,
           },
         ],
-        siteName: 'LắcKey - Móc Khóa Custom',
+        siteName: 'LắcKey - Custom Keyboard & Keycap',
         locale: 'vi_VN',
       },
       twitter: {

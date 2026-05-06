@@ -4,7 +4,7 @@ import { ABOUT_PAGE } from "../../constant/pages/about";
 import { ROUTES } from "@/constant/route";
 import Script from "next/script";
 import { siteConfig } from "@/constant/site";
-import { CheckCircle2, Truck, CreditCard, Phone, Mail, MapPin } from "lucide-react";
+import { CheckCircle2, Truck, Phone, Mail, MapPin } from "lucide-react";
 
 export const metadata: Metadata = {
   title: `Về ${siteConfig.name}`,
