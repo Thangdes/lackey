@@ -1,13 +1,13 @@
 services:
   # Database
-  postgres:
-    image: postgres:14
-    container_name: cvf-postgres-clientstack
+  mongo:
+    image: mongo:7
+    container_name: cvf-mongo-clientstack
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - cvf_postgres_data:/var/lib/postgresql/data
+      - cvf_mongo_data:/data/db
     env_file:
       - .env.docker
 
@@ -42,10 +42,9 @@ services:
     build:
       context: ../cvf-server
       dockerfile: Dockerfile
-    command: >
-      sh -c "npx prisma migrate deploy && node dist/main.js"
+    command: node dist/main.js
     depends_on:
-      - postgres
+      - mongo
       - redis
     expose:
       - "8000"
@@ -70,5 +69,5 @@ networks:
     driver: bridge
 
 volumes:
-  cvf_postgres_data:
+  cvf_mongo_data:
   cvf_redis_data:
