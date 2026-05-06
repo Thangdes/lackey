@@ -45,20 +45,37 @@ export class DashboardService {
     const group = (query.groupBy ?? 'day').toLowerCase();
     const granularity = group === 'week' ? 'week' : group === 'month' ? 'month' : 'day';
 
-    const sql = `
-      SELECT DATE_TRUNC('${granularity}', "created_at")::DATE as date, SUM("total_amount") as revenue
-      FROM "orders"
-      WHERE "status" = 'COMPLETED' AND "created_at" BETWEEN $1 AND $2
-      GROUP BY date
-      ORDER BY date ASC;
-    `;
+    const orders = await this.prisma.order.findMany({
+      where: {
+        status: OrderStatus.COMPLETED,
+        createdAt: { gte: startDate, lte: endDate },
+      },
+      select: {
+        createdAt: true,
+        totalAmount: true,
+      },
+    });
 
-    const results: { date: Date; revenue: any }[] = await this.prisma.$queryRawUnsafe(sql, startDate, endDate);
+    const bucket = (d: Date) => {
+      const base = dayjs(d);
+      if (granularity === 'week') return base.startOf('week').toDate();
+      if (granularity === 'month') return base.startOf('month').toDate();
+      return base.startOf('day').toDate();
+    };
 
-    return results.map((r) => ({
-      date: r.date,
-      revenue: Number(r.revenue ?? 0),
-    }));
+    const revenueByDate = new Map<number, number>();
+    for (const o of orders) {
+      const k = bucket(o.createdAt).getTime();
+      const prev = revenueByDate.get(k) ?? 0;
+      revenueByDate.set(k, prev + Number(o.totalAmount ?? 0));
+    }
+
+    return Array.from(revenueByDate.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([ts, revenue]) => ({
+        date: new Date(ts),
+        revenue,
+      }));
   }
 
   async getTopProducts(query: DashboardQueryDto) {

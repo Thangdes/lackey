@@ -3,7 +3,10 @@ import { DashboardService } from './dashboard.service';
 import { DashboardQueryDto } from './dto/dashboard-query.dto';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Admin - Dashboard')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, AdminGuard)
 @Controller('dashboard')
 export class DashboardController {

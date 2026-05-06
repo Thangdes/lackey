@@ -14,7 +14,10 @@ import { CreateCmspageDto } from './dto/create-cmspage.dto';
 import { UpdateCmspageDto } from './dto/update-cmspage.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('CMS Pages')
+@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), AdminGuard)
 @Controller('cms-pages')
 export class CmspageController {

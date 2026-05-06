@@ -15,7 +15,10 @@ import { JwtAuthGuard } from '../../auth/auth.gaurd';
 import { AdminGuard } from '../../auth/admin.gaurd';
 import { CreateSupplierUserDto } from './dto/create-supplier-user.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Admin - Suppliers')
+@ApiBearerAuth()
 @Controller('admin/suppliers')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class SupplierController {

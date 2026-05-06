@@ -26,6 +26,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { applyDecorators } from '@nestjs/common';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
@@ -33,6 +34,8 @@ interface UserPayload {
   id: string;
 }
 
+@ApiTags('Posts')
+@ApiBearerAuth()
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}

@@ -31,9 +31,12 @@ import { ProductVariantDto } from './dto/product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ProductQueryDto } from './dto/product-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
+@ApiTags('Products')
+@ApiBearerAuth()
 @Controller('products')
 export class ProductController {
   constructor(

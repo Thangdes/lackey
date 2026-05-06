@@ -21,11 +21,14 @@ import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { OwnershipGuard } from '@/modules/auth/ownership.guard';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 const StaffAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 const OwnerOrAdminAccess = () =>
   applyDecorators(UseGuards(JwtAuthGuard, OwnershipGuard));
 
+@ApiTags('Customers')
+@ApiBearerAuth()
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}

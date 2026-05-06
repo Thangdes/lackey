@@ -25,18 +25,21 @@ import {
   import { ContentType } from '@prisma/client';
 import { UpdateSiteContentDto } from './dto/update-site-content.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-  
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
   const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
-  
+
+  @ApiTags('Site Content')
+  @ApiBearerAuth()
   @Controller('site-content')
   export class SiteContentController {
     constructor(private readonly siteContentService: SiteContentService) {}
-  
+
     @Get('/banners')
     findBanners() {
       return this.siteContentService.findPublishedBanners();
     }
-  
+
     @Get('/testimonials')
     findTestimonials() {
       return this.siteContentService.findPublishedTestimonials();

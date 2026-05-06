@@ -25,9 +25,12 @@ import { JwtAuthGuard } from '../../auth/auth.gaurd';
 import { AdminGuard } from '../../auth/admin.gaurd';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
+@ApiTags('Categories')
+@ApiBearerAuth()
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

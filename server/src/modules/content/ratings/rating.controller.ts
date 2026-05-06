@@ -17,6 +17,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface UserPayload {
   id: string;
@@ -24,6 +25,8 @@ interface UserPayload {
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
+@ApiTags('Ratings')
+@ApiBearerAuth()
 @Controller('ratings')
 export class RatingController {
   constructor(
