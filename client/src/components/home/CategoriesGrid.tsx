@@ -8,43 +8,49 @@ import type { Category } from "@/service/category.service";
 import { ROUTES, buildCategoryPath } from "@/constant/route";
 import { ArrowRight } from "lucide-react";
 
-// Mock categories cho demo
+// Mock categories cho demo - Keyboard themed
 const MOCK_CATEGORIES: Category[] = [
   {
-    id: "1",
-    name: "Anime",
-    slug: "anime",
-    thumbnailUrl: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400",
+    id: "cat-keycap",
+    name: "Keycap",
+    slug: "keycap",
+    thumbnailUrl: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400",
+    description: "Keycap PBT, ABS, Artisan",
   },
   {
-    id: "2",
-    name: "Kpop",
-    slug: "kpop",
-    thumbnailUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400",
+    id: "cat-switch",
+    name: "Switch",
+    slug: "switch",
+    thumbnailUrl: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400",
+    description: "Linear, Tactile, Clicky",
   },
   {
-    id: "3",
-    name: "Game",
-    slug: "game",
-    thumbnailUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400",
+    id: "cat-keyboard",
+    name: "Bàn Phím",
+    slug: "keyboard",
+    thumbnailUrl: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400",
+    description: "60%, 65%, 75%, TKL",
   },
   {
-    id: "4",
-    name: "Cartoon",
-    slug: "cartoon",
-    thumbnailUrl: "https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400",
+    id: "cat-kit",
+    name: "Kit",
+    slug: "kit-barebone",
+    thumbnailUrl: "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=400",
+    description: "Barebone, Hotswap",
   },
   {
-    id: "5",
-    name: "Custom",
-    slug: "custom",
-    thumbnailUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+    id: "cat-cable",
+    name: "Dây Cáp",
+    slug: "cable",
+    thumbnailUrl: "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400",
+    description: "Custom Coiled Cable",
   },
   {
-    id: "6",
-    name: "LED",
-    slug: "led",
-    thumbnailUrl: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+    id: "cat-accessories",
+    name: "Phụ Kiện",
+    slug: "accessories",
+    thumbnailUrl: "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=400",
+    description: "Kê tay, Foam, Lube",
   },
 ];
 

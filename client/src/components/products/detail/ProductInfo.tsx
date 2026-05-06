@@ -55,38 +55,38 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   return (
     <div>
       {outOfStock && (
-        <div className="mb-3 inline-block px-4 py-1 bg-red-600 border-2 border-black">
-          <span className="text-xs font-bold uppercase tracking-wider text-white">Hết hàng</span>
+        <div className="mb-3 inline-block">
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-semibold border border-red-100">Hết hàng</span>
         </div>
       )}
       
       <h1 
-        className="font-[family-name:var(--font-retro)] text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider text-black leading-tight line-clamp-2 mb-2" 
+        className="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight line-clamp-2 mb-2" 
         title={name}
       >
         {name}
       </h1>
       {categoryName && (
-        <p className="text-sm font-medium text-neutral-700 mb-3">Danh mục: <span className="font-bold">{categoryName}</span></p>
+        <p className="text-sm text-neutral-500 mb-3">Danh mục: <span className="font-medium text-neutral-700">{categoryName}</span></p>
       )}
       
-      <div className="flex items-center gap-2 text-sm text-neutral-700 mb-4">
+      <div className="flex items-center gap-2 text-sm text-neutral-600 mb-4">
         <div className="flex items-center gap-0.5" aria-label={`Đánh giá ${ratingValue.toFixed(1)}/5`}>
           {Array.from({ length: 5 }).map((_, i) => (
-            <IoIosStar key={i} className={`h-4 w-4 ${i < fullStars ? "text-[#fff100]" : "text-neutral-300"}`} style={i < fullStars ? {stroke: "#000", strokeWidth: "1px"} : {}} />
+            <IoIosStar key={i} className={`h-4 w-4 ${i < fullStars ? "text-amber-400" : "text-neutral-200"}`} />
           ))}
         </div>
-        <span className="font-bold">{ratingValue.toFixed(1)}</span>
-        <span className="text-neutral-600">({ratingCount} đánh giá)</span>
+        <span className="font-semibold text-neutral-900">{ratingValue.toFixed(1)}</span>
+        <span className="text-neutral-400">({ratingCount} đánh giá)</span>
       </div>
       {/* SKU, Stock, and Share buttons in ONE ROW */}
       <div className="flex flex-wrap items-center gap-2 text-xs mb-4">
         {selectedVariant?.sku && (
-          <span className="inline-flex items-center bg-white text-black px-3 py-1.5 border-2 border-black font-bold uppercase">SKU: {selectedVariant.sku}</span>
+          <span className="inline-flex items-center bg-neutral-100 text-neutral-600 px-3 py-1.5 rounded-full font-medium">SKU: {selectedVariant.sku}</span>
         )}
         {!outOfStock && (
-          <span className={`inline-flex items-center px-3 py-1.5 border-2 font-bold uppercase ${totalStock <= 5 ? 'bg-amber-100 text-amber-900 border-amber-600' : 'bg-emerald-100 text-emerald-900 border-emerald-600'}`}>
-            <FiPackage className={`h-3.5 w-3.5 mr-1.5 ${totalStock <= 5 ? 'text-amber-700' : 'text-emerald-700'}`} />
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium ${totalStock <= 5 ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
+            <FiPackage className="h-3.5 w-3.5" />
             {totalStock}+ {stockUnit}
           </span>
         )}
@@ -96,17 +96,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             variant={selectedVariant}
             size="md"
             showLabel={true}
-            className="!inline-flex items-center gap-2 !px-3 !py-2 !text-xs !font-bold !uppercase !border-2 !border-black !bg-white hover:!bg-black hover:!text-white !transition-all !rounded-none !w-auto !h-auto"
+            className="!inline-flex items-center gap-2 !px-3 !py-1.5 !text-xs !font-medium !border !border-neutral-200 !bg-white hover:!bg-neutral-50 !transition-all !rounded-full !w-auto !h-auto !text-neutral-700"
           />
         )}
         {onShare && (
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase border-2 border-black bg-white hover:bg-black hover:text-white transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-neutral-200 bg-white rounded-full hover:bg-neutral-50 text-neutral-600 transition-all"
             aria-label="Chia sẻ sản phẩm"
             onClick={onShare}
           >
-            <FiShare2 className="h-4 w-4" />
+            <FiShare2 className="h-3.5 w-3.5" />
             Chia sẻ
           </button>
         )}

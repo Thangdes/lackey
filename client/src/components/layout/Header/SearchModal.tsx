@@ -203,7 +203,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSearch();
                 }}
-                placeholder="Tìm kiếm móc khóa, anime, kpop..."
+                placeholder="Tìm kiếm bàn phím, keycap, switch..."
                 className="w-full px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg border-2 border-black focus:outline-none focus:border-black bg-white text-black placeholder:text-gray-400"
               />
               <Search className="absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-400" />

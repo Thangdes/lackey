@@ -182,7 +182,7 @@ const Footer = () => {
                 <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
                     <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-xs text-gray-400 text-center md:text-left">
                         <span> 2025, LắcKey</span>
-                        <Link href={ROUTES.home} className="hover:text-white">Powered by <span className="font-bold underline">Annamite Labs</span></Link>
+                        {/* <Link href={ROUTES.home} className="hover:text-white">Powered by <span className="font-bold underline">Annamite Labs</span></Link> */}
                         <Link href={ROUTES.return} className="hover:text-white">Chính sách đổi trả</Link>
                         <Link href={ROUTES.privacy} className="hover:text-white">Chính sách bảo mật</Link>
                         <Link href={ROUTES.terms} className="hover:text-white">Điều khoản dịch vụ</Link>

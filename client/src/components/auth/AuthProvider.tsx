@@ -105,6 +105,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const u = prof ? ({ name: (prof.name ?? prof.username), email: prof.email || email } as AuthUser) : ({ email } as AuthUser);
     persist(u, remember);
 
+    try {
+      qc.setQueryData(keys.profile(), prof);
+      await qc.invalidateQueries({ queryKey: keys.profile() });
+      await qc.refetchQueries({ queryKey: keys.profile() });
+    } catch {}
+
+    if (typeof window !== 'undefined') {
+      try { window.dispatchEvent(new CustomEvent('auth:login-success')); } catch {}
+    }
+
     if (typeof window !== 'undefined') {
       try { window.localStorage.removeItem('cartItems'); } catch {}
     }
@@ -119,7 +129,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const prof = await authService.profile().catch(() => null);
     const u = prof ? ({ name: (prof.name ?? prof.username ?? name), email: prof.email || email } as AuthUser) : ({ name, email } as AuthUser);
     persist(u, remember);
-  }, [persist]);
+
+    try {
+      qc.setQueryData(keys.profile(), prof);
+      await qc.invalidateQueries({ queryKey: keys.profile() });
+      await qc.refetchQueries({ queryKey: keys.profile() });
+    } catch {}
+
+    if (typeof window !== 'undefined') {
+      try { window.dispatchEvent(new CustomEvent('auth:login-success')); } catch {}
+    }
+  }, [persist, qc]);
 
   const logout = useCallback(async () => {
     try {

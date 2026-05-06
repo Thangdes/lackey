@@ -81,7 +81,7 @@ export default function RetroSaleBanner() {
             </div>
 
             <p className="text-xl md:text-2xl lg:text-3xl text-black font-bold mb-8 uppercase tracking-wide">
-              Super Discount - Móc khóa chất lượng cao
+              Super Discount - Bàn phím cơ & Keycap chất lượng cao
             </p>
             <Link
               href="/products?sale=true"

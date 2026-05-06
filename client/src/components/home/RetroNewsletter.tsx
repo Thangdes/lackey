@@ -15,7 +15,7 @@ export type RetroNewsletterProps = {
 
 const RetroNewsletter: React.FC<RetroNewsletterProps> = ({
   title = "NHẬN ƯU ĐÃI ĐẶC BIỆT",
-  subtitle = "Đăng ký ngay để nhận thông tin về sản phẩm mới, khuyến mãi độc quyền và tips chăm sóc móc khóa!",
+  subtitle = "Đăng ký ngay để nhận thông tin về đợt GB mới, khuyến mãi độc quyền và tips chơi phím cơ!",
   placeholder = "Email của bạn...",
   ctaLabel = "ĐĂNG KÝ NGAY",
   onSubscribe,

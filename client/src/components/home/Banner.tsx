@@ -21,13 +21,13 @@ const defaultItems: BannerItem[] = [
   {
     imageUrl:
       'https://cdn.dribbble.com/userupload/18593430/file/original-584f68940e003859095420105796187c.png?resize=1024x768&vertical=center',
-    alt: 'Móc khóa đa dạng mẫu mã',
+    alt: 'Kit phím & Keycap đa dạng mẫu mã',
     href: '/products',
   },
   {
     imageUrl:
       'https://cdn.dribbble.com/userupload/43042575/file/original-39a16b2b624c7e0e29de8f50ecc36e7f.png?format=webp&resize=450x338&vertical=center',
-    alt: 'Thiết kế móc khóa theo ý tưởng',
+    alt: 'Build bàn phím theo ý tưởng',
     href: '/products?sort=popularity',
   },
   {

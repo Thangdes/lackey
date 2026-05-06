@@ -167,10 +167,10 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
 
       <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
         <Link href={ROUTES.products} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
-          Tất Cả
+          Sản phẩm
         </Link>
         <Link href={ROUTES.blog} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
-          Blog
+          Tin tức
         </Link>
         <Link href="/about" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Giới thiệu
@@ -223,7 +223,7 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                   id="user-menu"
                   role="menu"
                   aria-label="Tài khoản"
-                  className="absolute right-0 mt-3 w-56 bg-white text-black border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC] overflow-hidden z-50"
+                  className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-neutral-200/80 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200"
                   onKeyDown={(e) => {
                     const idx = itemRefs.current.findIndex((el) => el === document.activeElement)
                     if (e.key === 'ArrowDown') {
@@ -247,49 +247,67 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
                     }
                   }}
                 >
-                  <div className="bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black px-4 py-3">
-                    <div className="text-xs font-bold text-white uppercase tracking-wider">Tài khoản</div>
-                    <div className="text-xs text-white/90 mt-0.5 truncate">{user?.username || user?.email}</div>
+                  <div className="bg-gradient-to-br from-neutral-50 to-neutral-100/50 px-4 py-4 border-b border-neutral-200/60">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                        {(user?.name?.[0] || user?.username?.[0] || user?.email?.[0] || 'U').toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-neutral-900 truncate">
+                          {user?.name || user?.username || user?.email?.split('@')[0] || 'Người dùng'}
+                        </div>
+                        <div className="text-xs text-neutral-500 truncate mt-0.5">
+                          {user?.email}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-1">
+                  <div className="py-2 px-2">
                     <button
                       type="button"
                       role="menuitem"
                       ref={(el) => { itemRefs.current[0] = el }}
-                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 rounded-lg text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 focus:bg-neutral-50 focus:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-200 transition-all duration-150"
                       onClick={(e) => {
                         e.preventDefault();
                         setAcctOpen(false);
                         router.push(ROUTES.profile);
                       }}
                     >
-                      <User className="h-4 w-4 text-[#AE1C2C]" />
-                      <span>Tài khoản của tôi</span>
+                      <div className="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                        <User className="h-4 w-4 text-neutral-600" />
+                      </div>
+                      <span className="font-medium">Tài khoản của tôi</span>
                     </button>
                     <button
                       type="button"
                       role="menuitem"
                       ref={(el) => { itemRefs.current[1] = el }}
-                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 rounded-lg text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 focus:bg-neutral-50 focus:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-200 transition-all duration-150"
                       onClick={(e) => {
                         e.preventDefault();
                         setAcctOpen(false);
                         router.push(`${ROUTES.profile}?section=orders&tab=all&page=1&limit=10`);
                       }}
                     >
-                      <ShoppingBag className="h-4 w-4 text-[#AE1C2C]" />
-                      <span>Đơn mua</span>
+                      <div className="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center">
+                        <ShoppingBag className="h-4 w-4 text-neutral-600" />
+                      </div>
+                      <span className="font-medium">Đơn mua</span>
                     </button>
-                    <div className="mx-2 my-1 border-t-2 border-black"></div>
+                  </div>
+                  <div className="border-t border-neutral-200/60 py-2 px-2">
                     <button
                       type="button"
                       role="menuitem"
                       ref={(el) => { itemRefs.current[2] = el }}
-                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] focus:border-[#AE1C2C] focus:bg-[#FFF8E7] focus:outline-none transition-all font-medium"
+                      className="flex items-center gap-3 w-full text-left text-sm px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-200 transition-all duration-150"
                       onClick={() => { setAcctOpen(false); logout.mutate(); }}
                     >
-                      <LogOut className="h-4 w-4 text-[#AE1C2C]" />
-                      <span>Đăng xuất</span>
+                      <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
+                        <LogOut className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-medium">Đăng xuất</span>
                     </button>
                   </div>
                 </div>

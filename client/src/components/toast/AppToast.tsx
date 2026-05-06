@@ -4,6 +4,7 @@ import React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { AppToastOptions } from "@/type/toast";
+import { CheckCircle2, AlertCircle, Info } from "lucide-react";
 
 function BaseToast({
   title,
@@ -12,36 +13,46 @@ function BaseToast({
   onAction,
   tone = "info",
 }: { title?: string; message?: string; actionLabel?: string; onAction?: () => void; tone?: "success" | "error" | "info" }) {
-  const toneClasses =
-    tone === "success"
-      ? "border-[#B5CCBC] bg-[#f0f5f2] shadow-[4px_4px_0px_0px_rgba(181,204,188,0.4)]"
-      : tone === "error"
-      ? "border-[#E3B1B4] bg-[#fdf5f5] shadow-[4px_4px_0px_0px_rgba(227,177,180,0.4)]"
-      : "border-[#5A5E63] bg-[#fafafa] shadow-[4px_4px_0px_0px_rgba(90,94,99,0.2)]";
-  const titleClasses =
-    tone === "success"
-      ? "text-[#2f4f4f]"
-      : tone === "error"
-      ? "text-[#5A5E63]"
-      : "text-[#5A5E63]";
-  const accentColor =
-    tone === "success"
-      ? "bg-[#B5CCBC]"
-      : tone === "error"
-      ? "bg-[#E3B1B4]"
-      : "bg-[#5A5E63]";
+  
+  const styles = {
+    success: {
+      wrapper: "border-[#B5CCBC] bg-white shadow-xl shadow-[#B5CCBC]/10",
+      icon: <CheckCircle2 className="w-5 h-5 text-[#B5CCBC] mt-0.5" />,
+      title: "text-[#2f4f4f]",
+      accent: "bg-[#B5CCBC]",
+    },
+    error: {
+      wrapper: "border-[#E3B1B4] bg-white shadow-xl shadow-[#E3B1B4]/10",
+      icon: <AlertCircle className="w-5 h-5 text-[#E3B1B4] mt-0.5" />,
+      title: "text-[#5A5E63]",
+      accent: "bg-[#E3B1B4]",
+    },
+    info: {
+      wrapper: "border-[#5A5E63] bg-white shadow-xl shadow-[#5A5E63]/10",
+      icon: <Info className="w-5 h-5 text-[#5A5E63] mt-0.5" />,
+      title: "text-[#5A5E63]",
+      accent: "bg-[#5A5E63]",
+    }
+  };
+
+  const currentStyle = styles[tone];
 
   return (
-    <div className={`flex w-[320px] sm:w-[360px] items-start gap-3 rounded-none border-3 ${toneClasses} p-4 transition-all duration-300 animate-in slide-in-from-bottom-5`}>
-      <div className={`w-1 h-full ${accentColor} rounded-full shrink-0`} />
+    <div className={`flex w-[320px] sm:w-[360px] items-start gap-3 rounded-xl border border-neutral-100 ${currentStyle.wrapper} p-4 transition-all duration-300 animate-in slide-in-from-bottom-5`}>
+      <div className={`w-1.5 h-full min-h-[40px] ${currentStyle.accent} rounded-full shrink-0`} />
+      
+      <div className="shrink-0">
+        {currentStyle.icon}
+      </div>
+
       <div className="min-w-0 flex-1">
         {title ? (
-          <div className={`font-[family-name:var(--font-retro)] text-base font-bold ${titleClasses} truncate uppercase tracking-wide`}>
+          <div className={`text-sm font-bold ${currentStyle.title} truncate tracking-tight`}>
             {title}
           </div>
         ) : null}
         {message ? (
-          <div className="mt-1.5 text-sm text-[#2f4f4f]/80 line-clamp-3 leading-relaxed">
+          <div className="mt-1 text-sm text-neutral-500 line-clamp-3 leading-relaxed">
             {message}
           </div>
         ) : null}
@@ -50,7 +61,7 @@ function BaseToast({
             <Button 
               size="sm" 
               variant={tone === "error" ? "destructive" : "secondary"} 
-              className="h-8 px-4 rounded-none border-2 font-medium uppercase tracking-wide text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all" 
+              className="h-8 px-4 rounded-lg font-medium text-xs transition-all" 
               onClick={onAction}
             >
               {actionLabel}

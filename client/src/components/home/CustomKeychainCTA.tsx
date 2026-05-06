@@ -36,15 +36,15 @@ export default function CustomKeychainCTA() {
               </div>
 
               <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-black leading-tight tracking-wider">
-                CUSTOM<br />
-                MÓC KHÓA<br />
+                BUILD<br />
+                BÀN PHÍM<br />
                 <span className="text-[#229090]">THEO Ý BẠN</span>
               </h2>
 
               <p className="text-lg md:text-xl text-black/80 leading-relaxed">
-                Gửi hình ảnh, concept, nhân vật yêu thích của bạn. 
-                Chúng tôi sẽ thiết kế và in móc khóa acrylic chất lượng cao, 
-                hoàn toàn độc quyền cho riêng bạn!
+                Gửi cấu hình, sở thích âm thanh, hay thiết kế bạn mong muốn.
+                Chúng tôi sẽ tư vấn build kit, lube switch chuyên nghiệp và đem đến
+                cho bạn chiếc bàn phím hoàn hảo nhất!
               </p>
 
               <div className="space-y-3">

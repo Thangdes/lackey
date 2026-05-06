@@ -69,14 +69,14 @@ function MarqueeContent() {
     <div className="flex items-center gap-8 md:gap-12 pr-8 md:pr-12">
       {/* Text 1 */}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
-        BỘ SƯU TẬP #1
+        KEYCAP ARTISAN
       </span>
 
       {/* Product Image 1 */}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
-          src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400"
-          alt="Móc khóa Anime"
+          src="https://images.unsplash.com/photo-1595225476474-87563907a212?w=400"
+          alt="Keycap Artisan"
           fill
           className="object-cover"
         />
@@ -84,14 +84,14 @@ function MarqueeContent() {
 
       {/* Text 2 */}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
-        ANIME
+        CUSTOM BUILD
       </span>
 
       {/* Product Image 2 */}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
-          src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"
-          alt="Móc khóa Kpop"
+          src="https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400"
+          alt="Custom Keyboard"
           fill
           className="object-cover"
         />
@@ -99,14 +99,14 @@ function MarqueeContent() {
 
       {/* Text 3 */}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
-        KPOP
+        SWITCH
       </span>
 
       {/* Product Image 3 */}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
-          src="https://images.unsplash.com/photo-1530325553241-4f6e7690cf36?w=400"
-          alt="Móc khóa Cartoon"
+          src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400"
+          alt="Mechanical Switch"
           fill
           className="object-cover"
         />
@@ -114,14 +114,14 @@ function MarqueeContent() {
 
       {/* Text 4 */}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
-        GAME
+        SETUP ĐỈNH CAO
       </span>
 
       {/* Product Image 4 */}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
-          src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400"
-          alt="Móc khóa Game"
+          src="https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400"
+          alt="Keyboard Setup"
           fill
           className="object-cover"
         />

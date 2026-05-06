@@ -13,7 +13,7 @@ export function GallerySection() {
     let mounted = true;
     (async () => {
       try {
-        const list = await siteContentService.getKeychainGallery();
+        const list = await siteContentService.getProductGallery();
         if (!mounted) return;
         setImages((list || []).map((it) => it.imageUrl).filter(Boolean));
       } finally {

@@ -13,61 +13,61 @@ export type { AddToCartToastPayload };
 
 export function showAddedToCartToast({ name, thumbnailUrl, quantity = 1 }: AddToCartToastPayload) {
   toast.custom((t) => (
-    <div className="flex w-[340px] sm:w-[380px] flex-col rounded-none border-3 border-black bg-[#f5f1e8] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 animate-in slide-in-from-bottom-5">
-      <div className="flex items-center gap-3 border-b-3 border-black bg-[#fff100] px-4 py-3">
-        <div className="flex items-center justify-center w-10 h-10 rounded-none border-2 border-black bg-black shrink-0">
-          <CheckCircle2 className="w-6 h-6 text-[#fff100]" strokeWidth={2.5} />
+    <div className="flex w-[340px] sm:w-[380px] flex-col rounded-2xl border border-neutral-100 bg-white shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-5 overflow-hidden">
+      <div className="flex items-center gap-3 bg-[var(--brand-accent)] px-4 py-3 text-white">
+        <div className="flex items-center justify-center shrink-0">
+          <CheckCircle2 className="w-5 h-5" strokeWidth={2} />
         </div>
-        <div className="font-[family-name:var(--font-retro)] text-base font-bold text-black uppercase tracking-wider flex-1">
+        <div className="text-sm font-semibold tracking-wide flex-1">
           ĐÃ THÊM VÀO GIỎ
         </div>
         <button
           onClick={() => toast.dismiss(t)}
-          className="w-8 h-8 flex items-center justify-center border-2 border-black bg-white hover:bg-black hover:text-white transition-colors"
+          className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
         >
-          <X className="w-4 h-4" strokeWidth={2.5} />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
-      <div className="flex items-start gap-3 p-4">
+      <div className="flex items-start gap-4 p-4">
         {thumbnailUrl ? (
-          <div className="relative h-16 w-16 overflow-hidden rounded-none border-2 border-black bg-white shrink-0">
+          <div className="relative h-16 w-16 overflow-hidden rounded-xl border border-neutral-100 bg-neutral-50 shrink-0">
             <Image src={thumbnailUrl} alt={name} fill className="object-cover" />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-16 w-16 rounded-none border-2 border-black bg-white shrink-0">
-            <ShoppingCart className="w-8 h-8 text-black" strokeWidth={2} />
+          <div className="flex items-center justify-center h-16 w-16 rounded-xl border border-neutral-100 bg-neutral-50 shrink-0">
+            <ShoppingCart className="w-6 h-6 text-neutral-400" strokeWidth={1.5} />
           </div>
         )}
 
-        <div className="min-w-0 flex-1 space-y-2">
-          <div className="text-sm text-[#2d2d2d] line-clamp-2 leading-snug font-bold">
+        <div className="min-w-0 flex-1 space-y-1.5 pt-1">
+          <div className="text-sm text-neutral-900 line-clamp-2 leading-snug font-medium">
             {name}
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-white border-2 border-black">
-            <span className="text-xs text-[#2d2d2d] font-bold uppercase">Số lượng:</span>
-            <span className="text-xs text-black font-bold">{quantity}</span>
+          <div className="inline-flex items-center gap-1.5">
+            <span className="text-xs text-neutral-500">Số lượng:</span>
+            <span className="text-xs text-neutral-900 font-semibold">{quantity}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 px-4 pb-4">
+      <div className="flex items-center gap-3 px-4 pb-4">
         <Button 
           asChild 
           size="sm" 
-          className="flex-1 h-10 px-4 rounded-none border-3 border-black bg-[#2d2d2d] text-white font-bold uppercase tracking-wider text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
+          className="flex-1 h-10 px-4 rounded-xl bg-neutral-900 text-white font-medium text-xs hover:bg-neutral-800 transition-all"
         >
           <Link href={ROUTES.cart} onClick={() => toast.dismiss(t)}>
-            XEM GIỎ
+            XEM GIỎ HÀNG
           </Link>
         </Button>
         <Button 
           size="sm" 
-          className="flex-1 h-10 px-4 rounded-none border-3 border-black bg-white text-black font-bold uppercase tracking-wider text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all" 
+          className="flex-1 h-10 px-4 rounded-xl border border-neutral-200 bg-white text-neutral-700 font-medium text-xs hover:bg-neutral-50 hover:text-neutral-900 transition-all" 
           onClick={() => toast.dismiss(t)}
         >
-          TIẾP TỤC
+          TIẾP TỤC MUA SẮM
         </Button>
       </div>
     </div>

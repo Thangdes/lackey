@@ -1,7 +1,7 @@
 'use client'
 import React, { useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Eye, EyeOff } from 'lucide-react'
+import { X, Eye, EyeOff, Mail, Lock, User, AlertCircle, Loader2, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useAuthModalStore } from '@/store/authModal'
@@ -28,7 +28,7 @@ const useIsMounted = () => {
 
 const Overlay: React.FC<{ onClose: () => void }> = ({ onClose }) => (
   <div
-    className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
+    className="fixed inset-0 z-[100] bg-neutral-900/40 backdrop-blur-sm transition-opacity"
     onClick={onClose}
     aria-hidden="true"
   />
@@ -39,26 +39,28 @@ const Panel: React.FC<React.PropsWithChildren<{ title: string; onClose: () => vo
     role="dialog"
     aria-modal
     aria-labelledby="auth-modal-title"
-    className="fixed inset-0 z-[101] flex items-center justify-center p-3 sm:p-4"
+    className="fixed inset-0 z-[101] flex items-center justify-center p-4 sm:p-6"
   >
-    <div className="relative w-full max-w-md bg-white border-4 border-black shadow-[12px_12px_0px_0px_#B5CCBC]">
+    <div className="relative w-full max-w-[400px] bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
       <button
         type="button"
         aria-label="Đóng"
         onClick={onClose}
-        className="absolute right-2 top-2 sm:right-3 sm:top-3 inline-flex h-8 w-8 items-center justify-center bg-white border-2 border-black text-black hover:bg-black hover:text-white transition-colors z-10"
+        className="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900 transition-colors z-10"
       >
         <X className="size-4" />
       </button>
       
-      <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-4 border-b-4 border-black">
-        <h2 id="auth-modal-title" className="font-[family-name:var(--font-retro)] text-2xl sm:text-3xl font-bold tracking-wider uppercase pr-10">
+      <div className="px-6 sm:px-8 pt-10 pb-6 text-center">
+        <h2 id="auth-modal-title" className="text-2xl font-bold tracking-tight text-neutral-900">
           {title}
         </h2>
-        <p className="mt-2 text-sm text-neutral-700 font-medium">Chào mừng đến với LắcKey ✨</p>
+        <p className="mt-2 text-sm text-neutral-500">
+          Chào mừng đến với LắcKey
+        </p>
       </div>
       
-      <div className="px-5 sm:px-8 py-6 sm:py-8">
+      <div className="px-6 sm:px-8 pb-10">
         {children}
       </div>
     </div>
@@ -66,15 +68,17 @@ const Panel: React.FC<React.PropsWithChildren<{ title: string; onClose: () => vo
 )
 
 const Label: React.FC<React.PropsWithChildren<{ htmlFor?: string; className?: string }>> = ({ htmlFor, className, children }) => (
-  <label htmlFor={htmlFor} className={`text-xs font-bold uppercase tracking-wide text-neutral-900 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className ?? ''}`}>{children}</label>
+  <label htmlFor={htmlFor} className={`flex items-center gap-2 text-sm font-medium text-neutral-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className ?? ''}`}>
+    {children}
+  </label>
 )
-
 
 const SignInForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const close = useAuthModalStore((s) => s.close)
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState<string | null>(null)
+  const [showPassword, setShowPassword] = React.useState(false)
   const { mutateAsync, isPending } = useLogin()
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -95,54 +99,70 @@ const SignInForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     <form onSubmit={handleSubmit} className="space-y-5">
 
       <div className="space-y-2">
-        <Label htmlFor="signin-email">📧 Email</Label>
+        <Label htmlFor="signin-email"><Mail className="w-4 h-4 text-neutral-400" /> Email</Label>
         <Input
           id="signin-email"
           type="email"
           placeholder="you@example.com"
           required
-          className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none"
+          className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isPending}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="signin-password">🔒 Mật khẩu</Label>
-        <Input
-          id="signin-password"
-          type="password"
-          placeholder="••••••••"
-          required
-          className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={isPending}
-        />
+        <Label htmlFor="signin-password"><Lock className="w-4 h-4 text-neutral-400" /> Mật khẩu</Label>
+        <div className="relative">
+          <Input
+            id="signin-password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="••••••••"
+            required
+            className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 pr-12 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isPending}
+          />
+          <button 
+            type="button" 
+            onClick={() => setShowPassword((v) => !v)} 
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1"
+          >
+            {showPassword ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
+          </button>
+        </div>
       </div>
 
       {error && (
-        <div className="px-3 py-2 bg-red-50 border-2 border-red-500 text-sm text-red-700 font-medium">
-          ⚠️ {error}
+        <div className="flex items-start gap-2 p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <p>{error}</p>
         </div>
       )}
 
-      <div className="flex flex-col gap-3 pt-3">
+      <div className="flex flex-col gap-4 pt-4">
         <Button 
           type="submit" 
-          className="w-full h-11 bg-black text-white hover:bg-white hover:text-black border-2 border-black font-bold uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1 rounded-none" 
+          className="w-full h-12 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl font-medium transition-all flex items-center justify-center gap-2" 
           disabled={isPending}
         >
-          {isPending ? '⏳ Đang xử lý...' : '→ Đăng nhập'}
+          {isPending ? (
+            <><Loader2 className="w-5 h-5 animate-spin" /> Đang xử lý...</>
+          ) : (
+            <>Đăng nhập <ArrowRight className="w-4 h-4" /></>
+          )}
         </Button>
-        <button 
-          type="button" 
-          onClick={onSwitch} 
-          className="text-sm text-neutral-700 hover:text-black font-medium underline-offset-2 hover:underline transition-colors" 
-          disabled={isPending}
-        >
-          Chưa có tài khoản? <span className="font-bold">Đăng ký ngay</span>
-        </button>
+        <div className="text-center">
+          <button 
+            type="button" 
+            onClick={onSwitch} 
+            className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors" 
+            disabled={isPending}
+          >
+            Chưa có tài khoản? <span className="font-semibold text-[var(--brand-accent)]">Đăng ký ngay</span>
+          </button>
+        </div>
       </div>
     </form>
   )
@@ -188,62 +208,71 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="signup-name">👤 Họ và tên</Label>
-        <Input id="signup-name" type="text" placeholder="Nguyễn Văn A" required className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
+        <Label htmlFor="signup-name"><User className="w-4 h-4 text-neutral-400" /> Họ và tên</Label>
+        <Input id="signup-name" type="text" placeholder="Nguyễn Văn A" required className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="signup-email">📧 Email</Label>
-        <Input id="signup-email" type="email" placeholder="you@example.com" required className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isPending} />
+        <Label htmlFor="signup-email"><Mail className="w-4 h-4 text-neutral-400" /> Email</Label>
+        <Input id="signup-email" type="email" placeholder="you@example.com" required className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isPending} />
       </div>
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="signup-password">🔒 Mật khẩu</Label>
-          <button type="button" onClick={() => setShowPassword((v) => !v)} className="text-[10px] px-2 py-1 bg-neutral-100 border border-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors">
-            {showPassword ? (<span className="inline-flex items-center gap-1"><EyeOff className="h-3 w-3"/>Ẩn</span>) : (<span className="inline-flex items-center gap-1"><Eye className="h-3 w-3"/>Hiện</span>)}
+        <Label htmlFor="signup-password"><Lock className="w-4 h-4 text-neutral-400" /> Mật khẩu</Label>
+        <div className="relative">
+          <Input id="signup-password" type={showPassword ? 'text' : 'password'} placeholder="Tối thiểu 8 ký tự" required className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 pr-12 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
+          <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1">
+            {showPassword ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
           </button>
         </div>
-        <Input id="signup-password" type={showPassword ? 'text' : 'password'} placeholder="Tối thiểu 8 ký tự" required className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
-        <p className="text-[10px] text-neutral-600 font-medium">✓ Mật khẩu tối thiểu 8 ký tự</p>
+        <p className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium mt-1">
+          <CheckCircle2 className="w-3.5 h-3.5" /> Mật khẩu tối thiểu 8 ký tự
+        </p>
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="signup-confirm">🔐 Xác nhận</Label>
-          <button type="button" onClick={() => setShowConfirm((v) => !v)} className="text-[10px] px-2 py-1 bg-neutral-100 border border-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors">
-            {showConfirm ? (<span className="inline-flex items-center gap-1"><EyeOff className="h-3 w-3"/>Ẩn</span>) : (<span className="inline-flex items-center gap-1"><Eye className="h-3 w-3"/>Hiện</span>)}
+        <Label htmlFor="signup-confirm"><ShieldCheck className="w-4 h-4 text-neutral-400" /> Xác nhận mật khẩu</Label>
+        <div className="relative">
+          <Input id="signup-confirm" type={showConfirm ? 'text' : 'password'} placeholder="Nhập lại mật khẩu" required className="h-12 rounded-xl border-neutral-200 bg-neutral-50 px-4 pr-12 focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)] focus:border-transparent transition-all" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isPending} />
+          <button type="button" onClick={() => setShowConfirm((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1">
+            {showConfirm ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
           </button>
         </div>
-        <Input id="signup-confirm" type={showConfirm ? 'text' : 'password'} placeholder="Nhập lại mật khẩu" required className="h-11 border-2 border-black focus:border-black focus:ring-2 focus:ring-[var(--brand-secondary)] rounded-none" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isPending} />
       </div>
 
       {error && (
-        <div className="px-3 py-2 bg-red-50 border-2 border-red-500 text-sm text-red-700 font-medium">
-          ⚠️ {error}
+        <div className="flex items-start gap-2 p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <p>{error}</p>
         </div>
       )}
 
-      <div className="px-3 py-2 bg-neutral-50 border-2 border-neutral-300">
-        <p className="text-[10px] text-neutral-700 leading-relaxed font-medium">
-          Bằng cách tạo tài khoản, bạn chấp nhận <a className="underline hover:text-black font-bold" href="#" target="_blank" rel="noreferrer">Điều khoản</a> và <a className="underline hover:text-black font-bold" href="#" target="_blank" rel="noreferrer">Chính sách</a> của LắcKey.
+      <div className="p-3 bg-neutral-50 rounded-xl mt-2">
+        <p className="text-xs text-neutral-500 leading-relaxed text-center">
+          Bằng cách tạo tài khoản, bạn chấp nhận <a className="text-neutral-900 font-medium hover:underline" href="#" target="_blank" rel="noreferrer">Điều khoản</a> và <a className="text-neutral-900 font-medium hover:underline" href="#" target="_blank" rel="noreferrer">Chính sách</a> của LắcKey.
         </p>
       </div>
       
-      <div className="flex flex-col gap-3 pt-2">
+      <div className="flex flex-col gap-4 pt-4">
         <Button 
           type="submit" 
-          className="w-full h-11 bg-black text-white hover:bg-white hover:text-black border-2 border-black font-bold uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1 rounded-none" 
+          className="w-full h-12 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl font-medium transition-all flex items-center justify-center gap-2" 
           disabled={isPending}
         >
-          {isPending ? '⏳ Đang tạo...' : '→ Tạo tài khoản'}
+          {isPending ? (
+            <><Loader2 className="w-5 h-5 animate-spin" /> Đang tạo...</>
+          ) : (
+            <>Tạo tài khoản <ArrowRight className="w-4 h-4" /></>
+          )}
         </Button>
-        <button 
-          type="button" 
-          onClick={onSwitch} 
-          className="text-sm text-neutral-700 hover:text-black font-medium underline-offset-2 hover:underline transition-colors" 
-          disabled={isPending}
-        >
-          Đã có tài khoản? <span className="font-bold">Đăng nhập ngay</span>
-        </button>
+        <div className="text-center">
+          <button 
+            type="button" 
+            onClick={onSwitch} 
+            className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors" 
+            disabled={isPending}
+          >
+            Đã có tài khoản? <span className="font-semibold text-[var(--brand-accent)]">Đăng nhập ngay</span>
+          </button>
+        </div>
       </div>
     </form>
   )

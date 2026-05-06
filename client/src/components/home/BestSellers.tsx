@@ -53,9 +53,9 @@ export default function BestSellers() {
             Bán chạy nhất
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-neutral-600 leading-relaxed max-w-2xl mx-auto px-4">
-            Sẵn sàng tỏa sáng? Khám phá những móc khóa bán chạy nhất của chúng tôi!
-            Từ nhân vật anime, Kpop đến các thiết kế độc đáo, những sản phẩm yêu thích
-            này mang đến sự kết hợp hoàn hảo giữa phong cách, cá tính và năng lượng LắcKey.
+            Những sản phẩm được yêu thích nhất bởi cộng đồng dân chơi phím! 
+            Từ Keycap Artisan anime/Kpop độc bản, Switch êm mượt đến Kit bàn phím cao cấp.
+            Mua ngay để setup góc máy cá tính như chính bạn!
           </p>
         </div>
 

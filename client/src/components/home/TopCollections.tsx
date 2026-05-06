@@ -8,24 +8,27 @@ import { ROUTES } from "@/constant/route";
 const COLLECTIONS = [
   {
     id: "1",
-    title: "Anime",
-    slug: "anime",
-    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&h=800&fit=crop",
-    buttonText: "MUA ANIME",
+    title: "Gaming Setup",
+    slug: "gaming-setup",
+    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&h=800&fit=crop",
+    buttonText: "KHÁM PHÁ NGAY",
+    description: "Bàn phím cơ cho game thủ - Switch linear, RGB đầy đủ",
   },
   {
     id: "2",
-    title: "Kpop",
-    slug: "kpop",
-    image: "https://images-cdn.ubuy.ae/635a21ed18d6af2dc8114ff9-blackpink-merchandise-the-album-crown.jpg",
-    buttonText: "MUA KPOP",
+    title: "Office Premium",
+    slug: "office-premium",
+    image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&h=800&fit=crop",
+    buttonText: "XEM NGAY",
+    description: "Bàn phím văn phòng cao cấp - Gõ êm, thiết kế sang trọng",
   },
   {
     id: "3",
-    title: "Nhân vật",
-    slug: "nhan-vat",
-    image: "https://images.unsplash.com/photo-1674448417387-345997fcd888?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=600&h=800",
-    buttonText: "MUA NHÂN VẬT",
+    title: "Custom Build",
+    slug: "custom-build",
+    image: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=600&h=800&fit=crop",
+    buttonText: "TÙY CHỈNH",
+    description: "Kit & Keycap custom - Tạo bàn phím độc nhất của riêng bạn",
   },
 ];
 
@@ -39,7 +42,7 @@ export default function TopCollections() {
             Bộ sưu tập nổi bật
           </h2>
           <p className="text-base md:text-lg text-neutral-600 leading-relaxed">
-            Sản phẩm tốt nhất của LắcKey. Được yêu thích. Phong cách cho mọi người
+            Khám phá các bộ sưu tập được tuyển chọn cho từng nhu cầu sử dụng
           </p>
         </div>
 
@@ -64,7 +67,12 @@ export default function TopCollections() {
               </div>
 
               {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/80 to-transparent">
+                {/* Description */}
+                <p className="text-sm text-white/90 mb-3 line-clamp-2">
+                  {collection.description}
+                </p>
+
                 {/* Title */}
                 <h3 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl lg:text-5xl text-white mb-4 uppercase tracking-wider drop-shadow-2xl">
                   {collection.title}

@@ -285,7 +285,7 @@ const MobileHeaderBar: React.FC = () => {
           className="w-full h-10 px-4 flex items-center gap-2 border-2 border-black bg-white text-left"
         >
           <Search className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-500">Tìm kiếm móc khóa...</span>
+          <span className="text-sm text-gray-500">Tìm kiếm bàn phím...</span>
         </button>
       </div>
       

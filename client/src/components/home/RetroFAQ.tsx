@@ -17,40 +17,40 @@ export type RetroFAQProps = {
 
 const defaultFAQs: FAQItem[] = [
   {
-    question: "Móc khóa được làm từ chất liệu gì?",
-    answer: "Móc khóa của chúng tôi được làm từ acrylic trong suốt cao cấp, dày 3-4mm. In offset với mực chất lượng cao, bền màu, không phai theo thời gian. An toàn, không độc hại.",
+    question: "Bàn phím cơ và Keycap được làm từ chất liệu gì?",
+    answer: "Keycap thường được làm từ nhựa PBT hoặc ABS siêu bền, keycap artisan làm từ resin/epoxy thủ công. Kit bàn phím làm từ nhôm CNC nguyên khối hoặc nhựa ABS/PC chắc chắn.",
     icon: <Palette className="w-5 h-5" />,
   },
   {
     question: "Thời gian giao hàng mất bao lâu?",
-    answer: "Đơn hàng sẵn có: 1-3 ngày toàn quốc. Đơn custom design: 3-5 ngày (bao gồm thời gian thiết kế và sản xuất). Giao hàng nhanh, đóng gói cẩn thận, bảo hành trong quá trình vận chuyển.",
+    answer: "Đơn hàng có sẵn (switch, keycap bộ): 1-3 ngày toàn quốc. Dịch vụ build/mod phím: 3-5 ngày. Chúng tôi đóng gói chống sốc cẩn thận, đảm bảo an toàn tuyệt đối.",
     icon: <Zap className="w-5 h-5" />,
   },
   {
-    question: "Làm sao để custom móc khóa theo ý tưởng?",
-    answer: "Rất đơn giản! Bạn chỉ cần: (1) Gửi hình ảnh/concept qua Zalo/Facebook, (2) Trao đổi với team design về kích thước, màu sắc, (3) Xác nhận thiết kế mẫu, (4) Thanh toán và nhận hàng. Thiết kế hoàn toàn MIỄN PHÍ!",
+    question: "Làm sao để build bàn phím theo yêu cầu?",
+    answer: "Rất đơn giản! Bạn chỉ cần: (1) Nhắn qua Zalo/Facebook, (2) Chia sẻ budget và sở thích (âm thanh, màu sắc), (3) Nhận tư vấn cấu hình, (4) Chốt đơn và nhận phím đã được mod hoàn chỉnh.",
     icon: <Lightbulb className="w-5 h-5" />,
   },
   {
-    question: "Chính sách đổi trả như thế nào?",
-    answer: "Đổi trả trong 7 ngày nếu sản phẩm bị lỗi từ nhà sản xuất (in lỗi, vỡ, phai màu). Hoàn tiền 100% hoặc đổi sản phẩm mới. Lưu ý: Không áp dụng với đơn custom đã được xác nhận thiết kế.",
+    question: "Chính sách đổi trả bảo hành như thế nào?",
+    answer: "Bảo hành 1-12 tháng tùy linh kiện. Đổi trả trong 7 ngày nếu có lỗi từ NSX (chết led, hỏng mạch). Không áp dụng bảo hành nếu tự ý rã hàn hoặc đổ nước vào mạch.",
     icon: <RotateCcw className="w-5 h-5" />,
   },
   {
-    question: "Giá móc khóa bao nhiêu?",
-    answer: "Móc khóa có sẵn: 35.000₫ - 75.000₫/chiếc. Custom design: 45.000₫ - 120.000₫/chiếc tùy kích thước và độ phức tạp. Giảm giá khi mua số lượng lớn (từ 10 chiếc trở lên).",
+    question: "Giá một chiếc bàn phím/keycap bao nhiêu?",
+    answer: "Switch lẻ chỉ từ 5.000đ/cái. Set keycap full từ 300.000đ. Phím custom hoàn thiện (Kit + Switch + Keycap) có giá từ 1 triệu đến vài triệu đồng tùy cấu hình.",
     icon: <DollarSign className="w-5 h-5" />,
   },
   {
-    question: "Làm thế nào để bảo quản móc khóa?",
-    answer: "Tránh tiếp xúc trực tiếp với nước trong thời gian dài, không để dưới ánh nắng mặt trời gắt. Lau nhẹ bằng khăn mềm khi bám bụi. Bảo quản ở nơi khô ráo, thoáng mát để móc khóa giữ được màu sắc lâu dài.",
+    question: "Làm thế nào để bảo quản bàn phím cơ?",
+    answer: "Tránh để nước hay chất lỏng đổ vào phím. Thường xuyên vệ sinh bụi bằng chổi mềm. Không tự ý nhổ switch nếu phím không hỗ trợ hotswap để tránh hỏng mạch.",
     icon: <Sparkles className="w-5 h-5" />,
   },
 ];
 
 const RetroFAQ: React.FC<RetroFAQProps> = ({
   title = "CÂU HỎI THƯỜNG GẶP",
-  subtitle = "Giải đáp mọi thắc mắc của bạn về móc khóa LắcKey",
+  subtitle = "Giải đáp mọi thắc mắc về Bàn phím cơ & Dịch vụ của LắcKey",
   items = defaultFAQs,
 }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
