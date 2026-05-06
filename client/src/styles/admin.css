@@ -1,0 +1,209 @@
+/* Admin Panel Design System */
+
+/* Layout Utilities */
+.admin-page {
+  @apply space-y-6 p-6;
+}
+
+.admin-section {
+  @apply space-y-4;
+}
+
+.admin-card {
+  @apply border rounded-lg p-6 bg-card;
+}
+
+/* Typography */
+.admin-title {
+  @apply text-2xl font-semibold tracking-tight;
+}
+
+.admin-subtitle {
+  @apply text-lg font-semibold;
+}
+
+.admin-label {
+  @apply text-sm font-medium;
+}
+
+.admin-hint {
+  @apply text-xs text-muted-foreground;
+}
+
+/* Form Utilities */
+.admin-form {
+  @apply space-y-4;
+}
+
+.admin-form-row {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.admin-form-actions {
+  @apply flex items-center justify-end gap-2 pt-4;
+}
+
+/* Table Utilities */
+.admin-table-container {
+  @apply border rounded-lg overflow-hidden;
+}
+
+.admin-table-empty {
+  @apply flex flex-col items-center justify-center gap-3 py-12 text-muted-foreground;
+}
+
+/* Status Colors */
+.status-success {
+  @apply text-emerald-700 bg-emerald-100 border-emerald-200;
+}
+
+.status-warning {
+  @apply text-amber-800 bg-amber-100 border-amber-200;
+}
+
+.status-danger {
+  @apply text-red-700 bg-red-100 border-red-200;
+}
+
+.status-info {
+  @apply text-sky-800 bg-sky-100 border-sky-200;
+}
+
+.status-neutral {
+  @apply text-gray-700 bg-gray-100 border-gray-200;
+}
+
+/* Dark mode variants */
+@media (prefers-color-scheme: dark) {
+  .status-success {
+    @apply text-emerald-200 bg-emerald-900/30 border-emerald-900/40;
+  }
+  
+  .status-warning {
+    @apply text-amber-200 bg-amber-900/30 border-amber-900/40;
+  }
+  
+  .status-danger {
+    @apply text-red-200 bg-red-900/30 border-red-900/40;
+  }
+  
+  .status-info {
+    @apply text-sky-200 bg-sky-900/30 border-sky-900/40;
+  }
+  
+  .status-neutral {
+    @apply text-gray-200 bg-gray-800/60 border-gray-800;
+  }
+}
+
+/* Animation Utilities */
+.admin-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Utilities */
+.admin-mobile-stack {
+  @apply flex flex-col gap-3 md:flex-row md:items-center;
+}
+
+.admin-mobile-full {
+  @apply w-full md:w-auto;
+}
+
+/* Focus Utilities */
+.admin-focus {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+}
+
+/* Hover Utilities */
+.admin-hover {
+  @apply transition-colors hover:bg-muted/50;
+}
+
+/* Loading State */
+.admin-loading {
+  @apply animate-pulse bg-muted rounded;
+}
+
+/* Icon Sizing */
+.admin-icon-sm {
+  @apply size-4;
+}
+
+.admin-icon-md {
+  @apply size-5;
+}
+
+.admin-icon-lg {
+  @apply size-6;
+}
+
+/* Spacing Scale */
+.admin-gap-sm {
+  @apply gap-2;
+}
+
+.admin-gap-md {
+  @apply gap-4;
+}
+
+.admin-gap-lg {
+  @apply gap-6;
+}
+
+/* Border Utilities */
+.admin-border {
+  @apply border border-border;
+}
+
+.admin-border-top {
+  @apply border-t border-border;
+}
+
+.admin-border-bottom {
+  @apply border-b border-border;
+}
+
+/* Shadow Utilities */
+.admin-shadow-sm {
+  @apply shadow-sm;
+}
+
+.admin-shadow-md {
+  @apply shadow-md;
+}
+
+/* Scrollbar Styling */
+.admin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.3);
+}
