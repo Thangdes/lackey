@@ -41,36 +41,36 @@ export const PRODUCT_PRESET_VARIANTS = {
 
 export const COLLECTIONS_UI = {
   midAutumn: {
-    badgeLeft: "🎁 Ưu đãi Trung Thu",
+    badgeLeft: "🎁 Ưu đãi đặc biệt",
     badgeRight: "Combo tiết kiệm",
-    title: "Combo Lòng đỏ trứng muối",
+    title: "Combo Bàn phím Custom",
     ctaDesktop: "Xem tất cả",
     ctaMobile: "Xem tất cả combo",
     ctaHref: "/products?category=cat-combo",
   },
   eggs: {
-    badgeLeft: "🥚 Sản phẩm",
-    badgeRight: "Trứng muối & Combo",
-    title: "Bộ sưu tập Trứng muối",
+    badgeLeft: "⌨️ Sản phẩm",
+    badgeRight: "Bàn phím & Keycap",
+    title: "Bộ sưu tập Bàn phím cơ",
     ctaDesktop: "Xem tất cả",
     ctaMobile: "Xem tất cả sản phẩm",
     ctaHref: "/products",
-    ctaMobileHref: "/products?category=cat-eggs-salted-yolk",
+    ctaMobileHref: "/products?category=cat-keyboards",
   },
 } as const;
 
 export const HOME_UI = {
   showcase: {
-    title: "Thử làm ngay hôm nay",
-    descPrefix: "Gợi ý công thức với lòng đỏ trứng muối: bánh trung thu, bông lan trứng muối, sốt trứng muối cho hải sản và snack. Khám phá đầy đủ nguyên liệu tại ",
+    title: "Khám phá ngay hôm nay",
+    descPrefix: "Gợi ý setup bàn phím cơ: keycap artisan độc đáo, switch êm ái, dịch vụ build/mod chuyên nghiệp. Khám phá đầy đủ sản phẩm tại ",
     productsLinkText: "danh mục sản phẩm",
     descMiddle: " hoặc tìm hiểu thêm ",
     aboutLinkText: "về LắcKey",
-    subheading: "Công thức với lòng đỏ trứng muối",
+    subheading: "Bàn phím cơ & Keycap độc lạ",
     ideas: {
-      mooncake: "Bánh trung thu nhân trứng muối",
-      sponge: "Bông lan trứng muối béo mặn",
-      sauce: "Sốt trứng muối cho hải sản/snack",
+      mooncake: "Keycap artisan handmade",
+      sponge: "Switch êm ái, gõ phê",
+      sauce: "Dịch vụ build/mod chuyên nghiệp",
     },
     prevAria: "Xem trước",
     nextAria: "Xem tiếp",

@@ -2,7 +2,7 @@ const envUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
 
 export const siteConfig = {
   name: "LắcKey",
-  slogan: "Trang · Phụ kiện · Thiết kế & Thời trang · Cửa hàng phụ kiện giải trí",
+  slogan: "Custom Keyboard · Keycap · Phụ kiện setup góc làm việc",
   url: envUrl || "https://example.com",
   logo: (envUrl || "https://example.com") + "/logo/logo.jpg",
   contact: {
@@ -42,18 +42,19 @@ export const siteConfig = {
     facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL || "https://facebook.com",
   },
   default: {
-    title: "LắcKey - Cửa hàng trang trí chuyên cung cấp đầy đủ các loại móc khóa, đặc biệt cung cấp móc khóa theo ý tưởng hình ảnh từ khách hàng.",
+    title: "LắcKey - Thế giới Bàn phím cơ, Custom Keyboard & Keycap độc lạ",
     description:
-      "LắcKey - Cửa hàng trang trí chuyên cung cấp đầy đủ các loại móc khóa, đặc biệt cung cấp móc khóa theo ý tưởng hình ảnh từ khách hàng.",
+      "LắcKey chuyên cung cấp các dòng bàn phím cơ, custom keyboard, keycap artisan, switch, và dịch vụ build/mod bàn phím chuyên nghiệp.",
     keywords: [
       "LắcKey",
-      "móc khóa",
-      "phụ kiện",
-      "thiết kế",
-      "thời trang",
-      "cửa hàng phụ kiện giải trí",
-      "móc khóa theo ý tưởng",
-      "custom keychain",
+      "bàn phím cơ",
+      "custom keyboard",
+      "keycap",
+      "artisan keycap",
+      "switch bàn phím",
+      "phụ kiện setup",
+      "mod bàn phím",
+      "lube switch",
     ],
   },
 };

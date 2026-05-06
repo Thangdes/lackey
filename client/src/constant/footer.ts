@@ -55,7 +55,7 @@ export const PAYMENT_GROUP_TITLES = {
 } as const;
 
 export const COPYRIGHT_TITLE = 'Bản quyền' as const;
-export const COPYRIGHT_TEXT = '© 2025 LắcKey. Bảo lưu mọi quyền.' as const;
+export const COPYRIGHT_TEXT = '© 2026 LắcKey. Bảo lưu mọi quyền.' as const;
 
 export const LEGAL_LINKS = [
   { label: 'Điều khoản sử dụng', href: ROUTES.terms },

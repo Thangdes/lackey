@@ -9,7 +9,7 @@ export const ABOUT_PAGE = {
       titlePrefix: "Về",
       sloganPrefix: "",
       intro:
-        "LắcKey là cửa hàng trang trí chuyên cung cấp đầy đủ các loại móc khóa, đặc biệt cung cấp móc khóa thiết kế theo ý tưởng hình ảnh từ khách hàng.",
+        "LắcKey là điểm đến của những người đam mê Custom Keyboard, chuyên cung cấp kit bàn phím, keycap độc lạ và dịch vụ mod phím chuyên nghiệp.",
       ctas: {
         viewProducts: "Xem sản phẩm",
         contact: "Liên hệ",
@@ -20,7 +20,7 @@ export const ABOUT_PAGE = {
       {
         title: "Thiết kế sáng tạo",
         body:
-          "Móc khóa đa dạng mẫu mã, thiết kế theo ý tưởng riêng của khách hàng. Mỗi sản phẩm đều mang dấu ấn cá nhân độc đáo.",
+          "Kit phím và keycap đa dạng mẫu mã, tư vấn cấu hình theo ý tưởng riêng của khách hàng. Mỗi góc setup đều mang dấu ấn cá nhân độc đáo.",
       },
       {
         title: "Chất lượng cao",
@@ -35,7 +35,7 @@ export const ABOUT_PAGE = {
       {
         title: "Giá cả hợp lý",
         body:
-          "Mức giá cạnh tranh với nhiều ưu đãi hấp dẫn. Bạn dễ dàng sở hữu những chiếc móc khóa xịn xò mà không lo về chi phí.",
+          "Mức giá cạnh tranh với nhiều ưu đãi hấp dẫn. Bạn dễ dàng sở hữu một chiếc bàn phím xịn xò mà không lo về chi phí.",
       },
     ],
   
@@ -72,13 +72,13 @@ export const ABOUT_PAGE = {
     story: {
       title: "Câu chuyện thương hiệu",
       body:
-        "Khởi nguồn từ niềm yêu thích phụ kiện cá nhân hóa, LắcKey tập trung mang đến các mẫu móc khóa đa dạng cùng dịch vụ thiết kế theo ý tưởng để mỗi sản phẩm đều mang dấu ấn riêng của khách hàng.",
+        "Khởi nguồn từ niềm đam mê gõ phím và setup góc làm việc, LắcKey tập trung mang đến các sản phẩm bàn phím cơ chất lượng cùng dịch vụ build phím chuyên sâu để mỗi sản phẩm đều đem lại trải nghiệm hoàn hảo.",
     },
   
     mission: {
       title: "Sứ mệnh",
       bullets: [
-        "Mang đến những sản phẩm móc khóa chất lượng và độc đáo.",
+        "Mang đến những sản phẩm bàn phím cơ và keycap chất lượng, độc đáo.",
         "Biến ý tưởng của khách hàng thành sản phẩm thực tế.",
         "Mang lại trải nghiệm mua sắm tiện lợi, nhanh chóng.",
       ],

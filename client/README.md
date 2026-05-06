@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LắcKey - Thế giới Bàn phím cơ & Custom Keyboard
 
-## Getting Started
+Website thương mại điện tử chuyên cung cấp các sản phẩm và dịch vụ về bàn phím cơ (mechanical keyboard), keycap artisan, switch, và phụ kiện setup.
 
-First, run the development server:
+## 🎯 Về Dự Án
+
+LắcKey là nền tảng e-commerce chuyên về:
+- **Keycap Artisan**: Keycap resin/epoxy handmade độc đáo (anime, Kpop, meme)
+- **Switch**: Gateron, Cherry MX, Akko và các loại switch chất lượng
+- **Bàn phím Custom**: Kit barebone, bàn phím build sẵn
+- **Phụ kiện**: Dây cáp coiled, kê tay, foam mod, sticker
+- **Dịch vụ**: Build theo yêu cầu, mod bàn phím, keycap handmade
+
+## 🚀 Công Nghệ Sử Dụng
+
+- **Framework**: Next.js 15 (App Router)
+- **UI**: React 19, TailwindCSS
+- **Language**: TypeScript
+- **State Management**: React Query
+- **Styling**: Tailwind CSS + Custom Retro Theme
+
+## 📦 Cài Đặt
 
 ```bash
+# Clone repository
+git clone [repository-url]
+
+# Di chuyển vào thư mục client
+cd client
+
+# Cài đặt dependencies
+npm install
+
+# Chạy development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở [http://localhost:3000](http://localhost:3000) để xem kết quả.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎨 Tính Năng Chính
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Landing Page
+- **Hero Banner**: Giới thiệu sản phẩm nổi bật
+- **Business Levels**: 3 cấp độ kinh doanh (Dễ bán → Trung cấp → Cao cấp)
+- **Market Insights**: Phân tích thị trường và insight khách hàng
+- **Services Section**: Dịch vụ build custom, keycap handmade, content creation
+- **Best Sellers**: Sản phẩm bán chạy nhất
+- **Top Collections**: Bộ sưu tập nổi bật
+- **FAQ**: Câu hỏi thường gặp
 
-## Learn More
+### Sản Phẩm
+- Danh sách sản phẩm với filter và search
+- Chi tiết sản phẩm với variants
+- Đánh giá và rating
+- Wishlist
 
-To learn more about Next.js, take a look at the following resources:
+### Giỏ Hàng & Checkout
+- Mini cart
+- Checkout flow hoàn chỉnh
+- Tích hợp thanh toán VietQR
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Cấu Trúc Thư Mục
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+client/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   ├── components/       # React components
+│   │   ├── home/        # Landing page components
+│   │   ├── products/    # Product components
+│   │   ├── cart/        # Cart components
+│   │   └── ...
+│   ├── constant/        # Constants và configs
+│   ├── hook/            # Custom React hooks
+│   ├── lib/             # Utility functions
+│   └── type/            # TypeScript types
+├── data/                # Mock data (products, reviews)
+└── public/              # Static assets
+```
 
-## Deploy on Vercel
+## 🎨 Theme & Design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Website sử dụng **Retro/Brutalist Design** với:
+- Font chữ retro đặc trưng
+- Màu sắc nổi bật (#fff100 - vàng, #229090 - xanh ngọc)
+- Border đậm, shadow box
+- Hiệu ứng hover động
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 Ghi Chú
+
+- Dự án sử dụng mock data trong `client/data/`
+- Để tích hợp backend, cần cập nhật API endpoints trong các service files
+- Responsive design cho mobile, tablet, desktop
+
+## 🔗 Liên Hệ
+
+- **Email**: lackey6886@gmail.com
+- **Phone**: 091 960 08 01
+- **Facebook**: [LắcKey Facebook](https://www.facebook.com/profile.php?id=61581934494103)
+
+## 📄 License
+
+This project is private and proprietary.
