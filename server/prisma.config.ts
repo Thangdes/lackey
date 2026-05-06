@@ -1,3 +1,4 @@
+import "dotenv/config";
 import path from "node:path";
 import { defineConfig } from "prisma/config";
 
@@ -7,4 +8,7 @@ process.loadEnvFile?.();
 export default defineConfig({
   // Point to your Prisma schema (default already)
   schema: path.join("prisma", "schema.prisma"),
+  datasource: {
+    url: process.env["DATABASE_URL"],
+  },
 });
