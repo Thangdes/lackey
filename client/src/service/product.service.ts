@@ -1,5 +1,5 @@
 import { http, httpSuccess, api } from "@/utils/http";
-import { buildQueryString, normalizePaginationMeta } from "@/utils/response";
+import { buildQueryString, normalizePaginationMeta, unwrapDataArray } from "@/utils/response";
 import { API } from "@/constant/api";
 import type { CreateProductPayload, Product, UpdateProductPayload, ProductVariant, ProductSort } from "@/type/product";
 
@@ -85,18 +85,24 @@ export const productService = {
     });
 
     return http
-      .get<{
-        data: Product[];
-        meta?: Record<string, unknown>;
-      }>(`${API.product.root}?${qs}`)
+      .get<
+        | { data: Product[]; meta?: Record<string, unknown> }
+        | { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } }
+      >(`${API.product.root}?${qs}`)
       .then((res) => {
-        const meta = normalizePaginationMeta(res?.meta, { page, limit });
-        return { data: res?.data ?? [], meta } as { data: Product[]; meta?: { page?: number; limit?: number; total?: number } };
+        const wrapped = res as { success?: boolean; data?: { data?: Product[]; meta?: Record<string, unknown> } };
+        const unwrapped = (wrapped?.data && !Array.isArray(wrapped.data))
+          ? wrapped.data
+          : (res as { data?: Product[]; meta?: Record<string, unknown> });
+        const data = (unwrapped as { data?: Product[] })?.data ?? [];
+        const meta = normalizePaginationMeta((unwrapped as { meta?: Record<string, unknown> })?.meta, { page, limit });
+        return { data, meta } as { data: Product[]; meta?: { page?: number; limit?: number; total?: number } };
       });
   },
 
   // GET /products/suppliers
-  getSuppliers: () => http.get<Array<{ id: string; name: string }>>(API.product.suppliers),
+  getSuppliers: () =>
+    http.get<unknown>(API.product.suppliers).then((raw) => unwrapDataArray<{ id: string; name: string }>(raw)),
 
   // GET /products/:id
   getById: (id: string) => http.get<Product>(API.product.byId(id)),

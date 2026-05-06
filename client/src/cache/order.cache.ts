@@ -3,6 +3,7 @@ import { orderKeys as keys } from "@/constant/key/order";
 import type { OrderDetail, OrderSummary } from "@/type/order";
 import type { Paginated } from "@/type/common";
 import { http } from "@/utils/http";
+import { unwrapData, unwrapDataArray } from "@/utils/response";
 
 export function setMyOrderHistory(qc: QueryClient, data: OrderSummary[]) {
   qc.setQueryData<OrderSummary[]>(keys.myHistory(), data);
@@ -34,6 +35,8 @@ export async function prefetchAdminOrderList(
           }
         : undefined,
     );
+
+    const payload = unwrapData<unknown>(data);
     
     const page = params?.page ?? 1;
     const pageSize = params?.limit ?? 10;
@@ -45,19 +48,20 @@ export async function prefetchAdminOrderList(
       pageSize 
     };
 
-    if (Array.isArray(data)) {
+    if (Array.isArray(payload)) {
       normalized = { 
-        items: data, 
-        total: data.length, 
+        items: payload as OrderSummary[], 
+        total: (payload as OrderSummary[]).length, 
         page, 
-        pageSize: params?.limit ?? data.length 
+        pageSize: params?.limit ?? (payload as OrderSummary[]).length 
       };
-    } else if (data && typeof data === 'object') {
+    } else if (payload && typeof payload === 'object') {
+      const p = payload as Partial<Paginated<OrderSummary>> & Record<string, unknown>;
       normalized = {
-        items: Array.isArray(data.items) ? data.items : [],
-        total: Number(data.total ?? 0),
-        page: Number(data.page ?? page),
-        pageSize: Number(data.pageSize ?? pageSize),
+        items: Array.isArray(p.items) ? (p.items as OrderSummary[]) : unwrapDataArray<OrderSummary>(p),
+        total: Number(p.total ?? 0),
+        page: Number(p.page ?? page),
+        pageSize: Number(p.pageSize ?? pageSize),
       };
     }
     
@@ -72,7 +76,7 @@ export async function prefetchAdminOrderList(
 
 export async function prefetchMyOrderHistory(qc: QueryClient, cookieHeader?: string) {
   try {
-    const data = await http.get<OrderSummary[]>(
+    const data = await http.get<unknown>(
       "/orders/my-history",
       cookieHeader
         ? {
@@ -83,14 +87,15 @@ export async function prefetchMyOrderHistory(qc: QueryClient, cookieHeader?: str
           }
         : undefined,
     );
-    setMyOrderHistory(qc, Array.isArray(data) ? data : []);
+    const arr = unwrapDataArray<OrderSummary>(data);
+    setMyOrderHistory(qc, arr);
   } catch {
   }
 }
 
 export async function prefetchOrderDetail(qc: QueryClient, id: string, cookieHeader?: string) {
   try {
-    const data = await http.get<OrderDetail>(
+    const data = await http.get<unknown>(
       `/orders/${id}`,
       cookieHeader
         ? {
@@ -101,8 +106,9 @@ export async function prefetchOrderDetail(qc: QueryClient, id: string, cookieHea
           }
         : undefined,
     );
-    if (data) {
-      qc.setQueryData<OrderDetail>(keys.byId(id), data);
+    const detail = unwrapData<OrderDetail>(data);
+    if (detail) {
+      qc.setQueryData<OrderDetail>(keys.byId(id), detail);
     }
   } catch (error) {
     console.error(`Failed to fetch order detail for ID ${id}:`, error);

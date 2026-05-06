@@ -21,10 +21,14 @@ function isObject(x: unknown): x is Record<string, unknown> {
  * const order = unwrapData<OrderDetail>(await http.get(url));
  */
 export function unwrapData<T>(raw: unknown): T {
-  if (isObject(raw) && "data" in raw && !Array.isArray((raw as Record<string, unknown>).data === undefined ? [] : raw)) {
-    return (raw as { data: T }).data;
+  if (!isObject(raw) || !("data" in raw)) return raw as T;
+  const d = (raw as Record<string, unknown>).data;
+  if (d === undefined) return raw as T;
+  if (isObject(d) && "data" in d) {
+    const nested = (d as Record<string, unknown>).data;
+    if (nested !== undefined) return nested as T;
   }
-  return raw as T;
+  return d as T;
 }
 
 /**
@@ -36,8 +40,11 @@ export function unwrapData<T>(raw: unknown): T {
  */
 export function unwrapDataArray<T>(raw: unknown): T[] {
   if (Array.isArray(raw)) return raw as T[];
-  if (isObject(raw) && Array.isArray((raw as Record<string, unknown>).data)) {
-    return (raw as { data: T[] }).data;
+  if (!isObject(raw) || !("data" in raw)) return [];
+  const d = (raw as Record<string, unknown>).data;
+  if (Array.isArray(d)) return d as T[];
+  if (isObject(d) && Array.isArray((d as Record<string, unknown>).data)) {
+    return (d as { data: T[] }).data;
   }
   return [];
 }

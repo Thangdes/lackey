@@ -39,6 +39,9 @@ export function useSignup() {
     mutationFn: (payload: { username: string; email: string; password: string }) =>
       authService.signup(payload),
     onSuccess: () => {
+      try {
+        window.dispatchEvent(new CustomEvent("auth:login-success"));
+      } catch {}
       qc.invalidateQueries({ queryKey: keys.profile() });
     },
   });
@@ -49,6 +52,9 @@ export function useLogin() {
   return useMutation({
     mutationFn: (payload: { email: string; password: string }) => authService.login(payload),
     onSuccess: () => {
+      try {
+        window.dispatchEvent(new CustomEvent("auth:login-success"));
+      } catch {}
       qc.invalidateQueries({ queryKey: keys.profile() });
     },
   });
@@ -69,6 +75,9 @@ export function useLogout() {
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
+      try {
+        window.dispatchEvent(new CustomEvent("auth:logout"));
+      } catch {}
       qc.setQueryData<User | null>(keys.profile(), null);
       try { qc.removeQueries({ queryKey: cartKeys.root() }); } catch {}
       try { qc.removeQueries({ queryKey: cartKeys.items() }); } catch {}

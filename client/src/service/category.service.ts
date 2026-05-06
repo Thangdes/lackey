@@ -8,13 +8,31 @@ export type { Category };
 
 export const categoryService = {
   list: async () => {
-    const res = await http.get<Category[] | { data: Category[]; meta?: unknown }>(API.category.root);
-    return Array.isArray(res) ? res : (res?.data ?? []);
+    const res = await http.get<
+      | Category[]
+      | { data: Category[]; meta?: unknown }
+      | { success?: boolean; data?: Category[] | { data?: Category[] } }
+    >(API.category.root);
+
+    if (Array.isArray(res)) return res;
+    const wrapped = res as { success?: boolean; data?: Category[] | { data?: Category[] } };
+    const data = wrapped?.data;
+    if (Array.isArray(data)) return data;
+    return (data as { data?: Category[] } | undefined)?.data ?? (res as { data?: Category[] } | undefined)?.data ?? [];
   },
   headerTop: async () => {
     // Returns top categories for header (server limits to 7 and sorts by product count desc)
-    const res = await http.get<Category[] | { data: Category[] }>(API.category.header);
-    return Array.isArray(res) ? res : (res?.data ?? []);
+    const res = await http.get<
+      | Category[]
+      | { data: Category[] }
+      | { success?: boolean; data?: Category[] | { data?: Category[] } }
+    >(API.category.header);
+
+    if (Array.isArray(res)) return res;
+    const wrapped = res as { success?: boolean; data?: Category[] | { data?: Category[] } };
+    const data = wrapped?.data;
+    if (Array.isArray(data)) return data;
+    return (data as { data?: Category[] } | undefined)?.data ?? (res as { data?: Category[] } | undefined)?.data ?? [];
   },
   getById: (id: string) => httpSuccess.getData<Category>(API.category.byId(id)),
   getWithProducts: (id: string) =>

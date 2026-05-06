@@ -30,7 +30,7 @@ export function generatePersonalizedTempEmail(
 }
 
 export function isTempEmail(email: string): boolean {
-  return email.includes('@temp.hattruongxuan.com') || 
+  return email.includes('@temp.hatx.com.vn') || 
          email.includes('@temp.') ||
          email.startsWith('guest-');
 }

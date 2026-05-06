@@ -31,7 +31,7 @@ const reverseGeocode = async (latitude: number, longitude: number): Promise<{ ci
   const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&accept-language=en`
   const res = await fetch(url, {
     headers: {
-      'User-Agent': 'hattruongxuan.vn/1.0 (contact: support@hattruongxuan.vn)'
+      'User-Agent': 'lackey.vn/1.0 (contact: support@lackey.vn)'
     },
   })
   const data = await res.json()

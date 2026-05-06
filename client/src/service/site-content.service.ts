@@ -1,5 +1,6 @@
 import { http } from "@/utils/http";
 import { API } from "@/constant/api";
+import { unwrapDataArray } from "@/utils/response";
 import type {
   BannerItem,
   HeroSlide,
@@ -46,8 +47,8 @@ const mapValueProp = (it: SiteContentDto): ValuePropItem => ({
 export const siteContentService = {
   getBanners: async (): Promise<BannerItem[]> => {
     try {
-      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.banners);
-      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      const res = await http.get<unknown>(API.siteContent.banners);
+      const data = unwrapDataArray<SiteContentDto>(res);
       return data
         .filter((d) => !!d?.thumbnailUrl)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
@@ -58,8 +59,8 @@ export const siteContentService = {
   },
   getTestimonials: async (): Promise<TestimonialItem[]> => {
     try {
-      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.testimonials);
-      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      const res = await http.get<unknown>(API.siteContent.testimonials);
+      const data = unwrapDataArray<SiteContentDto>(res);
       return data
         .filter((d) => !!(d?.content) && (d?.authorName || d?.testimonial_name))
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
@@ -70,8 +71,8 @@ export const siteContentService = {
   },
   getValueProps: async (): Promise<ValuePropItem[]> => {
     try {
-      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(`${API.siteContent.banners}?type=VALUE_PROP`);
-      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      const res = await http.get<unknown>(`${API.siteContent.banners}?type=VALUE_PROP`);
+      const data = unwrapDataArray<SiteContentDto>(res);
       return data
         .filter((d) => d?.type === "VALUE_PROP" && !!d?.title && !!d?.content)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
@@ -82,8 +83,8 @@ export const siteContentService = {
   },
   getHeroSlides: async (): Promise<HeroSlide[]> => {
     try {
-      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.banners);
-      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      const res = await http.get<unknown>(API.siteContent.banners);
+      const data = unwrapDataArray<SiteContentDto>(res);
       return data
         .filter((d) => d?.type === "BANNER" && !!d?.thumbnailUrl && !!d?.title)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
@@ -92,10 +93,10 @@ export const siteContentService = {
       return [];
     }
   },
-  getKeychainGallery: async (): Promise<Array<{ imageUrl: string; title?: string }>> => {
+  getProductGallery: async (): Promise<Array<{ imageUrl: string; title?: string }>> => {
     try {
-      const res = await http.get<SiteContentDto[] | { data: SiteContentDto[] }>(API.siteContent.gallery);
-      const data = Array.isArray(res) ? res : (res?.data ?? []);
+      const res = await http.get<unknown>(API.siteContent.gallery);
+      const data = unwrapDataArray<SiteContentDto>(res);
       return data
         .filter((d) => !!d?.thumbnailUrl)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))

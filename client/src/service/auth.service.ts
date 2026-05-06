@@ -1,4 +1,4 @@
-import { http, httpSuccess } from "@/utils/http";
+import { httpSuccess } from "@/utils/http";
 import { API } from "@/constant/api";
 import type { User } from "@/type/user";
 
@@ -9,7 +9,7 @@ export const authService = {
   login: (payload: { email: string; password: string }) =>
     httpSuccess.postData<{ message: string }>(API.auth.login, payload),
 
-  profile: () => http.get<User | null>(API.auth.profile),
+  profile: () => httpSuccess.getData<User | null>(API.auth.profile),
 
   refresh: () => httpSuccess.postData<{ message: string }>(API.auth.refresh),
 

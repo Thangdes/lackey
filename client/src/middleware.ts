@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+type JsonResponse = Record<string, unknown>;
+
 export async function middleware(req: NextRequest) {
   const { nextUrl, cookies } = req;
 
@@ -59,7 +61,8 @@ export async function middleware(req: NextRequest) {
         url.searchParams.set("redirect", path);
         return NextResponse.redirect(url);
       }
-      const user = await profileRes.json();
+      const json = await profileRes.json() as JsonResponse;
+      const user = (json && typeof json === 'object' && 'data' in json) ? (json.data as JsonResponse) : json;
       const role = typeof user?.role === "string" ? user.role.toUpperCase() : undefined;
       if (role !== "ADMIN") {
         const url = new URL("/", nextUrl);
@@ -91,7 +94,8 @@ export async function middleware(req: NextRequest) {
         url.searchParams.set("redirect", path);
         return NextResponse.redirect(url);
       }
-      const user = await profileRes.json();
+      const json = await profileRes.json() as JsonResponse;
+      const user = (json && typeof json === 'object' && 'data' in json) ? (json.data as JsonResponse) : json;
       const role = typeof user?.role === "string" ? user.role.toUpperCase() : undefined;
       if (role !== "SUPPLIER" && role !== "ADMIN") {
         const url = new URL("/", nextUrl);
@@ -120,7 +124,8 @@ export async function middleware(req: NextRequest) {
 
       let to = "/";
       if (profileRes.ok) {
-        const user = await profileRes.json();
+        const json = await profileRes.json() as JsonResponse;
+        const user = (json && typeof json === 'object' && 'data' in json) ? (json.data as JsonResponse) : json;
         const role = typeof user?.role === "string" ? user.role.toUpperCase() : undefined;
         if (role === "SUPPLIER" || role === "ADMIN") {
           to = "/supplier";

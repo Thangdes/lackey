@@ -45,25 +45,33 @@ export const orderService = {
       params?.customerType === "registered" ? false :
       undefined;
 
+    const status = (params?.status ?? "").trim() || undefined;
+    const search = (params?.search ?? "").trim() || undefined;
+    const code = (params?.code ?? "").trim() || undefined;
+    const email = (params?.email ?? "").trim() || undefined;
+    const deliveryCode = (params?.deliveryCode ?? "").trim() || undefined;
+
     const qs = buildQueryString({
       page: params?.page,
       limit: params?.limit,
-      status: params?.status,
-      search: params?.search,
-      code: params?.code,
-      email: params?.email,
-      deliveryCode: params?.deliveryCode,
+      status,
+      search,
+      code,
+      email,
+      deliveryCode,
       isGuest: isGuestParam,
     });
 
     const body = await http.get<unknown>(`${API.order.root}${qs ? `?${qs}` : ""}`);
 
+    const payload = unwrapData<unknown>(body);
+
     // Check if it's a Paginated<OrderSummary> shape with `items`
-    if (body && typeof body === "object" && "items" in (body as object)) {
-      return body as Paginated<OrderSummary>;
+    if (payload && typeof payload === "object" && "items" in (payload as object)) {
+      return payload as Paginated<OrderSummary>;
     }
 
-    const items = unwrapDataArray<OrderSummary>(body);
+    const items = unwrapDataArray<OrderSummary>(payload);
     return {
       items,
       total: items.length,
@@ -119,15 +127,15 @@ export const orderService = {
 
   // PATCH /orders/:id/status (admin)
   updateStatus: (id: string, payload: UpdateOrderStatusPayload) =>
-    http.patch<OrderDetail>(API.order.status(id), payload),
+    http.patch<unknown>(API.order.status(id), payload).then((raw) => unwrapData<OrderDetail>(raw)),
 
   // PATCH /orders/:id/delivery-code (admin)
   updateDeliveryCode: (id: string, deliveryCode: string) =>
-    http.patch<OrderDetail>(API.order.deliveryCode(id), { deliveryCode }),
+    http.patch<unknown>(API.order.deliveryCode(id), { deliveryCode }).then((raw) => unwrapData<OrderDetail>(raw)),
 
   // POST /orders/:id/cancel (public)
   cancel: (id: string, orderCode?: string) =>
-    http.post<OrderDetail>(API.order.cancel(id), orderCode ? { orderCode } : undefined),
+    http.post<unknown>(API.order.cancel(id), orderCode ? { orderCode } : undefined).then((raw) => unwrapData<OrderDetail>(raw)),
 
   // POST /orders/:id/placed (public)
   markPlaced: (id: string) => http.post<{ ok: boolean }>(API.order.byId(id) + '/placed'),
