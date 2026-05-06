@@ -1,10 +1,11 @@
 "use client";
 import React, { useCallback, useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CategoryDialog } from "@/components/admin/categories/CategoryDialog";
 import { CategoryTable } from "@/components/admin/categories/CategoryTable";
 import { useCategoryList, useCreateCategory, useDeleteCategory, useUpdateCategory, useUploadCategoryThumbnail } from "@/hook/useCategory";
+import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
+import { AdminSearchBar } from "@/components/admin/shared/AdminSearchBar";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { FolderTree, Plus } from "lucide-react";
@@ -35,14 +36,6 @@ function CategoriesPage() {
       c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q)
     );
   }, [categories, query]);
-
-  const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  }, []);
-
-  const handleOpenChange = useCallback((open: boolean) => {
-    setDialogOpen(open);
-  }, []);
 
   const resetForm = useCallback(() => {
     setName("");
@@ -173,20 +166,25 @@ function CategoriesPage() {
   }, [createMutation, description, dialogMode, editingId, name, resetForm, selectedFile, slug, updateMutation, uploadThumbMutation]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-xl font-semibold inline-flex items-center gap-2">
-          <FolderTree className="size-5 text-muted-foreground" aria-hidden />
-          Danh mục
-        </h1>
-        <div className="flex gap-2 w-full md:w-auto">
-          <Input placeholder="Tìm theo tên hoặc slug" value={query} onChange={handleQueryChange} />
-          <Button type="button" onClick={handleCreateClick} className="inline-flex items-center gap-2">
-            <Plus className="size-4" aria-hidden />
-            Thêm
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6 p-6">
+      <AdminPageHeader
+        icon={FolderTree}
+        title="Danh mục"
+        description="Quản lý danh mục sản phẩm"
+        actions={
+          <>
+            <AdminSearchBar
+              value={query}
+              onChange={setQuery}
+              placeholder="Tìm theo tên hoặc slug"
+            />
+            <Button type="button" onClick={handleCreateClick}>
+              <Plus className="size-4" />
+              Thêm
+            </Button>
+          </>
+        }
+      />
 
       {isLoading ? (
         <div className="text-sm text-muted-foreground">Đang tải…</div>
@@ -202,7 +200,7 @@ function CategoriesPage() {
         description={description}
         thumbnailUrl={currentThumbnailUrl}
         saving={saving}
-        onOpenChange={handleOpenChange}
+        onOpenChange={setDialogOpen}
         onNameChange={handleNameChange}
         onSlugChange={handleSlugChange}
         onDescriptionChange={handleDescriptionChange}

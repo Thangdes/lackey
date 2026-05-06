@@ -6,11 +6,11 @@ import type { CreateProductPayload } from "@/type/product";
 import { categoryService, type Category } from "@/service/category.service";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import slugify from "slugify";
 import { PackagePlus, Save, X } from "lucide-react";
 import { useSupplierList } from "@/hook/useSupplier";
-import { AddVariantDialog } from "@/components/admin/products/VariantDialogs";
 import { validateAndSuggestVariantName } from "@/utils/variantNameHelper";
 import NewProductForm from "@/components/admin/products/NewProductForm";
 import ProductImageManager from "@/components/admin/products/ProductImageManager";
@@ -290,94 +290,177 @@ export default function NewProductPage() {
   };
 
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4 inline-flex items-center gap-2">
-        <PackagePlus className="size-5 text-muted-foreground" aria-hidden />
-        Thêm sản phẩm mới
-      </h1>
-
-      <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
-        <div className="rounded-lg border p-4">
-          <h2 className="font-semibold mb-4">Thông tin cơ bản</h2>
-          <NewProductForm
-            name={name}
-            slug={slug}
-            description={description}
-            isActive={isActive}
-            categoryId={categoryId}
-            categories={categories}
-            categoryQuery={categoryQuery}
-            supplierId={supplierId}
-            suppliers={suppliers}
-            supplierQuery={supplierQuery}
-            initialBuyCount={initialBuyCount}
-            slugError={slugError}
-            onNameChange={handleNameChange}
-            onSlugChange={handleSlugChange}
-            onDescriptionChange={handleDescriptionChange}
-            onIsActiveChange={handleIsActiveChange}
-            onCategoryChange={setCategoryId}
-            onCategoryQueryChange={handleCategoryQueryChange}
-            onSupplierChange={setSupplierId}
-            onSupplierQueryChange={handleSupplierQueryChange}
-            onInitialBuyCountChange={handleInitialBuyCountChange}
-          />
-        </div>
-
-        <Separator />
-
-        <div className="rounded-lg border p-4">
-          <h2 className="font-semibold mb-4">Hình ảnh</h2>
-          <ProductImageManager
-            thumbnailUrl={undefined}
-            thumbnailObjectUrl={thumbnailObjectUrl}
-            images={images}
-            pendingPreviews={[]}
-            uploading={false}
-            onThumbnailFileChange={handleThumbnailChange}
-            onImgUrlKeyDown={handleImgKeyDown}
-            onAddImageButtonClick={handleAddImageClick}
-            onImageDragStart={handleImageDragStart}
-            onDrop={onDrop}
-            onAllowDrop={allowDrop}
-            onRemoveImageClick={handleRemoveImageClick}
-            onFilesChange={() => {}}
-            onUploadImages={() => {}}
-            imgUrlRef={imgUrlRef as React.RefObject<HTMLInputElement>}
-          />
-        </div>
-
-        <Separator />
-
-        <div className="rounded-lg border p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Biến thể sản phẩm</h2>
-            <AddVariantDialog
-              triggerLabel="+ Thêm biến thể"
-              baseName={nvBaseName}
-              sku={nvSku}
-              price={nvPrice}
-              weight={nvWeight}
-              discountPercent={nvDiscountPrice}
-              discountAmount={nvDiscountAmount}
-              discountMode={nvDiscountMode}
-              stock={nvStock}
-              disabled={addingVariant}
-              onBaseNameChange={setNvBaseName}
-              onSkuChange={setNvSku}
-              onWeightChange={setNvWeight}
-              onPriceChange={setNvPrice}
-              onDiscountPercentChange={setNvDiscountPrice}
-              onDiscountAmountChange={setNvDiscountAmount}
-              onDiscountModeChange={setNvDiscountMode}
-              onStockChange={setNvStock}
-              onAdd={addVariantLocal}
-            />
-          </div>
-          <SimpleVariantsTable variants={variants} onDelete={handleVariantDelete} VND={VND} />
-        </div>
-
+    <div className="space-y-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold inline-flex items-center gap-2">
+          <PackagePlus className="size-5 text-muted-foreground" aria-hidden />
+          Thêm sản phẩm mới
+        </h1>
         <div className="flex gap-2">
+          <Button
+            type="button"
+            onClick={() => {
+              const form = document.getElementById('admin-new-product-form') as HTMLFormElement | null;
+              form?.requestSubmit();
+            }}
+            disabled={loading || !!slugError || !categoryId || !supplierId}
+            className="inline-flex items-center gap-1"
+          >
+            <Save className="size-4" aria-hidden />
+            {loading ? "Đang lưu…" : "Lưu"}
+          </Button>
+          <Button type="button" variant="outline" onClick={handleBackClick} className="inline-flex items-center gap-1">
+            <X className="size-4" aria-hidden />
+            Hủy
+          </Button>
+        </div>
+      </div>
+
+      <form id="admin-new-product-form" onSubmit={onSubmit} className="max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="rounded-lg border p-4">
+              <h2 className="font-semibold mb-4">Thông tin cơ bản</h2>
+              <NewProductForm
+                name={name}
+                slug={slug}
+                description={description}
+                isActive={isActive}
+                categoryId={categoryId}
+                categories={categories}
+                categoryQuery={categoryQuery}
+                supplierId={supplierId}
+                suppliers={suppliers}
+                supplierQuery={supplierQuery}
+                initialBuyCount={initialBuyCount}
+                slugError={slugError}
+                onNameChange={handleNameChange}
+                onSlugChange={handleSlugChange}
+                onDescriptionChange={handleDescriptionChange}
+                onIsActiveChange={handleIsActiveChange}
+                onCategoryChange={setCategoryId}
+                onCategoryQueryChange={handleCategoryQueryChange}
+                onSupplierChange={setSupplierId}
+                onSupplierQueryChange={handleSupplierQueryChange}
+                onInitialBuyCountChange={handleInitialBuyCountChange}
+              />
+            </div>
+
+            <div className="rounded-lg border p-4">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <h2 className="font-semibold">Biến thể mặc định</h2>
+                  <div className="text-xs text-muted-foreground">
+                    Bạn có thể tạo sản phẩm nhanh với 1 biến thể. Có thể thêm nhiều biến thể sau.
+                  </div>
+                </div>
+                <Button type="button" onClick={addVariantLocal} disabled={addingVariant}>
+                  {addingVariant ? "Đang thêm…" : "Thêm biến thể"}
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Tên cơ bản (không bao gồm khối lượng)</label>
+                  <Input placeholder="Ví dụ: Hạt điều rang muối" value={nvBaseName} onChange={(e) => setNvBaseName(e.target.value)} />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Khối lượng (gram)</label>
+                  <Input type="number" min={0} step="1" placeholder="Ví dụ: 500" value={nvWeight} onChange={(e) => setNvWeight(e.target.value)} />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <div className="p-3 bg-muted/40 border rounded text-sm">
+                    <div className="text-muted-foreground">Tên biến thể sẽ tạo:</div>
+                    <div className="font-semibold mt-1">{nvFinalName || "(Nhập tên cơ bản và khối lượng)"}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">SKU</label>
+                  <Input placeholder="SKU" value={nvSku} onChange={(e) => setNvSku(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Giá (VND)</label>
+                  <Input type="number" min={0} step="1" placeholder="Giá" value={nvPrice} onChange={(e) => setNvPrice(e.target.value)} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Khuyến mãi</label>
+                  <select
+                    aria-label="Chế độ khuyến mãi"
+                    className="border rounded px-2 py-2 text-sm w-full bg-background"
+                    value={nvDiscountMode}
+                    onChange={(e) => setNvDiscountMode(e.target.value as "PERCENT" | "AMOUNT")}
+                  >
+                    <option value="PERCENT">Theo %</option>
+                    <option value="AMOUNT">Giá sau giảm</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Giá trị</label>
+                  {nvDiscountMode === "PERCENT" ? (
+                    <Input type="number" min={0} max={100} step="1" placeholder="%" value={nvDiscountPrice} onChange={(e) => setNvDiscountPrice(e.target.value)} />
+                  ) : (
+                    <Input type="number" min={0} step="1" placeholder="Giá sau giảm" value={nvDiscountAmount} onChange={(e) => setNvDiscountAmount(e.target.value)} />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Kho</label>
+                  <Input type="number" min={0} step="1" placeholder="Kho" value={nvStock} onChange={(e) => setNvStock(e.target.value)} />
+                </div>
+                <div className="text-sm text-muted-foreground flex items-end">
+                  {(() => {
+                    const p = Number(nvPrice);
+                    if (!Number.isFinite(p) || p < 0) return null;
+                    if (nvDiscountMode === "AMOUNT") {
+                      const amt = nvDiscountAmount === "" ? null : Number(nvDiscountAmount);
+                      if (amt == null || !Number.isFinite(amt) || amt < 0) return null;
+                      return `Giá sau giảm: ${VND.format(Math.max(0, Math.min(amt, p)))}`;
+                    }
+                    const pct = nvDiscountPrice === "" ? null : Number(nvDiscountPrice);
+                    if (pct == null || !Number.isFinite(pct) || pct < 0 || pct > 100) return null;
+                    const after = Math.max(0, Math.round(p * (1 - pct / 100)));
+                    return `Giá sau giảm: ${VND.format(after)}`;
+                  })()}
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <h3 className="text-sm font-medium mb-2">Danh sách biến thể</h3>
+                <SimpleVariantsTable variants={variants} onDelete={handleVariantDelete} VND={VND} />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="rounded-lg border p-4">
+              <h2 className="font-semibold mb-4">Hình ảnh</h2>
+              <ProductImageManager
+                thumbnailUrl={undefined}
+                thumbnailObjectUrl={thumbnailObjectUrl}
+                images={images}
+                pendingPreviews={[]}
+                uploading={false}
+                onThumbnailFileChange={handleThumbnailChange}
+                onImgUrlKeyDown={handleImgKeyDown}
+                onAddImageButtonClick={handleAddImageClick}
+                onImageDragStart={handleImageDragStart}
+                onDrop={onDrop}
+                onAllowDrop={allowDrop}
+                onRemoveImageClick={handleRemoveImageClick}
+                onFilesChange={() => {}}
+                onUploadImages={() => {}}
+                imgUrlRef={imgUrlRef as React.RefObject<HTMLInputElement>}
+              />
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-6" />
+
+        <div className="sticky bottom-0 bg-background/80 backdrop-blur border rounded-lg p-3 flex items-center justify-end gap-2">
           <Button type="submit" disabled={loading || !!slugError || !categoryId || !supplierId} className="inline-flex items-center gap-1">
             <Save className="size-4" aria-hidden />
             {loading ? "Đang lưu…" : "Lưu"}

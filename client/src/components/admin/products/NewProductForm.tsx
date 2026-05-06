@@ -1,8 +1,10 @@
 "use client";
 import React, { useMemo } from "react";
-import type { Category } from "@/service/category.service";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Category } from "@/service/category.service";
 
 export type NewProductFormProps = {
   name: string;
@@ -54,13 +56,13 @@ export default function NewProductForm({
   const filteredCategories = useMemo(() => {
     const q = categoryQuery.trim().toLowerCase();
     if (!q) return categories;
-    return categories.filter((c) => (c.name + " " + (c.slug || "")).toLowerCase().includes(q));
+    return categories.filter((c: Category) => (c.name + " " + (c.slug || "")).toLowerCase().includes(q));
   }, [categories, categoryQuery]);
 
   const filteredSuppliers = useMemo(() => {
     const q = supplierQuery.trim().toLowerCase();
     if (!q) return suppliers;
-    return suppliers.filter((s) => s.name.toLowerCase().includes(q));
+    return suppliers.filter((s: { id: string; name: string }) => s.name.toLowerCase().includes(q));
   }, [suppliers, supplierQuery]);
 
   return (
@@ -100,7 +102,12 @@ export default function NewProductForm({
           </SelectTrigger>
           <SelectContent>
             {filteredCategories.length === 0 ? (
-              <div className="p-2 text-sm text-muted-foreground">Không có danh mục</div>
+              <div className="p-2 text-sm text-muted-foreground space-y-1">
+                <div>Chưa có danh mục.</div>
+                <Link href="/admin/categories" className="text-sm underline underline-offset-4">
+                  Tạo danh mục
+                </Link>
+              </div>
             ) : (
               filteredCategories.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
@@ -126,7 +133,12 @@ export default function NewProductForm({
           </SelectTrigger>
           <SelectContent>
             {filteredSuppliers.length === 0 ? (
-              <div className="p-2 text-sm text-muted-foreground">Không có nhà cung cấp</div>
+              <div className="p-2 text-sm text-muted-foreground space-y-1">
+                <div>Chưa có nhà cung cấp.</div>
+                <Link href="/admin/suppliers" className="text-sm underline underline-offset-4">
+                  Tạo nhà cung cấp
+                </Link>
+              </div>
             ) : (
               filteredSuppliers.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
