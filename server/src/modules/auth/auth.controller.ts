@@ -12,19 +12,33 @@ import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login.dto';
+import { SignupDto } from './dto/signup.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+/** Compute cookie options based on environment to avoid repetition. */
+function buildCookieOptions(isProduction: boolean) {
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax' as const, // client & server share parent domain (e.g. api.domain.com / domain.com)
+    path: '/',
+  };
+}
+
+@ApiTags('Auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
   async signup(
-    @Body() body: { username: string; email: string; password: string },
-    @Res() res: Response,
+    @Body() body: SignupDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.authService.signup(body);
     this.setAuthCookies(res, tokens);
-    return res.send({ message: 'Signup successful' });
+    return { message: 'Signup successful' };
   }
 
   @Post('login')
@@ -33,20 +47,23 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const guestCartId = req.cookies.guestCartId;
+    // Prefer guestCartId from httpOnly cookie over body field (more secure)
+    const guestCartIdFromCookie = req.cookies?.guestCartId as
+      | string
+      | undefined;
+    if (guestCartIdFromCookie) {
+      loginData.guestCartId = guestCartIdFromCookie;
+    }
+
     const tokens = await this.authService.login(loginData);
     this.setAuthCookies(res, tokens);
-    if (guestCartId) {
-      const originHeader = (req.headers?.origin as string | undefined) || '';
-      const hostToTest = originHeader || `http://${req.hostname || ''}`;
-      const isLocalhost = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(hostToTest);
-      res.clearCookie('guestCartId', {
-        httpOnly: true,
-        secure: isLocalhost ? false : true,
-        sameSite: isLocalhost ? 'lax' : 'none',
-        path: '/',
-      });
+
+    // Clear the guest cart cookie after merging
+    if (guestCartIdFromCookie) {
+      const isProduction = process.env.NODE_ENV === 'production';
+      res.clearCookie('guestCartId', buildCookieOptions(isProduction));
     }
+
     return { message: 'Login successful' };
   }
 
@@ -62,8 +79,7 @@ export class AuthController {
     @Req() req,
     @Body() body: { fullName?: string; phone?: string },
   ) {
-    const updated = await this.authService.updateProfile(req.user.id, body);
-    return updated;
+    return this.authService.updateProfile(req.user.id, body);
   }
 
   @Post('refresh')
@@ -71,18 +87,13 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = req.cookies.refreshToken;
-    const cookieOptions = {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax' as const,
-      path: '/',
-    };
+    const refreshToken = req.cookies?.refreshToken as string | undefined;
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieOptions = buildCookieOptions(isProduction);
 
     if (!refreshToken) {
       res.clearCookie('accessToken', cookieOptions);
       res.clearCookie('refreshToken', cookieOptions);
-      // Also clear the public hasAuth flag
       res.clearCookie('hasAuth', { ...cookieOptions, httpOnly: false });
       res.status(401);
       return { message: 'No refresh token' };
@@ -95,7 +106,6 @@ export class AuthController {
     } catch {
       res.clearCookie('accessToken', cookieOptions);
       res.clearCookie('refreshToken', cookieOptions);
-      // Also clear the public hasAuth flag
       res.clearCookie('hasAuth', { ...cookieOptions, httpOnly: false });
       res.status(401);
       return { message: 'Invalid refresh token' };
@@ -103,17 +113,22 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    const cookieOptions = {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax' as const,
-      path: '/',
-    };
+  async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // Revoke the refresh token in DB so it cannot be reused
+    const refreshToken = req.cookies?.refreshToken as string | undefined;
+    if (refreshToken) {
+      await this.authService.logout(refreshToken);
+    }
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieOptions = buildCookieOptions(isProduction);
     res.clearCookie('accessToken', cookieOptions);
     res.clearCookie('refreshToken', cookieOptions);
-    // Clear the public hasAuth flag
     res.clearCookie('hasAuth', { ...cookieOptions, httpOnly: false });
+
     return { message: 'Logged out successfully' };
   }
 
@@ -122,30 +137,22 @@ export class AuthController {
     tokens: { accessToken: string; refreshToken: string },
   ) {
     const isProduction = process.env.NODE_ENV === 'production';
-    const secureFlag = isProduction;
+    const base = buildCookieOptions(isProduction);
 
     res.cookie('accessToken', tokens.accessToken, {
-      httpOnly: true,
-      secure: secureFlag,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 24 * 60 * 60 * 1000,
+      ...base,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     res.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      secure: secureFlag,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      ...base,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Set a non-HttpOnly flag so the client can detect auth state cheaply
+    // Non-HttpOnly flag so the client can cheaply detect auth state
     res.cookie('hasAuth', '1', {
+      ...base,
       httpOnly: false,
-      secure: secureFlag,
-      sameSite: 'lax',
-      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   }
