@@ -98,7 +98,7 @@ type QueryValue = string | number | boolean | string[] | number[] | undefined | 
 
 /**
  * Builds a URL query string from a params object.
- * - Skips `undefined` and `null` values.
+ * - Skips `undefined`, `null`, and empty string (`""`) values.
  * - Array values are serialized as repeated keys with `[]` suffix (e.g., `ids[]=1&ids[]=2`).
  * - Boolean values are serialized as `"true"` / `"false"`.
  * @example
@@ -109,7 +109,7 @@ export function buildQueryString(params: Record<string, QueryValue>): string {
   const parts: string[] = [];
 
   for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null) continue;
+    if (value === undefined || value === null || value === "") continue;
 
     if (Array.isArray(value)) {
       const compact = value.filter((v) => v !== undefined && v !== null && v !== "");

@@ -174,7 +174,18 @@ type AxiosErrorLike = { response?: { status?: number; data?: unknown }; message?
 
 function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
   return p
-    .then((r) => r.data)
+    .then((r) => {
+      const payload = r.data as unknown;
+      if (
+        payload &&
+        typeof payload === "object" &&
+        (payload as { success?: unknown }).success === true &&
+        "data" in (payload as Record<string, unknown>)
+      ) {
+        return (payload as { data: T }).data;
+      }
+      return r.data;
+    })
     .catch((err: unknown) => {
       const e = err as AxiosErrorLike;
       const status = e?.response?.status;
@@ -209,9 +220,9 @@ export const http = {
 };
 
 export const httpSuccess = {
-  getData: <T>(path: string) => http.get<{ data: T }>(path).then((r) => r.data),
-  postData: <T>(path: string, body?: unknown) => http.post<{ data: T }>(path, body).then((r) => r.data),
-  patchData: <T>(path: string, body?: unknown) => http.patch<{ data: T }>(path, body).then((r) => r.data),
-  putData: <T>(path: string, body?: unknown) => http.put<{ data: T }>(path, body).then((r) => r.data),
-  deleteData: <T>(path: string) => http.delete<{ data: T }>(path).then((r) => r.data),
+  getData: <T>(path: string) => http.get<T>(path),
+  postData: <T>(path: string, body?: unknown) => http.post<T>(path, body),
+  patchData: <T>(path: string, body?: unknown) => http.patch<T>(path, body),
+  putData: <T>(path: string, body?: unknown) => http.put<T>(path, body),
+  deleteData: <T>(path: string) => http.delete<T>(path),
 };

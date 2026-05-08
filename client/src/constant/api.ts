@@ -122,12 +122,18 @@ export const API = {
     },
     reconcileCsv: `/payments/reconcile-csv`,
   },
+  sepay: {
+    status: (orderCode: string) => `/payments/sepay/status?orderCode=${encodeURIComponent(orderCode)}`,
+    createCheckout: "/payments/sepay/create-checkout",
+  },
   shipping: {
     calculateFee: "/shipping/calculate-fee",
     districtsInfo: "/shipping/districts-info",
     provinces: "/shipping/provinces",
     districts: "/shipping/districts",
     wards: "/shipping/wards",
+    ghnCreate: (orderId: string) => `/shipping/ghn/${orderId}/create`,
+    ghnTracking: (orderId: string) => `/shipping/ghn/${orderId}/tracking`,
   },
   user: {
     me: "/auth/profile",

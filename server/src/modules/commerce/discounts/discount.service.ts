@@ -124,38 +124,47 @@ export class DiscountService {
   }
 
   async findAllActive() {
-    return this.discountRepository.findAllActive();
+    try {
+      return await this.discountRepository.findAllActive();
+    } catch {
+      return [];
+    }
   }
 
   async getPromoStrip() {
-    const discount = await this.discountRepository.findActiveForPromoStrip();
-    if (!discount) {
+    try {
+      const discount = await this.discountRepository.findActiveForPromoStrip();
+      if (!discount) {
+        return { active: false };
+      }
+      const valueNum = Number(discount.value);
+      const fmtCurrency = (n: number) => new Intl.NumberFormat('vi-VN').format(n);
+      let main = '';
+      if (discount.type === 'PERCENTAGE') {
+        main = `Giảm ${valueNum}%`;
+      } else {
+        main = `Giảm ${fmtCurrency(valueNum)}₫`;
+      }
+      const code = String(discount.code).toUpperCase();
+      const suffix = discount.minAmount ? ` cho đơn từ ${fmtCurrency(Number(discount.minAmount))}₫` : '';
+      const message = `${main}${suffix} với mã ${code}`;
+      return {
+        active: true,
+        code,
+        type: discount.type,
+        value: valueNum,
+        message,
+        description: discount.description ?? null,
+        expiresAt: discount.endDate ? discount.endDate.toISOString() : null,
+        minAmount: discount.minAmount != null ? Number(discount.minAmount) : null,
+        ctaHref: '/products',
+        ctaLabel: 'Mua ngay',
+        variant: 'brand',
+        dismissible: false,
+      } as const;
+    } catch {
+      // Trả về fallback khi DB không khả dụng (Atlas timeout, TLS error...)
       return { active: false };
     }
-    const valueNum = Number(discount.value);
-    const fmtCurrency = (n: number) => new Intl.NumberFormat('vi-VN').format(n);
-    let main = '';
-    if (discount.type === 'PERCENTAGE') {
-      main = `Giảm ${valueNum}%`;
-    } else {
-      main = `Giảm ${fmtCurrency(valueNum)}₫`;
-    }
-    const code = String(discount.code).toUpperCase();
-    const suffix = discount.minAmount ? ` cho đơn từ ${fmtCurrency(Number(discount.minAmount))}₫` : '';
-    const message = `${main}${suffix} với mã ${code}`;
-    return {
-      active: true,
-      code,
-      type: discount.type,
-      value: valueNum,
-      message,
-      description: discount.description ?? null,
-      expiresAt: discount.endDate ? discount.endDate.toISOString() : null,
-      minAmount: discount.minAmount != null ? Number(discount.minAmount) : null,
-      ctaHref: '/products',
-      ctaLabel: 'Mua ngay',
-      variant: 'brand',
-      dismissible: false,
-    } as const;
   }
 }

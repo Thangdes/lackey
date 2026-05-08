@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as passport from 'passport';
 import { LoggerService } from './infrastructure/common/logger/logger.service';
@@ -26,23 +26,23 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // CORS configuration
+  const corsOrigins = [
+    'http://localhost',
+    'http://localhost:80',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://0.0.0.0:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://0.0.0.0:5173',
+    'https://localhost:3000',
+    'http://nginx',
+    'http://client:3000',
+    'http://client',
+    'http://client:80',
+  ];
   app.enableCors({
-    origin: [
-      'http://localhost',
-      'http://localhost:80',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://0.0.0.0:3000',
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://0.0.0.0:5173',
-      'https://localhost:3000',
-      'http://nginx',
-      'http://client:3000',
-      'http://client',
-      'http://client:80',
-      process.env.NODE_ENV === 'development' ? '*' : '',
-    ].filter(Boolean),
+    origin: process.env.NODE_ENV === 'development' ? true : corsOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: [
       'Content-Type',
@@ -59,6 +59,21 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      exceptionFactory: (errors) => {
+        const messages = errors.map(error => {
+          const constraints = error.constraints 
+            ? Object.values(error.constraints).join(', ')
+            : 'validation failed';
+          return `${error.property}: ${constraints}`;
+        });
+        return new BadRequestException({
+          message: 'Validation failed',
+          errors: messages,
+        });
+      },
     }),
   );
 
