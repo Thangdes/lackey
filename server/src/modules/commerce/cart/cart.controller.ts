@@ -8,7 +8,6 @@ import {
   Delete,
   Req,
   Res,
-  ParseUUIDPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -91,7 +90,7 @@ export class CartController {
   async updateItemQuantity(
     @CurrentUser() user: UserPayload | null,
     @Req() req: Request,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('itemId') itemId: string,
     @Body() updateCartItemDto: UpdateCartItemDto,
   ) {
     const identifier = await this.getCartIdentifier(user, req);
@@ -102,7 +101,7 @@ export class CartController {
   async removeItem(
     @CurrentUser() user: UserPayload | null,
     @Req() req: Request,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('itemId') itemId: string,
   ) {
     const identifier = await this.getCartIdentifier(user, req);
     return this.cartService.removeItem(identifier, itemId);

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { cartService } from "@/service/cart.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { cartKeys } from "@/constant/key/cart";
+import { useSepayStatus } from "@/hook/useSepay";
 
 export default function CheckoutCompletePage() {
   const { user } = useAuth();
@@ -16,6 +17,10 @@ export default function CheckoutCompletePage() {
   const [ready, setReady] = useState(false);
   const [orderCode, setOrderCode] = useState<string | null>(null);
   const [invalid, setInvalid] = useState(false);
+  const [lastMethod, setLastMethod] = useState<string | null>(null);
+
+  const shouldPollSepay = Boolean(orderCode && String(lastMethod || "").toUpperCase() === "VIETQR");
+  const { data: sepayStatus } = useSepayStatus(orderCode || undefined, shouldPollSepay);
 
   useEffect(() => {
     let allowed = false;
@@ -34,6 +39,7 @@ export default function CheckoutCompletePage() {
       return;
     }
     setOrderCode(lastCode);
+    setLastMethod(lastMethod);
     try { localStorage.removeItem("cartItems"); } catch {}
     try { document.cookie = "justCheckedOut=; path=/; max-age=0"; } catch {}
     (async () => {
@@ -76,9 +82,19 @@ export default function CheckoutCompletePage() {
           <CheckCircle2 size={32} />
         </div>
         <h1 className="mt-4 text-2xl font-semibold">Đơn hàng đã được ghi nhận</h1>
-        <p className="mt-2 text-black/70">Nhân viên sẽ kiểm tra và xác nhận đơn trong ngày. Bạn có thể theo dõi tình trạng đơn hàng tại trang Đơn hàng.</p>
+        <p className="mt-2 text-black/70">Đơn hàng đã được tạo thành công. Nếu bạn chuyển khoản, hệ thống sẽ tự xác nhận sau khi SePay nhận được giao dịch.</p>
         {orderCode ? (
           <p className="mt-1 text-sm text-black/60">Mã đơn hàng: <span className="font-medium">{orderCode}</span></p>
+        ) : null}
+
+        {shouldPollSepay ? (
+          <div className="mt-3 text-sm">
+            {String(sepayStatus?.paymentStatus || "").toUpperCase() === "SUCCESS" ? (
+              <div className="text-emerald-700">Thanh toán đã xác nhận</div>
+            ) : (
+              <div className="text-amber-700">Đang chờ xác nhận thanh toán...</div>
+            )}
+          </div>
         ) : null}
         {!user ? (
           <p className="mt-2 text-sm text-black/60">Đơn hàng sẽ được cập nhật qua email. Bạn có thể đăng ký bằng email của mình để xem đơn hàng trên website.</p>

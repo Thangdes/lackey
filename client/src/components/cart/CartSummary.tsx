@@ -49,7 +49,7 @@ export function CartSummary(props: CartSummaryProps) {
 
       <div className="space-y-3">
         <Link
-          href={ROUTES.checkout ?? "/checkout"}
+          href={`${ROUTES.checkout ?? "/checkout"}?source=cart`}
           className="block w-full py-3.5 bg-black text-white text-center text-sm font-semibold hover:bg-gray-800 transition-colors"
         >
           Tiến hành thanh toán

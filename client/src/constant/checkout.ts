@@ -95,7 +95,7 @@ export const PAYMENT_UI = {
     desc: "Thanh toán trực tiếp với shipper khi nhận hàng. Kiểm tra kỹ trước khi thanh toán. Nếu có lỗi vui lòng liên hệ hotline 0356 356 497",
   },
   vietqr: {
-    title: "Chuyển khoản ngân hàng (VietQR)",
+    title: "Thanh toán ngân hàng",
     descPrefix: "Sau khi đặt hàng, chúng tôi sẽ hiển thị mã QR với số tiền ",
     descSuffix: " và hướng dẫn chuyển khoản.",
   },

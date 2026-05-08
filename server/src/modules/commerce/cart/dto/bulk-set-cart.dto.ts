@@ -1,8 +1,8 @@
-import { ArrayNotEmpty, IsArray, IsInt, IsUUID, Min, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, IsMongoId, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class BulkCartItemDto {
-  @IsUUID()
+  @IsMongoId()
   productVariantId!: string;
 
   @IsInt()

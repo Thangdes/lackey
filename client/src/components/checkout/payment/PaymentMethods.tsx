@@ -5,24 +5,22 @@ import { getOrderedEntries } from "./PaymentLogos";
 
 type Props = {
   method: Method;
-  total: number;
   onSelect: (m: Method) => void;
-  formatVND: (n: number) => string;
   bankBrandCode?: string;
   selectingDisabled?: boolean;
   pending?: boolean;
 };
 
-export const PaymentMethods = ({ method, total, onSelect, formatVND, selectingDisabled, pending }: Props) => {
+export const PaymentMethods = ({ method, onSelect, selectingDisabled, pending }: Props) => {
   const meta: Record<Method, { label: string; desc: string; enabled: boolean }> = {
     COD: { 
       label: "Thanh toán tiền mặt khi nhận hàng", 
-      desc: "Thanh toán trực tiếp với shipper khi nhận hàng. Kiểm tra kỹ trước khi thanh toán. Nếu có lỗi vui lòng liên hệ hotline 0356 356 497", 
+      desc: "Thanh toán trực tiếp với shipper khi nhận hàng. Kiểm tra kỹ trước khi thanh toán.", 
       enabled: true 
     },
     VIETQR: { 
-      label: "Chuyển khoản ngân hàng (VietQR)", 
-      desc: `Sau khi đặt hàng, chúng tôi sẽ hiển thị mã QR với số tiền ${formatVND(total)} và hướng dẫn chuyển khoản.`, 
+      label: "Thanh toán qua SePay", 
+      desc: `Chuyển hướng đến cổng thanh toán an toàn SePay để quét mã QR chuyển khoản ngân hàng.`, 
       enabled: true 
     },
     BANK_TRANSFER: { label: "Chuyển khoản ngân hàng (Manual)", desc: "Bạn sẽ nhận hướng dẫn chuyển khoản sau khi đặt hàng.", enabled: false },

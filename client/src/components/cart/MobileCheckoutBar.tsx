@@ -28,7 +28,7 @@ export function MobileCheckoutBar({ total, formatVND, continueLabel, checkoutLab
           <span className="xs:hidden sm:hidden">Mua</span>
         </Link>
         <Link
-          href={ROUTES.checkout ?? "/checkout"}
+          href={`${ROUTES.checkout ?? "/checkout"}?source=cart`}
           className="inline-flex items-center justify-center rounded-full border border-black bg-black px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-black/90 gap-1 sm:gap-2 min-h-8 sm:min-h-10 shrink-0"
         >
           <span className="hidden xs:inline sm:inline">{checkoutLabel}</span>

@@ -85,18 +85,18 @@ export function GHNAddressSelector({
   return (
     <div className={className}>
       <div>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.city}</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">{CHECKOUT_TEXT.labels.city}</label>
         <Select 
           value={city} 
           onValueChange={handleCityChange}
           disabled={disabled || provincesLoading}
         >
-          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all">
+          <SelectTrigger className="w-full border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all">
             <SelectValue placeholder={provincesLoading ? "Đang tải..." : CHECKOUT_TEXT.labels.city} />
           </SelectTrigger>
-          <SelectContent className="border-2 border-black">
+          <SelectContent className="border border-gray-200 rounded-lg shadow-lg">
             {provinces.map((province) => (
-              <SelectItem key={province.ProvinceID} value={province.ProvinceName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
+              <SelectItem key={province.ProvinceID} value={province.ProvinceName} className="hover:bg-gray-50 focus:bg-gray-50">
                 {province.ProvinceName}
               </SelectItem>
             ))}
@@ -105,15 +105,15 @@ export function GHNAddressSelector({
       </div>
 
       <div>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
-          {CHECKOUT_TEXT.labels.district} <span className="text-[#AE1C2C]">*</span>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          {CHECKOUT_TEXT.labels.district} <span className="text-red-500">*</span>
         </label>
         <Select 
           value={district} 
           onValueChange={handleDistrictChange}
           disabled={disabled || !selectedProvinceId || districtsLoading}
         >
-          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all disabled:opacity-50">
+          <SelectTrigger className="w-full border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all disabled:opacity-50">
             <SelectValue placeholder={
               !selectedProvinceId 
                 ? "Chọn tỉnh/thành phố trước" 
@@ -122,9 +122,9 @@ export function GHNAddressSelector({
                 : CHECKOUT_TEXT.placeholders.chooseDistrict
             } />
           </SelectTrigger>
-          <SelectContent className="border-2 border-black">
+          <SelectContent className="border border-gray-200 rounded-lg shadow-lg">
             {districts.map((districtObj) => (
-              <SelectItem key={districtObj.DistrictID} value={districtObj.DistrictName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
+              <SelectItem key={districtObj.DistrictID} value={districtObj.DistrictName} className="hover:bg-gray-50 focus:bg-gray-50">
                 {districtObj.DistrictName}
               </SelectItem>
             ))}
@@ -133,15 +133,15 @@ export function GHNAddressSelector({
       </div>
 
       <div>
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
-          {CHECKOUT_TEXT.labels.ward} <span className="text-[#AE1C2C]">*</span>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          {CHECKOUT_TEXT.labels.ward} <span className="text-red-500">*</span>
         </label>
         <Select 
           value={ward} 
           onValueChange={handleWardChange}
           disabled={disabled || !selectedDistrictId || wardsLoading}
         >
-          <SelectTrigger className="w-full border-2 border-black bg-white focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all disabled:opacity-50">
+          <SelectTrigger className="w-full border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all disabled:opacity-50">
             <SelectValue placeholder={
               !selectedDistrictId 
                 ? "Chọn quận/huyện trước" 
@@ -150,9 +150,9 @@ export function GHNAddressSelector({
                 : "Chọn phường/xã"
             } />
           </SelectTrigger>
-          <SelectContent className="border-2 border-black">
+          <SelectContent className="border border-gray-200 rounded-lg shadow-lg">
             {wards.map((wardObj) => (
-              <SelectItem key={wardObj.WardCode} value={wardObj.WardName} className="hover:bg-[#FFF8E7] focus:bg-[#FFF8E7]">
+              <SelectItem key={wardObj.WardCode} value={wardObj.WardName} className="hover:bg-gray-50 focus:bg-gray-50">
                 {wardObj.WardName}
               </SelectItem>
             ))}
@@ -161,15 +161,15 @@ export function GHNAddressSelector({
       </div>
 
       <div className="sm:col-span-2">
-        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">
-          {CHECKOUT_TEXT.labels.street} <span className="text-[#AE1C2C]">*</span>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          {CHECKOUT_TEXT.labels.street} <span className="text-red-500">*</span>
         </label>
         <input 
           value={street} 
           onChange={onStreetChange} 
           placeholder={CHECKOUT_TEXT.placeholders.street}
           disabled={disabled}
-          className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] disabled:opacity-50 disabled:cursor-not-allowed transition-all" 
+          className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all" 
         />
       </div>
     </div>

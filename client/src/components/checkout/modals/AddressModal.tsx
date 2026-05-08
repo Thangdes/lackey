@@ -79,24 +79,24 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-4">
-      <div className="w-full max-w-lg border-4 border-black bg-white shadow-[12px_12px_0px_0px_#B5CCBC]">
-        <div className="bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <h4 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider">Địa chỉ giao hàng</h4>
-          <button onClick={onClose} className="shrink-0 w-8 h-8 flex items-center justify-center border-2 border-white bg-white text-black hover:bg-black hover:text-white transition-all" aria-label="Đóng">
-            <X size={16} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-3 sm:p-4">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-xl border border-gray-200">
+        <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 rounded-t-xl">
+          <h4 className="text-sm sm:text-base font-semibold text-gray-900">Địa chỉ giao hàng</h4>
+          <button onClick={onClose} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors" aria-label="Đóng">
+            <X size={18} />
           </button>
         </div>
         <div className="p-4 sm:p-6">
 
           <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 text-sm">
             <div>
-              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.fullName}</label>
-              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all" />
+              <label className="mb-2 block text-sm font-medium text-gray-700">{CHECKOUT_TEXT.labels.fullName}</label>
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-black">{CHECKOUT_TEXT.labels.phone}</label>
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border-2 border-black bg-white px-3 py-2.5 focus:outline-none focus:border-[#AE1C2C] focus:shadow-[4px_4px_0px_0px_rgba(174,28,44,0.2)] transition-all" />
+              <label className="mb-2 block text-sm font-medium text-gray-700">{CHECKOUT_TEXT.labels.phone}</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all" />
             </div>
 
             <GHNAddressSelector
@@ -112,19 +112,19 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
             />
           </div>
 
-          <div className="mt-4 p-3 bg-[#FFF8E7] border-2 border-black">
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <label className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-medium cursor-pointer">
-              <input type="checkbox" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="w-4 h-4 border-2 border-black" />
-              <span className="font-bold">Đặt làm địa chỉ mặc định</span>
+              <input type="checkbox" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-2 focus:ring-gray-900" />
+              <span className="text-gray-700">Đặt làm địa chỉ mặc định</span>
             </label>
           </div>
 
           {error && (
-            <div className="mt-4 border-2 border-[#AE1C2C] bg-red-50 p-3 text-sm font-medium text-[#AE1C2C]">{error}</div>
+            <div className="mt-4 border border-red-300 bg-red-50 rounded-lg p-3 text-sm font-medium text-red-600">{error}</div>
           )}
 
           <div className="mt-5 sm:mt-6 flex items-center justify-end gap-2 sm:gap-3">
-            <button onClick={onClose} className="border-2 border-black bg-white px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-all">Hủy</button>
+            <button onClick={onClose} className="border border-gray-300 bg-white rounded-lg px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Hủy</button>
             <button
               onClick={async () => {
                 const err = validate;
@@ -136,7 +136,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
                 await onSave({ fullName, phone, city, district, ward, street, isDefault });
               }}
               disabled={!!validate || saving}
-              className="border-2 border-black bg-black px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wide text-white hover:bg-[#AE1C2C] hover:border-[#AE1C2C] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1"
+              className="bg-gray-900 rounded-lg px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {saving ? "Đang lưu..." : "Lưu địa chỉ"}
             </button>

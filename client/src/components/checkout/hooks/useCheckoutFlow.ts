@@ -34,8 +34,7 @@ export type UseCheckoutFlowParams = {
   priceWarnMessage: string;
 
   // after-created context
-  createPaymentLinkMut: { mutateAsync: (p: { orderId: string }) => Promise<unknown> };
-  setFromLinkResponse: (linkResp: unknown, amount: number, note: string) => void;
+  createSepayCheckoutMut: { mutateAsync: (p: { orderId: string; returnUrl: string }) => Promise<{ checkoutUrl: string; fields: Record<string, string> }> };
   setPendingVietQROrderId: (id: string) => void;
   vietQRAcknowledged: boolean;
   setBankTfTransferNote: (s: string) => void;
@@ -61,10 +60,9 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
     setGlobalWarnings,
     setItemWarnings,
     priceWarnMessage,
-    createPaymentLinkMut,
-    setFromLinkResponse,
+    createSepayCheckoutMut,
     setPendingVietQROrderId,
-    vietQRAcknowledged,
+
     setBankTfTransferNote,
     setBankTfOpen,
     cart,
@@ -113,38 +111,35 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
     try { sessionStorage.setItem("lastPaymentMethod", usedMethod); } catch {}
 
     if (usedMethod === "VIETQR") {
-      const note = `${PAYMENT_QR.transferNotePrefix}-${createdCode || created.id}`;
-      // If user has already acknowledged transfer before submitting, treat as completed locally
-      if (vietQRAcknowledged) {
-        showSuccessToast({ title: "Đặt hàng thành công", message: "Cảm ơn bạn đã thanh toán qua VietQR!" });
-        try { sessionStorage.setItem("justCheckedOut", "1"); } catch {}
-        try { document.cookie = "justCheckedOut=1; path=/; max-age=180"; } catch {}
-        try { if (createdCode) sessionStorage.setItem("lastOrderCode", String(createdCode)); } catch {}
-        try { sessionStorage.setItem("lastPaymentMethod", "VIETQR"); } catch {}
-        try { localStorage.removeItem("cartItems"); } catch {}
-        cart.clear();
-        try {
-          const code = sessionStorage.getItem("lastOrderCode") || undefined;
-          setLastOrderCodeState(code || undefined);
-        } catch {}
-        setVietQRAcknowledged(false);
-        setOrderSuccessOpen(true);
-        return;
-      }
-
-      // Otherwise, generate payment link and show QR for the newly created order
-      const linkResp = await createPaymentLinkMut.mutateAsync({ orderId: created.id });
-      setFromLinkResponse(linkResp, Number(created.totalAmount || 0), note);
-      setPendingVietQROrderId(created.id);
-      try { sessionStorage.setItem(`vietqr_ack:${created.id}`, "0"); } catch {}
-      let shown = false;
-      try { shown = sessionStorage.getItem(`vietqr_toast_${created.id}`) === '1'; } catch {}
-      if (!shown) {
-        showSuccessToast({ title: "Đã tạo thanh toán VietQR", message: "Vui lòng quét mã để thanh toán." });
-        try { sessionStorage.setItem(`vietqr_toast_${created.id}`, '1'); } catch {}
-      }
-      try { if (createdCode) sessionStorage.setItem("lastOrderCode", String(createdCode)); } catch {}
       try { sessionStorage.setItem("lastPaymentMethod", "VIETQR"); } catch {}
+      try { if (createdCode) sessionStorage.setItem("lastOrderCode", String(createdCode)); } catch {}
+
+      showInfoToast({ title: "Đang chuyển hướng", message: "Đang chuyển hướng đến cổng thanh toán SePay..." });
+      
+      const res = await createSepayCheckoutMut.mutateAsync({ 
+        orderId: created.id,
+        returnUrl: window.location.origin
+      });
+
+      if (res && res.checkoutUrl && res.fields) {
+        // Create dynamic form and submit
+        const form = document.createElement("form");
+        form.action = res.checkoutUrl;
+        form.method = "POST";
+        form.style.display = "none";
+        
+        Object.entries(res.fields).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = String(value);
+          form.appendChild(input);
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        return; // Don't clear cart yet, let the callback page handle it
+      }
       return;
     }
 
@@ -173,7 +168,7 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
     } catch {}
     setVietQRAcknowledged(false);
     setOrderSuccessOpen(true);
-  }, [createPaymentLinkMut, setFromLinkResponse, setPendingVietQROrderId, vietQRAcknowledged, setBankTfTransferNote, setBankTfOpen, cart, setLastOrderCodeState, setVietQRAcknowledged, setOrderSuccessOpen]);
+  }, [createSepayCheckoutMut, setPendingVietQROrderId, setBankTfTransferNote, setBankTfOpen, cart, setLastOrderCodeState, setOrderSuccessOpen, setVietQRAcknowledged]);
 
   return { preSubmitChecks, afterOrderCreated };
 }

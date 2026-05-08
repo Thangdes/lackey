@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useState, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { showErrorToast, showSuccessToast } from "@/components/toast/AppToast";
 import { CHECKOUT_TEXT } from "@/constant/checkout";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -16,7 +16,7 @@ import type { SmartCartItem } from "@/type/cart";
 import { BuyerInfoForm } from "./forms/BuyerInfoForm";
 import { AlertTriangle } from "lucide-react";
 import { toLocalCartItem } from "../../utils/checkout";
-import { useCreatePaymentLink } from "@/hook/usePayment";
+import { useCreateSepayCheckout } from "@/hook/useSepay";
 import CheckoutLoading from "./parts/CheckoutLoading";
 import type { Address } from "@/type/checkout";
 import { DiscountBox } from "./summary/DiscountBox";
@@ -32,7 +32,6 @@ import { customerService } from "@/service/customer.service";
 import type { CustomerAddress } from "@/type/customer";
 import type { User } from "@/type/user";
 import { VietQRPanel } from "./payment/VietQRPanel";
-import { useUiLoading } from "./hooks/useUiLoading";
 import { canChooseDistrict } from "./utils/address";
 import { useAddressInit } from "./hooks/useAddressInit";
 import { useShippingFee } from "./hooks/useShippingFee";
@@ -47,6 +46,8 @@ import { copyText } from "./utils/clipboard";
 
 export default function CheckoutClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { user } = useAuth();
   const cart = useSmartCart();
   const items = cart.items as SmartCartItem[];
@@ -77,7 +78,7 @@ export default function CheckoutClient() {
   });
 
   const [method, setMethod] = useState<Method>("COD");
-  const createPaymentLinkMut = useCreatePaymentLink();
+  const createSepayCheckoutMut = useCreateSepayCheckout();
 
   const {
     vietQRUrl,
@@ -88,10 +89,29 @@ export default function CheckoutClient() {
     showVietQR,
     vietQRAcknowledged,
     setVietQRAcknowledged,
-    setFromLinkResponse,
     copyTransferNote,
     cancelPending,
   } = useVietQRFlow();
+
+  // Sync state to URL params so it's not lost on reload
+  useEffect(() => {
+    if (pendingVietQROrderId && pathname) {
+      const params = new URLSearchParams(searchParams?.toString() || "");
+      if (params.get("orderId") !== pendingVietQROrderId) {
+        params.set("orderId", pendingVietQROrderId);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+    }
+  }, [pendingVietQROrderId, pathname, router, searchParams]);
+
+  // Read state from URL params on mount
+  useEffect(() => {
+    const oid = searchParams?.get("orderId");
+    if (oid && !pendingVietQROrderId) {
+      setPendingVietQROrderId(oid);
+    }
+  }, [searchParams, pendingVietQROrderId, setPendingVietQROrderId]);
+
   const [bankTfOpen, setBankTfOpen] = useState(false);
   const [bankTfTransferNote, setBankTfTransferNote] = useState<string>("");
   const [exitModalOpen, setExitModalOpen] = useState(false);
@@ -209,8 +229,6 @@ export default function CheckoutClient() {
     return () => clearInterval(iv);
   }, [orderSuccessOpen, noAutoDismiss]);
 
-  const pendingNetwork = checkoutMut.isPending || createPaymentLinkMut.isPending;
-  const uiLoading = useUiLoading(pendingNetwork, 300);
 
   useEffect(() => {
     if (!pendingRedirectHome) return;
@@ -287,8 +305,7 @@ export default function CheckoutClient() {
     setGlobalWarnings,
     setItemWarnings,
     priceWarnMessage: PRICE_WARN,
-    createPaymentLinkMut,
-    setFromLinkResponse,
+    createSepayCheckoutMut,
     setPendingVietQROrderId,
     vietQRAcknowledged,
     setBankTfTransferNote,
@@ -315,7 +332,7 @@ export default function CheckoutClient() {
   const onAltWardChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => dispatchAlt({ key: "altWard", value: e.target.value }), []);
   const onAltStreetChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => dispatchAlt({ key: "altStreet", value: e.target.value }), []);
   const onSelectMethod = useCallback(async (m: Method) => {
-    if (submitLocked || checkoutMut.isPending || createPaymentLinkMut.isPending) return;
+    if (submitLocked || checkoutMut.isPending || createSepayCheckoutMut.isPending) return;
     setMethod(m);
     if (m !== "VIETQR") return;
     const pre = await preSubmitChecks("VIETQR");
@@ -329,10 +346,10 @@ export default function CheckoutClient() {
       const created = await checkoutMut.mutateAsync(payload);
       await afterOrderCreated(created, "VIETQR");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Không thể khởi tạo VietQR";
-      showErrorToast({ title: "Lỗi VietQR", message });
+      const message = err instanceof Error ? err.message : "Không thể khởi tạo thanh toán SePay";
+      showErrorToast({ title: "Lỗi thanh toán", message });
     }
-  }, [buyer, alt, appliedCode, shippingFee, preSubmitChecks, checkoutMut, createPaymentLinkMut.isPending, afterOrderCreated, submitLocked, setMethod]);
+  }, [buyer, alt, appliedCode, shippingFee, preSubmitChecks, checkoutMut, createSepayCheckoutMut.isPending, afterOrderCreated, submitLocked, setMethod]);
 
   const effectiveUser: (User & { customer?: { id?: string } }) | { email: string } | null =
     user || (customerIdState ? { email: "authed@placeholder" } : null);
@@ -591,11 +608,11 @@ export default function CheckoutClient() {
   const submitDisabled = useMemo(() => {
     const base = submitLocked || checkoutMut.isPending || isCartLoading || items.length === 0;
     if (method === "VIETQR") {
-      return base;
+      return base || createSepayCheckoutMut.isPending;
     }
-    return base || createPaymentLinkMut.isPending;
-  }, [submitLocked, checkoutMut.isPending, isCartLoading, items.length, method, createPaymentLinkMut.isPending]);
-  const submitButtonText = (preSubmitLoading || checkoutMut.isPending || createPaymentLinkMut.isPending)
+    return base;
+  }, [submitLocked, checkoutMut.isPending, isCartLoading, items.length, method, createSepayCheckoutMut.isPending]);
+  const submitButtonText = (preSubmitLoading || checkoutMut.isPending || createSepayCheckoutMut.isPending)
     ? "đặt hàng..."
     : CHECKOUT_TEXT.actions.placeOrder;
 
@@ -614,12 +631,6 @@ export default function CheckoutClient() {
             {/* LEFT COLUMN - Forms (Mobile: top, Desktop: left) */}
             <div className="order-1 lg:order-1">
               <form onSubmit={handleSubmit} className="relative space-y-6">
-                {uiLoading && !orderSuccessOpen && !showVietQR && !bankTfOpen && (
-                  <div className="absolute inset-0 z-10 rounded-2xl bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
-                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
-                  </div>
-                )}
-
                 {/* Contact Section */}
                 <div className="bg-white border border-gray-200 p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-6">CONTACT</h2>
@@ -670,22 +681,22 @@ export default function CheckoutClient() {
                     onClick={(e) => { if (e.currentTarget === e.target) onExitCancel(); }}
                   >
                     <div className="flex min-h-[100dvh] items-center justify-center p-4">
-                      <div className="w-full max-w-md overflow-hidden rounded-none border-3 border-black bg-[#f5f1e8] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.4)] animate-in zoom-in-95 duration-200" data-exit-modal-root>
-                        <div className="flex items-center gap-4 border-b-3 border-black bg-[#fff100] px-5 py-4">
-                          <span className="inline-flex h-12 w-12 items-center justify-center rounded-none border-2 border-black bg-black text-[#fff100]">
-                            <AlertTriangle size={24} strokeWidth={2.5} />
+                      <div className="w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl animate-in zoom-in-95 duration-200" data-exit-modal-root>
+                        <div className="flex items-center gap-4 border-b border-gray-200 bg-gray-50 px-5 py-4">
+                          <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+                            <AlertTriangle size={24} strokeWidth={2} />
                           </span>
-                          <div className="font-[family-name:var(--font-retro)] text-lg font-bold text-black uppercase tracking-wider">
-                            {exitContext === 'vietqr' ? 'RỜI KHỎI THANH TOÁN?' : 'RỜI KHỎI TRANG?'}
+                          <div className="text-lg font-semibold text-gray-900">
+                            {exitContext === 'vietqr' ? 'Rời khỏi thanh toán?' : 'Rời khỏi trang?'}
                           </div>
                         </div>
                         <div className="px-6 py-6">
                           {exitContext === 'vietqr' ? (
-                            <p className="text-base text-[#2d2d2d] leading-relaxed font-medium">
+                            <p className="text-base text-gray-600 leading-relaxed">
                               Bạn đang có một đơn hàng đang chờ (VietQR). Bạn có muốn hủy đơn hàng này trước khi rời trang?
                             </p>
                           ) : (
-                            <p className="text-base text-[#2d2d2d] leading-relaxed font-medium">
+                            <p className="text-base text-gray-600 leading-relaxed">
                               Form của bạn có dữ liệu chưa lưu. Nếu rời trang, các thông tin đã nhập có thể bị mất. Bạn có chắc muốn rời trang?
                             </p>
                           )}
@@ -693,17 +704,17 @@ export default function CheckoutClient() {
                           <div className="mt-6 flex flex-col sm:flex-row gap-3">
                             <button
                               type="button"
-                              className="flex-1 inline-flex items-center justify-center gap-2 rounded-none border-3 border-black bg-white px-5 py-3 text-sm font-bold uppercase tracking-wider text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
+                              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                               onClick={onExitCancel}
                             >
-                              Ở LẠI TRANG
+                              Ở lại trang
                             </button>
                             <button
                               type="button"
-                              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-none border-3 border-black px-5 py-3 text-sm font-bold uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] ${exitContext === 'vietqr' ? 'bg-[#ff4444] text-white' : 'bg-[#2d2d2d] text-[#fff100]'}`}
+                              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-medium transition-colors ${exitContext === 'vietqr' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
                               onClick={onExitConfirm}
                             >
-                              {exitContext === 'vietqr' ? 'HỦY ĐƠN VÀ RỜI TRANG' : 'RỜI TRANG'}
+                              {exitContext === 'vietqr' ? 'Hủy đơn và rời trang' : 'Rời trang'}
                             </button>
                           </div>
                         </div>
@@ -752,12 +763,10 @@ export default function CheckoutClient() {
                   <h2 className="text-lg font-semibold text-gray-900 mb-6">PAYMENT</h2>
                   <PaymentMethods
                     method={method}
-                    total={total}
                     onSelect={onSelectMethod}
-                    formatVND={formatVND}
                     bankBrandCode={vietQRBank.bankCode?.toUpperCase()}
-                    selectingDisabled={checkoutMut.isPending || createPaymentLinkMut.isPending}
-                    pending={checkoutMut.isPending || createPaymentLinkMut.isPending}
+                    selectingDisabled={checkoutMut.isPending || createSepayCheckoutMut.isPending}
+                    pending={checkoutMut.isPending || createSepayCheckoutMut.isPending}
                   />
                 </div>
 
@@ -784,7 +793,7 @@ export default function CheckoutClient() {
                   formatVND={formatVND}
                   disabled={submitDisabled}
                   buttonText={submitButtonText}
-                  loading={preSubmitLoading || checkoutMut.isPending || createPaymentLinkMut.isPending}
+                  loading={preSubmitLoading || checkoutMut.isPending || createSepayCheckoutMut.isPending}
                 />
               </form>
             </div>
