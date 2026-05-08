@@ -5,6 +5,7 @@ import ProductGrid from "@/components/common/ProductGrid";
 import ProductsFilterBar from "@/components/products/ProductsFilterBar";
 import { useProductQueryParams } from "@/hook/useProductQueryParams";
 import type { ProductSort } from "@/type/product";
+import { useProductList } from "@/hook/useProduct";
 
 const ProductsPageClient: React.FC = () => {
   const [minPrice, setMinPrice] = useState("");
@@ -30,24 +31,32 @@ const ProductsPageClient: React.FC = () => {
     };
   }, [minPrice, maxPrice]);
 
-  return (
-    <div className="min-h-screen bg-[#f5f1e8] px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-      {/* <div className="pt-6">
-        <Breadcrumb
-          items={[
-            { name: "Sản phẩm" }
-          ]}
-        />
-      </div> */}
+  // Get product count from API
+  const { data: productsData, isLoading: isLoadingCount } = useProductList(
+    1, // page
+    1, // limit - Only need count, not actual products
+    selectedCategories.length > 0 ? selectedCategories[0] : undefined, // categoryId - using first selected category
+    q ?? undefined,
+    {
+      sort: localSort,
+      minPrice: priceRange.minPrice,
+      maxPrice: priceRange.maxPrice,
+    }
+  );
 
+  const productCount = productsData?.meta?.total ?? 0;
+
+  return (
+    <div className="min-h-screen bg-white px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
       <ProductsFilterBar
-        productCount={0}
+        productCount={productCount}
         minPrice={minPrice}
         maxPrice={maxPrice}
         onMinPriceChange={setMinPrice}
         onMaxPriceChange={setMaxPrice}
         sort={localSort}
         onSortChange={setLocalSort}
+        loading={isLoadingCount}
       />
 
       <div className="py-8 pb-20 md:pb-8">

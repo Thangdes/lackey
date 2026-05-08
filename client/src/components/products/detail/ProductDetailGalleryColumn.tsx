@@ -25,7 +25,7 @@ const ProductDetailGalleryColumn: React.FC<ProductDetailGalleryColumnProps> = ({
   thumbGapClass,
 }) => {
   return (
-    <div className="w-full max-w-[850px] mx-auto lg:mx-0">
+    <div className="w-full max-w-[520px] mx-auto lg:mx-0">
       <ProductGallery
         name={name}
         images={images}

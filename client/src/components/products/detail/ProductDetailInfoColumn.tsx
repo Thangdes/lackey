@@ -8,7 +8,7 @@ import ProductAddToCart from "./ProductAddToCart";
 import type { Product, ProductVariant } from "@/type/product";
 
 export type ProductDetailInfoColumnProps = {
-  product?: Product; // NEW: Product data for wishlist
+  product?: Product;
   name: string;
   ratingValue: number;
   fullStars: number;
@@ -31,6 +31,7 @@ export type ProductDetailInfoColumnProps = {
   maxStock?: number;
   adding: boolean;
   onAdd: () => void;
+  onBuyNow: () => void;
   onDecrease: () => void;
   onIncrease: () => void;
 };
@@ -59,11 +60,12 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
   maxStock,
   adding,
   onAdd,
+  onBuyNow,
   onDecrease,
   onIncrease,
 }) => {
   return (
-    <div className="space-y-3 sm:space-y-4 lg:space-y-5 self-start lg:sticky lg:top-20 w-full max-w-[580px] mx-auto lg:mx-0 ">
+    <div className="flex flex-col w-full max-w-[600px] mx-auto lg:mx-0 lg:sticky lg:top-24">
       <ProductInfo
         product={product}
         name={name}
@@ -73,39 +75,44 @@ const ProductDetailInfoColumn: React.FC<ProductDetailInfoColumnProps> = ({
         selectedVariant={selectedVariant}
         categoryId={categoryId}
         categoryName={categoryName}
-        showSupplierContacts={false}
-        showSupplierDescription={false}
         outOfStock={outOfStock}
         totalStock={totalStock}
         stockUnit={stockUnit}
         onShare={onShare}
       />
 
-      <ProductPricing
-        price={price}
-        compareAt={compareAt}
-        isSale={isSale}
-        discountPercent={discountPercent}
-        formatVND={(n: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n).replace('₫', '₫').replace('VND', '₫')}
-      />
+      <div className="mt-3 mb-6">
+        <ProductPricing
+          price={price}
+          compareAt={compareAt}
+          isSale={isSale}
+          discountPercent={discountPercent}
+          formatVND={(n: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n).replace('₫', '₫').replace('VND', '₫')}
+        />
+      </div>
 
-      <ProductVariantSelector
-        variants={variants}
-        selectedVariantId={selectedVariantId}
-        onVariantChange={onVariantChange}
-      />
+      <div className="mb-6">
+        <ProductVariantSelector
+          variants={variants}
+          selectedVariantId={selectedVariantId}
+          onVariantChange={onVariantChange}
+        />
+      </div>
 
-      <ProductAddToCart
-        cartQty={cartQty}
-        maxStock={maxStock}
-        selectedVariant={selectedVariant}
-        outOfStock={outOfStock}
-        productName={name}
-        adding={adding}
-        onAdd={onAdd}
-        onDecrease={onDecrease}
-        onIncrease={onIncrease}
-      />
+      <div className="pt-6 border-t border-neutral-100">
+        <ProductAddToCart
+          cartQty={cartQty}
+          maxStock={maxStock}
+          selectedVariant={selectedVariant}
+          outOfStock={outOfStock}
+          productName={name}
+          adding={adding}
+          onAdd={onAdd}
+          onBuyNow={onBuyNow}
+          onDecrease={onDecrease}
+          onIncrease={onIncrease}
+        />
+      </div>
     </div>
   );
 };

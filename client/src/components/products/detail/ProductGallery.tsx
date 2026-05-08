@@ -33,6 +33,26 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
   const displayImages = images.length > 0 ? images : ["/logo/logo.jpg"];
   const currentImage = displayImages[activeImg] || displayImages[0];
 
+  // Optimize image URLs with Cloudinary transformations
+  const optimizeImageUrl = (url: string, width: number = 800, quality: number = 80) => {
+    if (!url) return url;
+    
+    // Check if it's a Cloudinary URL
+    if (url.includes('cloudinary.com')) {
+      // Insert transformation parameters before the version or filename
+      const parts = url.split('/upload/');
+      if (parts.length === 2) {
+        return `${parts[0]}/upload/w_${width},q_${quality},f_auto,c_limit/${parts[1]}`;
+      }
+    }
+    
+    return url;
+  };
+
+  const optimizedCurrentImage = optimizeImageUrl(currentImage, 900, 85);
+  const optimizedDisplayImages = displayImages.map((img) => optimizeImageUrl(img, 160, 80));
+  const optimizedFullscreenImage = optimizeImageUrl(currentImage, 1600, 90);
+
   const onMouseMove: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (!zoomed) return;
     const rect = mainRef.current?.getBoundingClientRect();
@@ -89,36 +109,13 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
   }, [fullscreen]);
 
   return (
-    <div className="w-full " >
-      <div className="flex gap-2 md:gap-3">
-        {displayImages.length > 1 && (
-          <div className="flex flex-col gap-2 md:gap-3 w-20 md:w-24">
-            {displayImages.map((img, idx) => (
-              <button
-                key={idx}
-                onClick={() => onChangeActive(idx)}
-                className={`relative aspect-square border-2 rounded-md transition-all overflow-hidden ${
-                  idx === activeImg
-                    ? "border-black scale-105 shadow-md"
-                    : "border-neutral-300 hover:border-black hover:scale-105"
-                }`}
-              >
-                <Image
-                  src={img}
-                  alt={`${name} - view ${idx + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 80px, 96px"
-                />
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className="flex-1">
+    <div className="w-full">
+      <div className="flex flex-col gap-3 md:gap-4">
+        {/* Main Image */}
+        <div className="w-full">
           <div 
             ref={mainRef}
-            className="relative group w-full aspect-square bg-white border-4 border-black overflow-hidden shadow-[8px_8px_0px_0px_#B5CCBC] cursor-pointer"
+            className="relative group w-full aspect-square bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             onClick={() => setFullscreen(true)}
             onMouseEnter={() => setZoomed(true)}
             onMouseLeave={() => {
@@ -128,7 +125,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             onMouseMove={onMouseMove}
           >
             <Image
-              src={currentImage}
+              src={optimizedCurrentImage}
               alt={name}
               fill
               priority
@@ -136,12 +133,12 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
                 zoomed ? "scale-150" : "scale-100"
               }`}
               style={zoomed ? { transformOrigin: `${origin.x}% ${origin.y}%` } : undefined}
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 900px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 720px"
             />
             
             {isSale && discountPercent ? (
-              <div className="absolute top-4 left-4 z-20 bg-red-600 text-white border-2 border-black px-4 py-2 font-bold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
-                -{discountPercent}% OFF
+              <div className="absolute top-3 left-3 z-20 bg-[#AE1C2C] text-white rounded-lg px-3 py-1.5 font-semibold text-xs shadow-md">
+                -{discountPercent}%
               </div>
             ) : null}
 
@@ -150,21 +147,48 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
                 e.stopPropagation();
                 setFullscreen(true);
               }}
-              className="absolute top-4 right-4 z-20 p-2 bg-white border-2 border-black opacity-0 group-hover:opacity-100 transition-all hover:bg-black hover:text-white"
+              className="absolute top-3 right-3 z-20 p-2.5 bg-white/90 backdrop-blur-sm rounded-xl border border-neutral-200 opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-sm"
               aria-label="Xem ảnh toàn màn hình"
             >
-              <IoExpand className="h-5 w-5" />
+              <IoExpand className="h-5 w-5 text-neutral-700" />
             </button>
           </div>
         </div>
+
+        {/* Horizontal Thumbnails (Shopee Style) */}
+        {displayImages.length > 1 && (
+          <div className="w-full">
+            <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar">
+              {optimizedDisplayImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onChangeActive(idx)}
+                  className={`relative flex-none h-[72px] w-[72px] md:h-20 md:w-20 rounded-xl overflow-hidden transition-all ${
+                    idx === activeImg 
+                      ? "ring-2 ring-[#AE1C2C] opacity-100 shadow-sm" 
+                      : "ring-1 ring-neutral-200 opacity-70 hover:opacity-100 hover:ring-neutral-400"
+                  }`}
+                  aria-label={`Xem ảnh ${idx + 1}`}
+                >
+                  <Image
+                    src={img}
+                    alt={`${name} - thumbnail ${idx + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="80px"
+                    loading="lazy"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Zoom Hint - Hidden on mobile */}
       {zoomed && (
-        <div className="hidden md:flex absolute inset-x-0 bottom-4 items-center justify-center pointer-events-none z-10">
-          <span className="inline-flex items-center rounded-full bg-black/50 text-white px-3 py-1.5 text-xs font-medium shadow-md">
-            🔍 Di chuột để zoom • Click để xem toàn màn hình
-          </span>
+        <div className="hidden md:flex mt-3 justify-center pointer-events-none z-10 text-neutral-500 text-sm">
+          <span>Di chuột để zoom • Click để xem toàn màn hình</span>
         </div>
       )}
 
@@ -203,7 +227,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             className="absolute top-20 right-4 z-50 px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors text-sm font-medium"
             aria-label={fullscreenZoom === 1 ? "Phóng to" : "Thu nhỏ"}
           >
-            {fullscreenZoom === 1 ? "🔍 Zoom 2x" : "↩️ Reset"}
+            {fullscreenZoom === 1 ? "Zoom 2x" : "Reset"}
           </button>
 
           {/* Main Fullscreen Image */}
@@ -214,7 +238,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
           >
             <div className="relative w-full h-full max-w-7xl max-h-full">
               <Image
-                src={currentImage}
+                src={optimizedFullscreenImage}
                 alt={`${name} - Ảnh ${activeImg + 1}`}
                 fill
                 sizes="100vw"
@@ -259,7 +283,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
           {displayImages.length > 1 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-4xl w-full px-4">
               <div className="flex gap-2 justify-center overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-                {displayImages.map((img, i) => (
+                {optimizedDisplayImages.map((img, i) => (
                   <button
                     key={i}
                     type="button"

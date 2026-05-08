@@ -18,8 +18,7 @@ const ProductRelatedSection: React.FC<ProductRelatedSectionProps> = ({ related, 
   if (loading) {
     return (
       <div className="mt-12">
-        <SectionHeader title={<h2 className="text-lg md:text-xl font-semibold text-[var(--color-cod-gray-900)]">Sản phẩm liên quan</h2>} />
-        {/* Keep skeleton rendering in parent if needed to avoid import duplication */}
+        <SectionHeader title={<h2 className="text-lg md:text-xl font-semibold text-neutral-900">Sản phẩm liên quan</h2>} />
       </div>
     );
   }
@@ -28,11 +27,18 @@ const ProductRelatedSection: React.FC<ProductRelatedSectionProps> = ({ related, 
 
   return (
     <div className="mt-16">
-      {/* Retro Section Header */}
-      <div className="mb-8 text-center">
-        <h2 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl font-bold uppercase tracking-wider text-black inline-block px-6 py-3 bg-[#fff100] border-4 border-black shadow-[8px_8px_0px_0px_#B5CCBC]">
+      <div className="mb-8 flex items-center justify-between">
+        <h2 className="text-2xl md:text-3xl font-bold text-neutral-900">
           Sản phẩm liên quan
         </h2>
+        {categorySlug && (
+          <Link
+            href={buildProductsByCategory(categorySlug)}
+            className="hidden md:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors"
+          >
+            Xem tất cả →
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
@@ -49,10 +55,10 @@ const ProductRelatedSection: React.FC<ProductRelatedSectionProps> = ({ related, 
       </div>
 
       {categorySlug && (
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center md:hidden">
           <Link
             href={buildProductsByCategory(categorySlug)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-2 border-black font-bold uppercase text-sm tracking-wide hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_#B5CCBC] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg font-medium hover:bg-neutral-800 transition-colors shadow-sm"
           >
             Xem tất cả →
           </Link>

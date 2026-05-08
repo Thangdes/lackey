@@ -71,7 +71,7 @@ export default function MobileFilterSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col bg-[#f5f1e8] rounded-none">
+      <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col bg-white rounded-none">
         <SheetHeader className="shrink-0 border-b-2 border-[#2d2d2d]">
           <div className="flex items-center justify-between px-4 py-4">
             <SheetTitle className="text-left flex items-center gap-2 font-mono tracking-wider text-[#2d2d2d] uppercase">
@@ -110,10 +110,10 @@ export default function MobileFilterSheet({
                 Chất liệu
               </label>
               <Select value={selectedSize} onValueChange={onSizeChange}>
-                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-white rounded-none">
                   <SelectValue placeholder="Chọn chất liệu" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+                <SelectContent className="bg-white border-2 border-[#2d2d2d] rounded-none">
                   {MATERIALS.map((material) => (
                     <SelectItem key={material.value} value={material.value}>
                       {material.label}
@@ -128,10 +128,10 @@ export default function MobileFilterSheet({
                 Phong cách
               </label>
               <Select value={selectedType} onValueChange={onTypeChange}>
-                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-white rounded-none">
                   <SelectValue placeholder="Chọn phong cách" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+                <SelectContent className="bg-white border-2 border-[#2d2d2d] rounded-none">
                   {STYLES.map((style) => (
                     <SelectItem key={style.value} value={style.value}>
                       {style.label}
@@ -146,10 +146,10 @@ export default function MobileFilterSheet({
                 Màu sắc
               </label>
               <Select value={selectedColor} onValueChange={onColorChange}>
-                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-[#f5f1e8] rounded-none">
+                <SelectTrigger className="w-full border-2 border-[#2d2d2d] bg-white rounded-none">
                   <SelectValue placeholder="Chọn màu sắc" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#f5f1e8] border-2 border-[#2d2d2d] rounded-none">
+                <SelectContent className="bg-white border-2 border-[#2d2d2d] rounded-none">
                   {COLORS.map((color) => (
                     <SelectItem key={color.value} value={color.value}>
                       {color.label}
@@ -163,10 +163,10 @@ export default function MobileFilterSheet({
           <div className="h-4" />
         </div>
 
-        <div className="shrink-0 border-t-2 border-[#2d2d2d] p-4 bg-[#f5f1e8]">
+        <div className="shrink-0 border-t-2 border-[#2d2d2d] p-4 bg-white">
           <Button
             onClick={() => onOpenChange(false)}
-            className="w-full bg-[#2d2d2d] hover:bg-[#2d2d2d]/90 text-[#f5f1e8] h-12 rounded-none font-mono tracking-wider uppercase"
+            className="w-full bg-[#2d2d2d] hover:bg-[#2d2d2d]/90 text-white h-12 rounded-none font-mono tracking-wider uppercase"
           >
             Áp dụng bộ lọc
           </Button>

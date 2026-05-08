@@ -51,45 +51,44 @@ const ProductBreadcrumb: React.FC<ProductBreadcrumbProps> = ({ product: p }) => 
       />
 
       <nav className="mb-6" aria-label="Breadcrumb">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black flex-wrap">
-          <Link
-            href={ROUTES.home}
-            className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors"
-          >
-            Trang chủ
-          </Link>
+        <ol className="inline-flex items-center flex-wrap text-sm text-neutral-600">
+          <li>
+            <Link href={ROUTES.home} className="font-medium hover:text-neutral-900 transition-colors">
+              Trang chủ
+            </Link>
+          </li>
 
-          <span className="text-black font-bold">/</span>
+          <li className="px-2 text-neutral-300">/</li>
 
-          <Link
-            href={ROUTES.products}
-            className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors"
-          >
-            Sản phẩm
-          </Link>
+          <li>
+            <Link href={ROUTES.products} className="font-medium hover:text-neutral-900 transition-colors">
+              Sản phẩm
+            </Link>
+          </li>
 
           {catSlug && (
             <>
-              <span className="text-black font-bold">/</span>
-              <Link
-                href={buildProductsByCategory(catSlug)}
-                className="text-sm font-bold uppercase tracking-wide hover:text-[var(--brand-secondary)] transition-colors truncate max-w-[150px] md:max-w-none"
-                title={catName || "Danh mục"}
-              >
-                {catName || "Danh mục"}
-              </Link>
+              <li className="px-2 text-neutral-300">/</li>
+              <li>
+                <Link
+                  href={buildProductsByCategory(catSlug)}
+                  className="font-medium hover:text-neutral-900 transition-colors truncate max-w-[160px] md:max-w-none"
+                  title={catName || "Danh mục"}
+                >
+                  {catName || "Danh mục"}
+                </Link>
+              </li>
             </>
           )}
 
-          <span className="text-black font-bold">/</span>
+          <li className="px-2 text-neutral-300">/</li>
 
-          <span
-            className="text-sm font-bold uppercase tracking-wide text-black truncate max-w-[200px] md:max-w-none"
-            title={p.name}
-          >
-            {p.name}
-          </span>
-        </div>
+          <li>
+            <span className="font-semibold text-neutral-900 truncate max-w-[240px] md:max-w-none" title={p.name}>
+              {p.name}
+            </span>
+          </li>
+        </ol>
       </nav>
     </>
   );

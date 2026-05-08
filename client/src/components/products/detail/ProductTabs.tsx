@@ -2,9 +2,7 @@
 
 import React from "react";
 import type { ProductVariant } from "@/type/product";
-import Link from "next/link";
-import { ROUTES } from "@/constant/route";
-import { FiMail, FiPhone } from "react-icons/fi";
+
 
 export type ProductTabsProps = {
   tab: "desc" | "reviews" | "info" | "supplier";
@@ -24,7 +22,7 @@ export type ProductTabsProps = {
   displayMode?: "tabs" | "stacked" | "auto";
 };
 
-const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, ratingValue, ratingCount, variants, supplier, displayMode = "tabs" }) => {
+const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, ratingValue, ratingCount, variants, displayMode = "tabs" }) => {
   return (
     <div className="pt-2 md:pt-3">
       {displayMode === "auto" ? (
@@ -54,7 +52,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
             >
               Thông tin bổ sung
             </button>
-            {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
+            {/* Temporarily hidden - Supplier tab */}
+            {/* {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
               <button
                 role="tab"
                 aria-selected={tab === "supplier"}
@@ -63,7 +62,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               >
                 Nhà cung cấp
               </button>
-            ) : null}
+            ) : null} */}
           </div>
           <div role="tabpanel" className="hidden lg:block pt-3">
             {tab === "desc" && (
@@ -100,7 +99,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
                 )}
               </div>
             )}
-            {tab === "supplier" && (
+            {/* Temporarily hidden - Supplier content */}
+            {/* {tab === "supplier" && (
               supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
                 <div className="text-sm text-neutral-700">
                   {supplier.description ? (
@@ -131,7 +131,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               ) : (
                 <p className="text-sm text-neutral-600">Chưa có thông tin nhà cung cấp.</p>
               )
-            )}
+            )} */}
           </div>
           <div className="lg:hidden space-y-7 md:space-y-8 pt-2.5">
             <section>
@@ -142,7 +142,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
                 <p className="text-[13px] md:text-sm text-neutral-600">Chưa có mô tả cho sản phẩm này.</p>
               )}
             </section>
-            <section>
+            {/* Temporarily hidden - Supplier section in mobile stacked view */}
+            {/* <section>
               <h3 className="text-base md:text-lg font-semibold text-[var(--color-cod-gray-900)] mb-2">Nhà cung cấp</h3>
               {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
                 <div className="text-[13px] md:text-sm text-neutral-700">
@@ -174,7 +175,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               ) : (
                 <p className="text-[13px] md:text-sm text-neutral-600">Chưa có thông tin nhà cung cấp.</p>
               )}
-            </section>
+            </section> */}
             <section>
               <h3 className="text-base md:text-lg font-semibold text-[var(--color-cod-gray-900)] mb-2">Thông tin bổ sung</h3>
               <div className="text-[13px] md:text-sm text-neutral-700 space-y-1.5 md:space-y-2">
@@ -232,7 +233,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
             >
               Thông tin bổ sung
             </button>
-            {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
+            {/* Temporarily hidden - Supplier tab */}
+            {/* {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
               <button
                 role="tab"
                 aria-selected={tab === "supplier"}
@@ -241,7 +243,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               >
                 Nhà cung cấp
               </button>
-            ) : null}
+            ) : null} */}
           </div>
           <div role="tabpanel" className="pt-2.5 md:pt-3">
             {tab === "desc" && (
@@ -278,7 +280,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
                 )}
               </div>
             )}
-            {tab === "supplier" && (
+            {/* Temporarily hidden - Supplier content */}
+            {/* {tab === "supplier" && (
               supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
                 <div className="text-sm md:text-base text-neutral-700">
                   {supplier.description ? (
@@ -309,81 +312,108 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ tab, onChange, description, r
               ) : (
                 <p className="text-sm md:text-base text-neutral-600">Chưa có thông tin nhà cung cấp.</p>
               )
-            )}
+            )} */}
           </div>
         </>
       ) : (
-        // Stacked mode: show all sections without tabs - RETRO MINIMAL STYLE
+        // Stacked mode: show all sections without tabs - MINIMAL MODERN STYLE
         <div className="space-y-6">
-          <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
-            <h3 className="text-xl font-bold uppercase tracking-wide text-black mb-4 pb-3 border-b-4 border-black">Mô tả</h3>
+          <section className="bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-4 pb-3 border-b border-neutral-200">Mô tả</h3>
             {description ? (
-              <div className="prose prose-sm md:prose-base max-w-none text-neutral-800" dangerouslySetInnerHTML={{ __html: description as string }} />
+              <div className="prose prose-sm md:prose-base max-w-none text-neutral-700" dangerouslySetInnerHTML={{ __html: description as string }} />
             ) : (
-              <p className="text-sm text-neutral-600">Chưa có mô tả cho sản phẩm này.</p>
+              <p className="text-sm text-neutral-500">Chưa có mô tả cho sản phẩm này.</p>
             )}
           </section>
-          <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
-            <h3 className="text-xl font-bold uppercase tracking-wide text-black mb-4 pb-3 border-b-4 border-black">Nhà cung cấp</h3>
+
+          {/* Temporarily hidden - Supplier section in stacked view */}
+          {/* <section className="bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-4 pb-3 border-b border-neutral-200">Nhà cung cấp</h3>
             {supplier && (supplier.name || supplier.description || supplier.email || supplier.phone || supplier.address) ? (
               <div className="text-sm text-neutral-700">
                 {supplier.description ? (
-                  <div className="prose prose-sm max-w-none text-neutral-800 mb-4" dangerouslySetInnerHTML={{ __html: supplier.description as string }} />
+                  <div className="prose prose-sm max-w-none text-neutral-700 mb-4" dangerouslySetInnerHTML={{ __html: supplier.description as string }} />
                 ) : null}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {supplier.name ? (
-                    <div className="p-3 bg-neutral-50 border-2 border-neutral-300"><span className="text-neutral-600 font-bold">Tên:</span> <span className="font-medium">{supplier.name}</span></div>
+                    <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <span className="text-neutral-500 text-xs font-medium">Tên</span>
+                      <p className="font-medium text-neutral-900 mt-1">{supplier.name}</p>
+                    </div>
                   ) : null}
                   {supplier.email ? (
-                    <div className="p-3 bg-neutral-50 border-2 border-neutral-300 flex items-center gap-2"><FiMail className="h-4 w-4 text-neutral-600" /><span className="text-neutral-600 font-bold">Email:</span> <a href={`mailto:${supplier.email}`} className="font-bold hover:text-[var(--brand-secondary)] transition-colors">{supplier.email}</a></div>
+                    <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <span className="text-neutral-500 text-xs font-medium flex items-center gap-1.5">
+                        <FiMail className="h-3.5 w-3.5" />
+                        Email
+                      </span>
+                      <a href={`mailto:${supplier.email}`} className="font-medium text-neutral-900 hover:text-neutral-700 mt-1 block">{supplier.email}</a>
+                    </div>
                   ) : null}
                   {supplier.phone ? (
-                    <div className="p-3 bg-neutral-50 border-2 border-neutral-300 flex items-center gap-2"><FiPhone className="h-4 w-4 text-neutral-600" /><span className="text-neutral-600 font-bold">Phone:</span> <a href={`tel:${supplier.phone}`} className="font-bold hover:text-[var(--brand-secondary)] transition-colors">{supplier.phone}</a></div>
+                    <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <span className="text-neutral-500 text-xs font-medium flex items-center gap-1.5">
+                        <FiPhone className="h-3.5 w-3.5" />
+                        Điện thoại
+                      </span>
+                      <a href={`tel:${supplier.phone}`} className="font-medium text-neutral-900 hover:text-neutral-700 mt-1 block">{supplier.phone}</a>
+                    </div>
                   ) : null}
                   {supplier.address ? (
-                    <div className="md:col-span-2 p-3 bg-neutral-50 border-2 border-neutral-300"><span className="text-neutral-600 font-bold">Địa chỉ:</span> <span>{supplier.address}</span></div>
+                    <div className="md:col-span-2 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <span className="text-neutral-500 text-xs font-medium">Địa chỉ</span>
+                      <p className="text-neutral-900 mt-1">{supplier.address}</p>
+                    </div>
                   ) : null}
                 </div>
                 {supplier.id ? (
                   <div className="mt-4">
-                    <Link href={{ pathname: ROUTES.products, query: { supplierId: supplier.id } }} className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white border-2 border-black font-bold uppercase text-xs hover:bg-white hover:text-black transition-all">
+                    <Link 
+                      href={{ pathname: ROUTES.products, query: { supplierId: supplier.id } }} 
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
+                    >
                       Xem tất cả sản phẩm →
                     </Link>
                   </div>
                 ) : null}
               </div>
             ) : (
-              <p className="text-sm text-neutral-600">Chưa có thông tin nhà cung cấp.</p>
+              <p className="text-sm text-neutral-500">Chưa có thông tin nhà cung cấp.</p>
             )}
-          </section>
-          <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
-            <h3 className="text-xl font-bold uppercase tracking-wide text-black mb-4 pb-3 border-b-4 border-black">Thông tin bổ sung</h3>
+          </section> */}
+
+          <section className="bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-4 pb-3 border-b border-neutral-200">Thông tin bổ sung</h3>
             <div className="text-sm text-neutral-700">
               {variants.length > 0 ? (
                 <div className="space-y-2">
                   {variants.map((v) => (
-                    <div key={v.id} className="flex items-center justify-between gap-4 p-3 bg-neutral-50 border-2 border-neutral-300">
-                      <span className="font-bold">{v.name}</span>
-                      <span className="text-xs px-2 py-1 bg-white border border-black font-bold">SKU: {v.sku}</span>
+                    <div key={v.id} className="flex items-center justify-between gap-4 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <span className="font-medium text-neutral-900">{v.name}</span>
+                      <span className="text-xs px-2.5 py-1 bg-white rounded-full border border-neutral-300 font-medium text-neutral-600">
+                        SKU: {v.sku}
+                      </span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-neutral-600">Chưa có thông tin bổ sung.</p>
+                <p className="text-sm text-neutral-500">Chưa có thông tin bổ sung.</p>
               )}
             </div>
           </section>
-          <section className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_#B5CCBC]">
-            <h3 className="text-xl font-bold uppercase tracking-wide text-black mb-4 pb-3 border-b-4 border-black">Đánh giá</h3>
+
+          <section className="bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-4 pb-3 border-b border-neutral-200">Đánh giá</h3>
             <div className="text-sm text-neutral-700">
-              <div className="p-4 bg-neutral-50 border-2 border-neutral-300 mb-3">
-                <p className="font-medium">Tính năng đánh giá đang được cập nhật.</p>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 mb-3">
+                <p className="font-medium text-neutral-700">Tính năng đánh giá đang được cập nhật.</p>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-[#fff100] border-2 border-black">
-                <div className="text-3xl font-bold text-black">{ratingValue.toFixed(1)}</div>
+              <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-lg border border-amber-200">
+                <div className="text-3xl font-bold text-neutral-900">{ratingValue.toFixed(1)}</div>
                 <div>
-                  <div className="text-xs text-black uppercase font-bold">Điểm trung bình</div>
-                  <div className="text-xs text-neutral-700">{ratingCount} lượt đánh giá</div>
+                  <div className="text-xs text-neutral-600 font-semibold uppercase">Điểm trung bình</div>
+                  <div className="text-xs text-neutral-500">{ratingCount} lượt đánh giá</div>
                 </div>
               </div>
             </div>

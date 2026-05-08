@@ -10,24 +10,59 @@ export type ProductGridSkeletonProps = {
 const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({ count = 6, className = "" }) => {
   return (
     <div className={[
-      "grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:[grid-template-columns:repeat(auto-fit,minmax(12rem,max-content))] md:gap-3 lg:[grid-template-columns:repeat(auto-fit,minmax(14rem,max-content))] lg:gap-4 xl:[grid-template-columns:repeat(auto-fit,minmax(16rem,max-content))] xl:gap-5 justify-start",
+      "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4",
       className,
     ].join(" ")}
     >
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="border-2 border-[#2d2d2d] bg-[#f5f1e8] p-3">
-          <div className="aspect-[4/5] w-full bg-[#d4cfc0] relative overflow-hidden">
+        <div 
+          key={i} 
+          className="bg-white border border-gray-200 rounded-lg overflow-hidden animate-pulse"
+        >
+          {/* Image Skeleton */}
+          <div className="aspect-square w-full bg-gray-100 relative overflow-hidden">
             <div 
-              className="absolute inset-0 bg-gradient-to-br from-[#c9c4b5] to-[#d4cfc0]"
+              className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100"
               style={{ 
-                animation: `pulse ${1.5 + (i % 3) * 0.2}s cubic-bezier(0.4, 0, 0.6, 1) infinite`
+                animation: `shimmer 2s infinite`,
+                backgroundSize: '200% 100%'
               }}
             />
           </div>
-          <div className="mt-3 h-3 w-3/4 bg-[#2d2d2d]/10" />
-          <div className="mt-2 h-3 w-1/2 bg-[#2d2d2d]/10" />
+          
+          {/* Content Skeleton */}
+          <div className="p-3 space-y-2">
+            {/* Title */}
+            <div className="space-y-1.5">
+              <div className="h-3.5 bg-gray-200 rounded w-full" />
+              <div className="h-3.5 bg-gray-200 rounded w-4/5" />
+            </div>
+            
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              <div className="h-3 bg-gray-200 rounded w-12" />
+              <div className="h-3 bg-gray-200 rounded w-8" />
+            </div>
+            
+            {/* Sold */}
+            <div className="h-3 bg-gray-200 rounded w-20" />
+            
+            {/* Price */}
+            <div className="h-4 bg-gray-200 rounded w-24" />
+          </div>
         </div>
       ))}
+      
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
+      `}</style>
     </div>
   );
 };

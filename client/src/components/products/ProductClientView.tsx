@@ -178,6 +178,35 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
     }
   }, [addToCart, cartQty, maxStock, openAuth, selectedVariant]);
 
+  const handleBuyNow = useCallback(() => {
+    if (!selectedVariant) return;
+    const cap = typeof maxStock === "number" && maxStock > 0 ? maxStock : Infinity;
+    const remain = cap - cartQty;
+    
+    if (remain > 0) {
+      setAdding(true);
+      addToCart
+        .mutateAsync({ productVariantId: selectedVariant.id, quantity: 1 })
+        .then(() => {
+          setAdding(false);
+          router.push(`/checkout?buyNow=true&variantId=${selectedVariant.id}&qty=1`);
+        })
+        .catch((e: unknown) => {
+          setAdding(false);
+          const msg = e instanceof Error ? e.message : "Lỗi. Vui lòng thử lại.";
+          if (/401|unauthorized/i.test(msg)) {
+            showErrorToast({ title: "Cần đăng nhập", message: "Bạn cần đăng nhập để tiếp tục." });
+            try { openAuth('signin'); } catch { }
+          } else {
+            setToastMsg(msg);
+            setTimeout(() => setToastMsg(null), 2500);
+          }
+        });
+    } else {
+      router.push(`/checkout?buyNow=true&variantId=${selectedVariant.id}&qty=1`);
+    }
+  }, [addToCart, cartQty, maxStock, openAuth, selectedVariant, router]);
+
   const handleIncreaseMobile = useCallback(() => {
     if (!selectedVariant) return;
     const cap = typeof maxStock === "number" && maxStock > 0 ? maxStock : Infinity;
@@ -266,75 +295,86 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
   }, [selectedVariant?.id, selectedVariant?.sku, pathname, router, searchParams]);
 
   return (
-    <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pb-24 sm:pb-28 md:pb-10">
+    <div className="pb-24 sm:pb-28 md:pb-10">
       <ProductToast message={toastMsg} />
       <ProductSEO product={p} images={images} selectedVariant={selectedVariant} price={price} compareAt={compareAt} isSale={isSale} discountPercent={discountPercent} />
-      <ProductBreadcrumb product={p} />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-8 xl:gap-10 items-start">
-        <ProductDetailGalleryColumn
-          name={p.name}
-          images={images}
-          activeImg={activeImg}
-          onChangeActive={setActiveImg}
-          isSale={isSale}
-          discountPercent={discountPercent}
-          thumbColsClass={thumbColsClass}
-          thumbGapClass={thumbGapClass}
-        />
 
-        <ProductDetailInfoColumn
-          product={p}
-          name={p.name}
-          ratingValue={ratingValue}
-          fullStars={fullStars}
-          ratingCount={ratingCount}
-          selectedVariant={selectedVariant}
-          categoryId={p.categoryId}
-          categoryName={p.category?.name}
-          outOfStock={outOfStock}
-          totalStock={totalStock}
-          stockUnit={stockUnit}
-          onShare={handleShare}
-          price={price}
-          compareAt={compareAt}
-          isSale={isSale}
-          discountPercent={discountPercent}
-          variants={variants}
-          selectedVariantId={selectedVariantId}
-          onVariantChange={setSelectedVariantId}
-          cartQty={cartQty}
-          maxStock={maxStock}
-          adding={adding}
-          onAdd={handleAddToCart}
-          onDecrease={handleDecrease}
-          onIncrease={handleIncrease}
-        />
-      </div>
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <ProductBreadcrumb product={p} />
 
-      <ProductTabsSection
-        tab={tab}
-        onChange={setTab}
-        description={p.description}
-        ratingValue={ratingValue}
-        ratingCount={ratingCount}
-        variants={variants}
-        supplier={{
-          id: p.supplier?.id,
-          name: p.supplier?.name ?? null,
-          email: p.supplier?.email ?? null,
-          phone: p.supplier?.phone ?? null,
-          address: p.supplier?.address ?? null,
-          description: p.supplier?.description ?? null,
-        }}
-      />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div className="lg:col-span-5">
+            <ProductDetailGalleryColumn
+              name={p.name}
+              images={images}
+              activeImg={activeImg}
+              onChangeActive={setActiveImg}
+              isSale={isSale}
+              discountPercent={discountPercent}
+              thumbColsClass={thumbColsClass}
+              thumbGapClass={thumbGapClass}
+            />
+          </div>
 
-      {relatedLoading ? (
-        <div className="mt-12">
-          <ProductGridSkeleton count={6} />
+          <div className="lg:col-span-7">
+            <ProductDetailInfoColumn
+              product={p}
+              name={p.name}
+              ratingValue={ratingValue}
+              fullStars={fullStars}
+              ratingCount={ratingCount}
+              selectedVariant={selectedVariant}
+              categoryId={p.categoryId}
+              categoryName={p.category?.name}
+              outOfStock={outOfStock}
+              totalStock={totalStock}
+              stockUnit={stockUnit}
+              onShare={handleShare}
+              price={price}
+              compareAt={compareAt}
+              isSale={isSale}
+              discountPercent={discountPercent}
+              variants={variants}
+              selectedVariantId={selectedVariantId}
+              onVariantChange={setSelectedVariantId}
+              cartQty={cartQty}
+              maxStock={maxStock}
+              adding={adding}
+              onAdd={handleAddToCart}
+              onBuyNow={handleBuyNow}
+              onDecrease={handleDecrease}
+              onIncrease={handleIncrease}
+            />
+          </div>
         </div>
-      ) : (
-        <ProductRelatedSection related={related} loading={false} categorySlug={p.category?.slug ?? null} />
-      )}
+
+        <div className="mt-10 border-t border-neutral-100 pt-8">
+          <ProductTabsSection
+            tab={tab}
+            onChange={setTab}
+            description={p.description}
+            ratingValue={ratingValue}
+            ratingCount={ratingCount}
+            variants={variants}
+            supplier={{
+              id: p.supplier?.id,
+              name: p.supplier?.name ?? null,
+              email: p.supplier?.email ?? null,
+              phone: p.supplier?.phone ?? null,
+              address: p.supplier?.address ?? null,
+              description: p.supplier?.description ?? null,
+            }}
+          />
+
+          {relatedLoading ? (
+            <div className="mt-12">
+              <ProductGridSkeleton count={6} />
+            </div>
+          ) : (
+            <ProductRelatedSection related={related} loading={false} categorySlug={p.category?.slug ?? null} />
+          )}
+        </div>
+      </div>
 
       {/* <ProductCTASection /> */}
 
