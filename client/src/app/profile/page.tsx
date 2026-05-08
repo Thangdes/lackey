@@ -187,13 +187,13 @@ export default function ProfilePage() {
       </nav>
 
       {/* Header */}
-      <div className="mb-8 p-6 md:p-8 bg-white border-b-2 border-neutral-200 flex items-center gap-4">
-        <div className="w-12 h-12 md:w-16 md:h-16 bg-black flex items-center justify-center shrink-0">
-          <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-white" />
+      <div className="mb-8 p-6 md:p-8 bg-white border border-neutral-200 rounded-2xl flex items-center gap-5">
+        <div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-100 rounded-full flex items-center justify-center shrink-0">
+          <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-neutral-500" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-black">{section === "orders" ? "Đơn mua" : T.title}</h1>
-          <p className="text-neutral-600 text-sm md:text-base mt-1">{section === "orders" ? "Quản lý đơn hàng của bạn" : T.subtitle}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-black tracking-tight">{section === "orders" ? "Đơn mua" : T.title}</h1>
+          <p className="text-neutral-500 text-sm md:text-base mt-1">{section === "orders" ? "Quản lý đơn hàng của bạn" : T.subtitle}</p>
         </div>
       </div>
 
@@ -203,7 +203,7 @@ export default function ProfilePage() {
           onSelect={(next) => { setSection(next); updateUrl(next, activeOrderTab); }}
         />
 
-        <div className="md:col-span-2 bg-white p-6 md:p-8 border border-neutral-200">
+        <div className="md:col-span-2 bg-white p-6 md:p-8 border border-neutral-200 rounded-2xl">
           {section === "account" ? (
             <div className="space-y-8">
               <AccountForm
@@ -217,32 +217,36 @@ export default function ProfilePage() {
                 onEditAddress={() => setAddrModalOpen(true)}
               />
 
-              <div className="border-t-2 border-neutral-200 pt-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+              <div className="border-t border-neutral-200 pt-8 mt-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                   <div>
                     <h3 className="text-lg font-bold text-black">Sổ địa chỉ</h3>
-                    <p className="text-sm text-neutral-600 mt-1">Quản lý các địa chỉ giao hàng đã lưu</p>
+                    <p className="text-sm text-neutral-500 mt-1">Quản lý các địa chỉ giao hàng đã lưu</p>
                   </div>
                   <button
                     onClick={() => setAddrModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-medium hover:bg-neutral-800 transition-colors shrink-0"
+                    className="inline-flex items-center gap-2 bg-white border border-neutral-200 text-black px-4 py-2 text-sm font-medium rounded-xl hover:bg-neutral-50 transition-colors shrink-0"
                   >
                     <Plus size={16} /> <span>Thêm địa chỉ</span>
                   </button>
                 </div>
                 <div className="space-y-3">
                   {dedupedAddresses.length === 0 && (
-                    <div className="p-4 bg-neutral-50 border border-neutral-200 text-neutral-600 text-sm">Chưa có địa chỉ nào. Nhấn &quot;Thêm địa chỉ&quot; để lưu địa chỉ mới.</div>
+                    <div className="p-6 bg-neutral-50 rounded-xl border border-neutral-200 text-neutral-500 text-sm text-center">Chưa có địa chỉ nào. Nhấn &quot;Thêm địa chỉ&quot; để lưu địa chỉ mới.</div>
                   )}
                   {dedupedAddresses.map((a) => (
-                    <div key={a.id} className="border border-neutral-200 p-4 bg-white hover:border-black transition-colors">
-                      <div className="font-semibold text-sm mb-2">{a.fullAddress || `${a.street}, ${a.ward}, ${a.district}, ${a.city}`}</div>
-                      <div className="text-neutral-600 text-xs flex flex-wrap gap-3">
-                        <span className="flex items-center gap-1">
-                          <UserCircle className="w-3 h-3" /> {a.recipientName}
+                    <div key={a.id} className="border border-neutral-200 rounded-xl p-4 sm:p-5 bg-white hover:border-neutral-300 transition-colors">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="font-medium text-sm sm:text-base text-black leading-snug">{a.fullAddress || `${a.street}, ${a.ward}, ${a.district}, ${a.city}`}</div>
+                        {a.isDefault && <span className="shrink-0 px-2 py-0.5 bg-neutral-100 text-black border border-neutral-200 rounded text-xs font-medium">Mặc định</span>}
+                      </div>
+                      <div className="text-neutral-500 text-sm flex flex-wrap gap-4">
+                        <span className="flex items-center gap-1.5">
+                          <UserCircle className="w-4 h-4 text-neutral-400" /> {a.recipientName}
                         </span>
-                        <span>📞 {a.phoneNumber}</span>
-                        {a.isDefault && <span className="px-2 py-0.5 bg-black text-white text-xs font-medium">MẶC ĐỊNH</span>}
+                        <span className="flex items-center gap-1.5">
+                           📞 {a.phoneNumber}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -297,44 +301,46 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div>
-              <div className="mb-6 pb-4 border-b-2 border-neutral-200">
+              <div className="mb-6 pb-4 border-b border-neutral-200">
                 <h2 className="text-xl font-bold text-black">Đơn mua</h2>
-                <p className="text-sm text-neutral-600 mt-1">Quản lý đơn hàng của bạn theo trạng thái</p>
+                <p className="text-sm text-neutral-500 mt-1">Quản lý đơn hàng của bạn theo trạng thái</p>
               </div>
               <Suspense
                 fallback={
                   <div className="space-y-4">
                     <div className="no-scrollbar overflow-x-auto pb-2">
-                      <div className="inline-flex items-center gap-2 border-b-2 border-neutral-200 min-w-full">
+                      <div className="inline-flex items-center gap-6 border-b border-neutral-200 min-w-full">
                         {Array.from({ length: 7 }).map((_, i) => (
-                          <div key={i} className="h-10 w-24 bg-gray-200 animate-pulse" />
+                          <div key={i} className="h-8 w-20 mb-2 bg-neutral-200 animate-pulse rounded-md" />
                         ))}
                       </div>
                     </div>
                     <div className="space-y-3">
                       {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-32 bg-gray-200 animate-pulse" />
+                        <div key={i} className="h-32 bg-neutral-100 rounded-xl animate-pulse" />
                       ))}
                     </div>
                   </div>
                 }
               >
-                <div role="tablist" aria-label="Trạng thái đơn hàng" className="no-scrollbar overflow-x-auto -mx-6 md:-mx-8 px-6 md:px-8 pb-2 mb-6">
-                  <div className="inline-flex items-center gap-2 border-b-2 border-neutral-200 min-w-full">
+                <div role="tablist" aria-label="Trạng thái đơn hàng" className="no-scrollbar overflow-x-auto -mx-6 md:-mx-8 px-6 md:px-8 pb-2 mb-2">
+                  <div className="inline-flex items-center gap-6 border-b border-neutral-200 min-w-full">
                     {orderTabs.map((t) => (
                       <button
                         key={t.key}
                         role="tab"
                         aria-selected={activeOrderTab === t.key}
-                        className={`relative px-4 py-3 text-sm font-medium whitespace-nowrap transition-all ${activeOrderTab === t.key ? "text-black border-b-2 border-black -mb-[2px]" : "text-neutral-600 hover:text-black"}`}
+                        className={`relative py-3 text-sm font-medium whitespace-nowrap transition-all ${activeOrderTab === t.key ? "text-black border-b-2 border-black -mb-[1px]" : "text-neutral-500 hover:text-black"}`}
                         onClick={() => { setActiveOrderTab(t.key); setPage(1); updateUrl("orders", t.key, 1, limit); }}
                       >
-                        <span>{t.label}</span>
-                        {activeOrderTab === t.key && activeTabTotal > 0 && (
-                          <span className="ml-2 inline-flex items-center bg-black text-white px-2 py-0.5 text-xs font-medium rounded-full">
-                            {activeTabTotal}
-                          </span>
-                        )}
+                        <span className="flex items-center gap-2">
+                          {t.label}
+                          {activeOrderTab === t.key && activeTabTotal > 0 && (
+                            <span className="inline-flex items-center justify-center bg-black text-white px-2 py-0.5 text-[10px] sm:text-xs font-bold rounded-full min-w-[20px]">
+                              {activeTabTotal}
+                            </span>
+                          )}
+                        </span>
                       </button>
                     ))}
                   </div>

@@ -30,10 +30,10 @@ export default function AccountForm({
   onEditAddress?: () => void;
 }) {
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       <div>
-        <label className="inline-flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-1" htmlFor="name">
-          <UserIcon size={12} className="sm:w-3.5 sm:h-3.5 text-black/60" />
+        <label className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-neutral-500 mb-1.5" htmlFor="name">
+          <UserIcon size={14} className="text-neutral-400" />
           {T.fields.name}
         </label>
         <input
@@ -41,14 +41,14 @@ export default function AccountForm({
           name="name"
           value={form.name}
           onChange={onChange}
-          className="w-full rounded-md sm:rounded-lg border border-black/15 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+          className="w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-all bg-white"
           placeholder="Nguyễn Văn A"
         />
       </div>
 
       <div>
-        <label className="inline-flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-1" htmlFor="email">
-          <Mail size={12} className="sm:w-3.5 sm:h-3.5 text-black/60" />
+        <label className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-neutral-500 mb-1.5" htmlFor="email">
+          <Mail size={14} className="text-neutral-400" />
           {T.fields.email}
         </label>
         <input
@@ -59,15 +59,15 @@ export default function AccountForm({
           placeholder={meEmail || form.email}
           disabled
           readOnly
-          className="w-full rounded-md sm:rounded-lg border border-black/15 bg-neutral-50 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-black/70"
+          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-500"
           aria-readonly
         />
-        <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-black/50">Email được lấy từ tài khoản và không thể chỉnh sửa tại đây.</p>
+        <p className="mt-1.5 text-xs text-neutral-400">Email được lấy từ tài khoản và không thể chỉnh sửa tại đây.</p>
       </div>
 
       <div>
-        <label className="inline-flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-1" htmlFor="phone">
-          <Phone size={12} className="sm:w-3.5 sm:h-3.5 text-black/60" />
+        <label className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-neutral-500 mb-1.5" htmlFor="phone">
+          <Phone size={14} className="text-neutral-400" />
           {T.fields.phone}
         </label>
         <input
@@ -75,20 +75,20 @@ export default function AccountForm({
           name="phone"
           value={form.phone}
           onChange={onChange}
-          className="w-full rounded-md sm:rounded-lg border border-black/15 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+          className="w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-all bg-white"
           placeholder="0901234567"
         />
       </div>
 
       <div>
-        <label className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground mb-1" htmlFor="address">
-          <MapPin size={12} className="sm:w-3.5 sm:h-3.5 text-black/60" />
+        <label className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-neutral-500 mb-1.5" htmlFor="address">
+          <MapPin size={14} className="text-neutral-400" />
           {T.fields.address}
           {addressReadOnlyValue !== undefined && (
             <button
               type="button"
               onClick={onEditAddress}
-              className="ml-1 inline-flex items-center rounded-full border border-black/15 bg-white px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium text-black hover:bg-black/5"
+              className="ml-2 inline-flex items-center rounded-md border border-neutral-200 bg-white px-2 py-0.5 text-[10px] sm:text-xs font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
             >
               Thay đổi
             </button>
@@ -101,7 +101,7 @@ export default function AccountForm({
             value={addressReadOnlyValue}
             readOnly
             disabled
-            className="w-full rounded-md sm:rounded-lg border border-black/15 bg-neutral-50 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-black/70"
+            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-500"
           />
         ) : (
           <input
@@ -109,28 +109,28 @@ export default function AccountForm({
             name="address"
             value={form.address}
             onChange={onChange}
-            className="w-full rounded-md sm:rounded-lg border border-black/15 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+            className="w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-all bg-white"
             placeholder="Số nhà, đường, phường, quận, TP"
           />
         )}
       </div>
 
-      <div className="mt-4 sm:mt-6 flex flex-wrap gap-2">
+      <div className="mt-6 flex flex-wrap gap-3">
         <button
           onClick={onSave}
           disabled={status === "saving"}
-          className={`px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm rounded-full border ${status === "saving" ? "opacity-60 cursor-not-allowed" : "bg-black text-white hover:bg-black/90"}`}
+          className={`px-5 py-2.5 text-sm font-medium rounded-xl border transition-colors ${status === "saving" ? "opacity-60 cursor-not-allowed bg-black text-white" : "bg-black text-white hover:bg-neutral-800 border-black"}`}
         >
           {status === "saving" ? "Đang lưu…" : T.actions.save}
         </button>
-        <button onClick={onCancel} className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm rounded-full border border-black/15 bg-white hover:bg-black/5">{T.actions.cancel}</button>
+        <button onClick={onCancel} className="px-5 py-2.5 text-sm font-medium rounded-xl border border-neutral-200 bg-white text-black hover:bg-neutral-50 transition-colors">{T.actions.cancel}</button>
       </div>
 
       {status === "success" && (
-        <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-green-600">{T.messages.updated}</p>
+        <p className="mt-3 text-sm font-medium text-green-600">{T.messages.updated}</p>
       )}
       {status === "error" && (
-        <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-red-600">{T.messages.failed}</p>
+        <p className="mt-3 text-sm font-medium text-red-600">{T.messages.failed}</p>
       )}
     </div>
   );

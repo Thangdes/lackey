@@ -6,6 +6,7 @@ import { statusClasses, statusDescription, statusLabel } from "@/constant/order-
 import { formatDate, formatVND } from "@/utils/format";
 import InlineCancel from "./InlineCancel";
 import OrderInlineDetails from "./OrderInlineDetails";
+import { PackageOpen } from "lucide-react";
 
 export type OrderTabKey = "all" | "pending" | "confirmed" | "preparing" | "shipping" | "completed" | "canceled";
 
@@ -97,53 +98,67 @@ export default function OrderTabContent({
   const totalPages = Math.max(1, Math.ceil(displayTotal / (limit || 10)));
 
   return (
-    <div className="mt-3 sm:mt-4 rounded-lg sm:rounded-xl border border-black/10 bg-white shadow-sm">
+    <div className="mt-4 rounded-xl border border-neutral-200 bg-white overflow-hidden">
       {isLoading ? (
-        <div className="p-4 sm:p-5 text-sm text-center text-neutral-600 animate-pulse">Đang tải đơn hàng...</div>
+        <div className="p-12 flex flex-col items-center justify-center gap-3 text-neutral-500 animate-pulse">
+           <div className="w-8 h-8 border-4 border-neutral-200 border-t-black rounded-full animate-spin"></div>
+           <span className="text-sm">Đang tải đơn hàng...</span>
+        </div>
       ) : error ? (
-        <div className="p-4 sm:p-5 text-sm text-center text-red-600 bg-red-50 rounded-lg">Không thể tải danh sách đơn hàng.</div>
+        <div className="p-8 text-sm text-center text-red-600 bg-red-50">Không thể tải danh sách đơn hàng.</div>
       ) : (
         <>
           {filtered.length === 0 ? (
-            <div className="p-6 sm:p-8 text-center">
-              <div className="text-4xl sm:text-5xl mb-3">📦</div>
-              <div className="text-sm sm:text-base text-black/60">Không có đơn hàng phù hợp.</div>
+            <div className="p-12 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
+                <PackageOpen size={32} />
+              </div>
+              <h3 className="text-base font-medium text-black mb-1">Không có đơn hàng</h3>
+              <p className="text-sm text-neutral-500 max-w-sm">Không tìm thấy đơn hàng nào phù hợp với trạng thái hoặc bộ lọc hiện tại.</p>
             </div>
           ) : (
-            <ul className="divide-y divide-black/10">
+            <ul className="divide-y divide-neutral-200">
               {filtered.map((o) => (
-                <li key={o.id} className="p-3 sm:p-4 md:p-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-sm sm:text-base truncate">Mã đơn: {o.orderCode || o.code || o.id}</div>
-                      <div className="mt-1.5 sm:mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                        <span className={`inline-flex items-center rounded-full border px-2.5 py-1 font-medium ${statusClasses(o.status)}`} title={statusDescription(o.status)}>{statusLabel(o.status)}</span>
-                        {o.createdAt && <span className="hidden sm:inline text-black/50">•</span>}
-                        {o.createdAt && <span className="text-black/60">{formatDate(o.createdAt)}</span>}
+                <li key={o.id} className="p-4 sm:p-5 hover:bg-neutral-50/50 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-black truncate">Mã đơn: {o.orderCode || o.code || o.id}</span>
+                        <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium border ${statusClasses(o.status)}`} title={statusDescription(o.status)}>
+                          {statusLabel(o.status)}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
+                        {o.createdAt && <span>{formatDate(o.createdAt)}</span>}
                         {(() => {
                           const r = o as unknown as { deliveryCode?: string | null; carrier?: string | null; shippingCarrier?: string | null };
                           const dc = (r.deliveryCode || "").trim();
                           const carrier = (r.carrier || r.shippingCarrier || "").toString().trim();
                           if (!dc && !carrier) return null;
                           return (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-sky-800">
-                              {carrier ? <strong className="font-semibold">{carrier}</strong> : null}
-                              {carrier && dc ? <span>•</span> : null}
-                              {dc ? <span>Mã vận chuyển: <span className="font-medium">{dc}</span></span> : null}
-                            </span>
+                            <>
+                              <span className="hidden sm:inline text-neutral-300">•</span>
+                              <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-2 py-0.5 text-neutral-700">
+                                {carrier ? <span className="font-medium">{carrier}</span> : null}
+                                {carrier && dc ? <span className="text-neutral-400">|</span> : null}
+                                {dc ? <span>Mã: <span className="font-medium text-black">{dc}</span></span> : null}
+                              </span>
+                            </>
                           );
                         })()}
                       </div>
                     </div>
-                    <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                      <div className="text-base sm:text-lg font-bold text-[#AE1C2C] whitespace-nowrap order-first sm:order-none">{formatVND((o as unknown as { totalAmount?: number; total?: number }).totalAmount ?? (o as unknown as { total?: number }).total ?? 0)}</div>
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:items-end gap-3 shrink-0">
+                      <div className="text-base sm:text-lg font-bold text-[#AE1C2C]">
+                        {formatVND((o as unknown as { totalAmount?: number; total?: number }).totalAmount ?? (o as unknown as { total?: number }).total ?? 0)}
+                      </div>
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         {String(o.status || "").toUpperCase() === "PENDING_CONFIRMATION" && (
                           <InlineCancel orderId={o.id} orderCode={(o as unknown as { orderCode?: string; code?: string }).orderCode || (o as unknown as { code?: string }).code} />
                         )}
                         <button
                           type="button"
-                          className="flex-1 sm:flex-none rounded-lg border border-black/15 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium hover:bg-black/5 transition-colors"
+                          className="flex-1 sm:flex-none justify-center inline-flex items-center rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-50 transition-colors"
                           onClick={() => toggleExpanded(o.id)}
                           aria-expanded={expandedIds.includes(o.id)}
                         >
@@ -153,22 +168,24 @@ export default function OrderTabContent({
                     </div>
                   </div>
                   {expandedIds.includes(o.id) && (
-                    <OrderInlineDetails order={o} />
+                    <div className="mt-4 pt-4 border-t border-neutral-100">
+                      <OrderInlineDetails order={o} />
+                    </div>
                   )}
                 </li>
               ))}
             </ul>
           )}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-black/10 p-3 sm:p-4 bg-neutral-50">
-            <div className="text-xs sm:text-sm text-black/60 text-center sm:text-left">
-              <span className="font-medium">Trang {page} / {totalPages}</span>
-              <span className="hidden sm:inline"> • </span>
-              <span className="block sm:inline mt-0.5 sm:mt-0">Tổng {displayTotal} đơn</span>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-neutral-200 p-4 bg-neutral-50/50">
+            <div className="text-sm text-neutral-500 text-center sm:text-left">
+              <span className="font-medium text-black">Trang {page} / {totalPages}</span>
+              <span className="hidden sm:inline mx-2 text-neutral-300">|</span>
+              <span className="block sm:inline mt-1 sm:mt-0">Tổng {displayTotal} đơn</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <button
                 type="button"
-                className="flex-1 sm:flex-none rounded-lg border border-black/15 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 sm:flex-none rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium bg-white text-black hover:bg-neutral-50 disabled:opacity-50 disabled:hover:bg-white disabled:cursor-not-allowed transition-colors"
                 onClick={() => onPageChange(Math.max(1, page - 1))}
                 disabled={page <= 1}
               >
@@ -176,7 +193,7 @@ export default function OrderTabContent({
               </button>
               <button
                 type="button"
-                className="flex-1 sm:flex-none rounded-lg border border-black/15 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 sm:flex-none rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium bg-white text-black hover:bg-neutral-50 disabled:opacity-50 disabled:hover:bg-white disabled:cursor-not-allowed transition-colors"
                 onClick={() => onPageChange(Math.min(totalPages, page + 1))}
                 disabled={page >= totalPages}
               >
@@ -185,7 +202,7 @@ export default function OrderTabContent({
               <select
                 value={limit}
                 onChange={(e) => onLimitChange(Number(e.target.value) || 10)}
-                className="rounded-lg border border-black/15 px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-medium bg-white hover:bg-neutral-50 transition-colors"
+                className="rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-colors"
                 aria-label="Số dòng mỗi trang"
               >
                 {[10, 20, 50].map((n) => (
