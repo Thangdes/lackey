@@ -1,5 +1,5 @@
 import { http, httpSuccess, api } from "@/utils/http";
-import { buildQueryString, normalizePaginationMeta, unwrapDataArray } from "@/utils/response";
+import { buildQueryString, normalizePaginationMeta, unwrapData, unwrapDataArray } from "@/utils/response";
 import { API } from "@/constant/api";
 import type { CreateProductPayload, Product, UpdateProductPayload, ProductVariant, ProductSort } from "@/type/product";
 
@@ -105,14 +105,16 @@ export const productService = {
     http.get<unknown>(API.product.suppliers).then((raw) => unwrapDataArray<{ id: string; name: string }>(raw)),
 
   // GET /products/:id
-  getById: (id: string) => http.get<Product>(API.product.byId(id)),
+  getById: (id: string) => http.get<unknown>(API.product.byId(id)).then((raw) => unwrapData<Product>(raw)),
 
   // GET /products/slug/:slug
-  getBySlug: (slug: string) => http.get<Product>(API.product.bySlug(slug)),
+  getBySlug: (slug: string) => http.get<unknown>(API.product.bySlug(slug)).then((raw) => unwrapData<Product>(raw)),
 
   // GET /products/:id/related?limit=
   related: (productId: string, limit = 8) =>
-    http.get<Product[]>(`${API.product.byId(productId)}/related?limit=${encodeURIComponent(String(limit))}`),
+    http
+      .get<unknown>(`${API.product.byId(productId)}/related?limit=${encodeURIComponent(String(limit))}`)
+      .then((raw) => unwrapData<Product[]>(raw)),
 
   bestSellers: (params?: { page?: number; limit?: number; categoryId?: string }) => {
     const page = params?.page ?? 1;

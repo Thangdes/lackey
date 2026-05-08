@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { productService } from "@/service/product.service";
 import type { CreateProductPayload } from "@/type/product";
 import { categoryService, type Category } from "@/service/category.service";
+import { supplierAdminService } from "@/service/supplier-admin.service";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,14 +17,17 @@ import { validateAndSuggestVariantName } from "@/utils/variantNameHelper";
 import NewProductForm from "@/components/admin/products/NewProductForm";
 import ProductImageManager from "@/components/admin/products/ProductImageManager";
 import SimpleVariantsTable, { type SimpleVariant } from "@/components/admin/products/SimpleVariantsTable";
+import { AdminFormDialog } from "@/components/admin/shared/AdminFormDialog";
+import { AdminFormField } from "@/components/admin/shared/AdminFormField";
 
 export default function NewProductPage() {
   const router = useRouter();
+  const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
   const [categoryQuery, setCategoryQuery] = useState("");
-  const { data: suppliers = [] } = useSupplierList();
+  const { data: suppliers = [], isLoading: suppliersLoading, isError: suppliersError } = useSupplierList();
   const [supplierId, setSupplierId] = useState<string>("");
   const [supplierQuery, setSupplierQuery] = useState("");
   const imgUrlRef = useRef<HTMLInputElement | null>(null);
@@ -36,6 +41,20 @@ export default function NewProductPage() {
   const [images, setImages] = useState<string[]>([]);
   const [slugError, setSlugError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [createCategoryOpen, setCreateCategoryOpen] = useState(false);
+  const [ccName, setCcName] = useState("");
+  const [ccSlug, setCcSlug] = useState("");
+  const [ccDescription, setCcDescription] = useState("");
+  const [createCategorySaving, setCreateCategorySaving] = useState(false);
+
+  const [createSupplierOpen, setCreateSupplierOpen] = useState(false);
+  const [csName, setCsName] = useState("");
+  const [csEmail, setCsEmail] = useState("");
+  const [csContactName, setCsContactName] = useState("");
+  const [csPhone, setCsPhone] = useState("");
+  const [csAddress, setCsAddress] = useState("");
+  const [createSupplierSaving, setCreateSupplierSaving] = useState(false);
   
   const [variants, setVariants] = useState<SimpleVariant[]>([]);
   
@@ -68,6 +87,15 @@ export default function NewProductPage() {
       .list()
       .then((cs) => setCategories(Array.isArray(cs) ? cs : []))
       .catch(() => setCategories([]));
+  }, []);
+
+  const reloadCategories = useCallback(async () => {
+    try {
+      const cs = await categoryService.list();
+      setCategories(Array.isArray(cs) ? cs : []);
+    } catch {
+      setCategories([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -214,6 +242,82 @@ export default function NewProductPage() {
   const handleCategoryQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setCategoryQuery(e.target.value), []);
   const handleSupplierQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setSupplierQuery(e.target.value), []);
 
+  const openCreateCategory = useCallback(() => {
+    setCcName(categoryQuery.trim());
+    setCcSlug(slugify(categoryQuery.trim() || "", { lower: true, strict: true, trim: true, locale: "vi" }));
+    setCcDescription("");
+    setCreateCategoryOpen(true);
+  }, [categoryQuery]);
+
+  const openCreateSupplier = useCallback(() => {
+    setCsName(supplierQuery.trim());
+    setCsEmail("");
+    setCsContactName("");
+    setCsPhone("");
+    setCsAddress("");
+    setCreateSupplierOpen(true);
+  }, [supplierQuery]);
+
+  const handleCreateCategorySave = useCallback(async () => {
+    const name = ccName.trim();
+    const safeSlug = slugify((ccSlug || name) || "", { lower: true, strict: true, trim: true, locale: "vi" });
+    if (!name) {
+      toast.error("Vui lòng nhập tên danh mục");
+      return;
+    }
+    if (!safeSlug) {
+      toast.error("Vui lòng nhập slug hợp lệ");
+      return;
+    }
+
+    try {
+      setCreateCategorySaving(true);
+      const created = await categoryService.create({ name, slug: safeSlug, description: ccDescription.trim() || undefined });
+      await reloadCategories();
+      setCategoryId(created.id);
+      setCreateCategoryOpen(false);
+      setCategoryQuery("");
+      toast.success("Đã tạo danh mục");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Không thể tạo danh mục");
+    } finally {
+      setCreateCategorySaving(false);
+    }
+  }, [ccDescription, ccName, ccSlug, reloadCategories]);
+
+  const handleCreateSupplierSave = useCallback(async () => {
+    const name = csName.trim();
+    const email = csEmail.trim();
+    if (!name) {
+      toast.error("Vui lòng nhập tên nhà cung cấp");
+      return;
+    }
+    if (!email) {
+      toast.error("Vui lòng nhập email liên hệ");
+      return;
+    }
+
+    try {
+      setCreateSupplierSaving(true);
+      const created = await supplierAdminService.create({
+        name,
+        email,
+        contactName: csContactName.trim() || undefined,
+        phone: csPhone.trim() || undefined,
+        address: csAddress.trim() || undefined,
+      });
+      await qc.invalidateQueries({ queryKey: ["suppliers"] });
+      setSupplierId(created.id);
+      setCreateSupplierOpen(false);
+      setSupplierQuery("");
+      toast.success("Đã tạo nhà cung cấp");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Không thể tạo nhà cung cấp");
+    } finally {
+      setCreateSupplierSaving(false);
+    }
+  }, [csAddress, csContactName, csEmail, csName, csPhone, qc]);
+
   const handleImgKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
@@ -257,6 +361,10 @@ export default function NewProductPage() {
     if (slugError || !categoryId || !supplierId) {
       if (!categoryId) toast.error("Vui lòng chọn danh mục");
       if (!supplierId) toast.error("Vui lòng chọn nhà cung cấp");
+      return;
+    }
+    if (variants.length === 0) {
+      toast.error("Vui lòng thêm ít nhất 1 biến thể trước khi lưu");
       return;
     }
     setLoading(true);
@@ -303,7 +411,7 @@ export default function NewProductPage() {
               const form = document.getElementById('admin-new-product-form') as HTMLFormElement | null;
               form?.requestSubmit();
             }}
-            disabled={loading || !!slugError || !categoryId || !supplierId}
+            disabled={loading || !!slugError || !categoryId || !supplierId || variants.length === 0}
             className="inline-flex items-center gap-1"
           >
             <Save className="size-4" aria-hidden />
@@ -331,6 +439,8 @@ export default function NewProductPage() {
                 categoryQuery={categoryQuery}
                 supplierId={supplierId}
                 suppliers={suppliers}
+                suppliersLoading={suppliersLoading}
+                suppliersError={suppliersError}
                 supplierQuery={supplierQuery}
                 initialBuyCount={initialBuyCount}
                 slugError={slugError}
@@ -343,6 +453,8 @@ export default function NewProductPage() {
                 onSupplierChange={setSupplierId}
                 onSupplierQueryChange={handleSupplierQueryChange}
                 onInitialBuyCountChange={handleInitialBuyCountChange}
+                onCreateCategoryClick={openCreateCategory}
+                onCreateSupplierClick={openCreateSupplier}
               />
             </div>
 
@@ -461,7 +573,7 @@ export default function NewProductPage() {
         <Separator className="my-6" />
 
         <div className="sticky bottom-0 bg-background/80 backdrop-blur border rounded-lg p-3 flex items-center justify-end gap-2">
-          <Button type="submit" disabled={loading || !!slugError || !categoryId || !supplierId} className="inline-flex items-center gap-1">
+          <Button type="submit" disabled={loading || !!slugError || !categoryId || !supplierId || variants.length === 0} className="inline-flex items-center gap-1">
             <Save className="size-4" aria-hidden />
             {loading ? "Đang lưu…" : "Lưu"}
           </Button>
@@ -471,6 +583,97 @@ export default function NewProductPage() {
           </Button>
         </div>
       </form>
+
+      <AdminFormDialog
+        open={createCategoryOpen}
+        onOpenChange={setCreateCategoryOpen}
+        title="Thêm danh mục"
+        description="Tạo danh mục mới"
+        onSave={handleCreateCategorySave}
+        saving={createCategorySaving}
+        saveLabel="Tạo"
+        maxWidth="md"
+      >
+        <AdminFormField
+          label="Tên danh mục"
+          value={ccName}
+          onChange={(v) => {
+            setCcName(v);
+            setCcSlug((prev) => (prev ? prev : slugify(v || "", { lower: true, strict: true, trim: true, locale: "vi" })));
+          }}
+          placeholder="Ví dụ: Thực phẩm"
+          required
+          disabled={createCategorySaving}
+        />
+        <AdminFormField
+          label="Slug"
+          value={ccSlug}
+          onChange={(v) => setCcSlug(v)}
+          placeholder="vi-du: thuc-pham"
+          required
+          disabled={createCategorySaving}
+        />
+        <AdminFormField
+          label="Mô tả"
+          type="textarea"
+          value={ccDescription}
+          onChange={setCcDescription}
+          placeholder="Mô tả ngắn về danh mục"
+          disabled={createCategorySaving}
+          rows={3}
+          maxLength={1000}
+        />
+      </AdminFormDialog>
+
+      <AdminFormDialog
+        open={createSupplierOpen}
+        onOpenChange={setCreateSupplierOpen}
+        title="Thêm nhà cung cấp"
+        description="Tạo nhà cung cấp mới"
+        onSave={handleCreateSupplierSave}
+        saving={createSupplierSaving}
+        saveLabel="Tạo"
+        maxWidth="md"
+      >
+        <AdminFormField
+          label="Tên nhà cung cấp"
+          value={csName}
+          onChange={setCsName}
+          placeholder="VD: Công ty ABC"
+          required
+          disabled={createSupplierSaving}
+        />
+        <AdminFormField
+          label="Email liên hệ"
+          type="email"
+          value={csEmail}
+          onChange={setCsEmail}
+          placeholder="name@company.com"
+          required
+          disabled={createSupplierSaving}
+        />
+        <AdminFormField
+          label="Tên người liên hệ"
+          value={csContactName}
+          onChange={setCsContactName}
+          placeholder="Nguyễn Văn A"
+          disabled={createSupplierSaving}
+        />
+        <AdminFormField
+          label="Số điện thoại"
+          value={csPhone}
+          onChange={setCsPhone}
+          placeholder="0901 234 567"
+          disabled={createSupplierSaving}
+        />
+        <AdminFormField
+          label="Địa chỉ"
+          value={csAddress}
+          onChange={setCsAddress}
+          placeholder="Số nhà, đường, quận/huyện, tỉnh/thành"
+          disabled={createSupplierSaving}
+        />
+      </AdminFormDialog>
     </div>
   );
 }

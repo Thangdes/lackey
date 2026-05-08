@@ -4,10 +4,11 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
+  IsMongoId,
   IsInt,
   Min,
   ValidateNested,
+  ArrayMinSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ProductVariantDto } from './product-variant.dto';
@@ -21,11 +22,11 @@ export class CreateProductDto {
   @IsNotEmpty()
   slug: string;
 
-  @IsUUID()
+  @IsMongoId({ message: 'categoryId must be a valid MongoDB ObjectId' })
   @IsNotEmpty()
   categoryId: string;
 
-  @IsUUID('4', { message: 'supplierId must be a UUID' })
+  @IsMongoId({ message: 'supplierId must be a valid MongoDB ObjectId' })
   @IsNotEmpty({ message: 'supplierId should not be empty' })
   supplierId: string;
 
@@ -43,6 +44,7 @@ export class CreateProductDto {
   initialBuyCount?: number;
 
   @IsArray()
+  @ArrayMinSize(1, { message: 'Phải có ít nhất 1 biến thể' })
   @ValidateNested({ each: true })
   @Type(() => ProductVariantDto)
   variants: ProductVariantDto[];

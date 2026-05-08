@@ -472,10 +472,14 @@ export class ProductQueryService {
   }
 
   async findSuppliers() {
-    return this.prisma.supplier.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    });
+    try {
+      return await this.prisma.supplier.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      });
+    } catch {
+      return [];
+    }
   }
 }

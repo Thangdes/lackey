@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ParseUUIDPipe,
   applyDecorators,
   UseGuards,
   FileTypeValidator,
@@ -21,6 +20,7 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
 } from '@nestjs/common';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 import { ProductService } from './product.service';
 import { ProductQueryService } from './services/product-query.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -60,7 +60,7 @@ export class ProductController {
   @UseInterceptors(FileInterceptor('thumbnail'))
   @HttpCode(HttpStatus.OK)
   updateThumbnail(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -119,7 +119,7 @@ export class ProductController {
 
   @Get(':id/related')
   findRelated(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Query('limit', new DefaultValuePipe(8), ParseIntPipe) limit: number,
   ) {
     return this.productQueryService.findRelated(id, limit);
@@ -131,14 +131,14 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.productService.findOne(id);
   }
 
   @Patch(':id')
   @AdminAccess()
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productService.update(id, updateProductDto);
@@ -146,20 +146,20 @@ export class ProductController {
 
   @Delete(':id')
   @AdminAccess()
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.productService.remove(id);
   }
 
   @Get(':productId/variants')
   @AdminAccess()
-  findAllVariants(@Param('productId', ParseUUIDPipe) productId: string) {
+  findAllVariants(@Param('productId', ParseObjectIdPipe) productId: string) {
     return this.productService.findAllVariants(productId);
   }
 
   @Post(':productId/variants')
   @AdminAccess()
   addVariant(
-    @Param('productId', ParseUUIDPipe) productId: string,
+    @Param('productId', ParseObjectIdPipe) productId: string,
     @Body() variantData: ProductVariantDto,
   ) {
     delete variantData.id;
@@ -169,8 +169,8 @@ export class ProductController {
   @Patch(':productId/variants/:variantId')
   @AdminAccess()
   updateVariant(
-    @Param('productId', ParseUUIDPipe) productId: string,
-    @Param('variantId', ParseUUIDPipe) variantId: string,
+    @Param('productId', ParseObjectIdPipe) productId: string,
+    @Param('variantId', ParseObjectIdPipe) variantId: string,
     @Body() variantData: UpdateProductVariantDto,
   ) {
     return this.productService.updateVariant(productId, variantId, variantData);
@@ -179,8 +179,8 @@ export class ProductController {
   @Delete(':productId/variants/:variantId')
   @AdminAccess()
   removeVariant(
-    @Param('productId', ParseUUIDPipe) productId: string,
-    @Param('variantId', ParseUUIDPipe) variantId: string,
+    @Param('productId', ParseObjectIdPipe) productId: string,
+    @Param('variantId', ParseObjectIdPipe) variantId: string,
   ) {
     return this.productService.removeVariant(productId, variantId);
   }
@@ -189,7 +189,7 @@ export class ProductController {
   @AdminAccess()
   @UseInterceptors(FilesInterceptor('images', 10))
   addImages(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
@@ -206,9 +206,10 @@ export class ProductController {
   @Patch(':id/images/delete')
   @AdminAccess()
   removeImage(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body('imageUrl') imageUrl: string,
   ) {
     return this.productService.removeImage(id, imageUrl);
   }
 }
+

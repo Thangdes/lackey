@@ -109,7 +109,7 @@
         "stockQuantity": 28
       }
     ],
-    "ratingAvg": 5.0,
+    "ratingAvg": 5,
     "ratingCount": 96,
     "buyCount": 234
   },
@@ -223,11 +223,10 @@
         "stockQuantity": 19
       }
     ],
-    "ratingAvg": 5.0,
+    "ratingAvg": 5,
     "ratingCount": 78,
     "buyCount": 167
-  }
-,
+  },
   {
     "id": "KB013",
     "name": "Cherry MX Red Switch (10 cái)",
@@ -357,7 +356,7 @@
         "stockQuantity": 33
       }
     ],
-    "ratingAvg": 5.0,
+    "ratingAvg": 5,
     "ratingCount": 142,
     "buyCount": 398
   },
@@ -379,5 +378,45 @@
     "ratingAvg": 4.9,
     "ratingCount": 87,
     "buyCount": 234
+  },
+  {
+    "id": "KB021",
+    "name": "Bàn phím cơ E-Dra không dây EK368L Beta",
+    "slug": "ban-phim-co-e-dra-khong-day-ek368l-beta",
+    "description": "Bàn phím cơ E-Dra EK368L Beta 68 phím với kết nối không dây 2.4G + Bluetooth 5.0. Switch Huano bền bỉ 50 triệu lần nhấn, keycap ABS DoubleShot in rõ nét. Layout mini-size tiết kiệm không gian, thời gian sử dụng lên đến 6 tháng. Tương thích đa nền tảng Windows và MacOS.",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&h=300&fit=crop",
+    "variants": [
+      {
+        "id": "v-KB021-yellow",
+        "name": "Yellow Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-YELLOW",
+        "price": 499000,
+        "stockQuantity": 35
+      },
+      {
+        "id": "v-KB021-blue",
+        "name": "Blue Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-BLUE",
+        "price": 499000,
+        "stockQuantity": 42
+      },
+      {
+        "id": "v-KB021-red",
+        "name": "Red Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-RED",
+        "price": 499000,
+        "stockQuantity": 38
+      },
+      {
+        "id": "v-KB021-brown",
+        "name": "Brown Switch - Trắng Xám",
+        "sku": "SKU-EK368L-BETA-BROWN",
+        "price": 499000,
+        "stockQuantity": 40
+      }
+    ],
+    "ratingAvg": 4,
+    "ratingCount": 1,
+    "buyCount": 0
   }
 ]

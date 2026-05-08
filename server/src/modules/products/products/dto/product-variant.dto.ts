@@ -3,12 +3,12 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUUID,
+  IsMongoId,
   Min,
 } from 'class-validator';
 
 export class ProductVariantDto {
-  @IsUUID()
+  @IsMongoId()
   @IsOptional()
   id?: string;
 

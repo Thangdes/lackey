@@ -2,7 +2,6 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Category } from "@/service/category.service";
 
@@ -16,6 +15,8 @@ export type NewProductFormProps = {
   categoryQuery: string;
   supplierId: string;
   suppliers: Array<{ id: string; name: string }>;
+  suppliersLoading?: boolean;
+  suppliersError?: boolean;
   supplierQuery: string;
   initialBuyCount: string;
   slugError: string | null;
@@ -28,6 +29,8 @@ export type NewProductFormProps = {
   onSupplierChange: (value: string) => void;
   onSupplierQueryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onInitialBuyCountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onCreateCategoryClick?: () => void;
+  onCreateSupplierClick?: () => void;
 };
 
 export default function NewProductForm({
@@ -40,6 +43,8 @@ export default function NewProductForm({
   categoryQuery,
   supplierId,
   suppliers,
+  suppliersLoading,
+  suppliersError,
   supplierQuery,
   initialBuyCount,
   slugError,
@@ -52,6 +57,8 @@ export default function NewProductForm({
   onSupplierChange,
   onSupplierQueryChange,
   onInitialBuyCountChange,
+  onCreateCategoryClick,
+  onCreateSupplierClick,
 }: NewProductFormProps) {
   const filteredCategories = useMemo(() => {
     const q = categoryQuery.trim().toLowerCase();
@@ -89,7 +96,18 @@ export default function NewProductForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Danh mục</label>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <label className="block text-sm font-medium">Danh mục</label>
+          {onCreateCategoryClick && (
+            <button
+              type="button"
+              onClick={onCreateCategoryClick}
+              className="text-xs underline underline-offset-4"
+            >
+              Tạo danh mục
+            </button>
+          )}
+        </div>
         <Input
           value={categoryQuery}
           onChange={onCategoryQueryChange}
@@ -104,9 +122,15 @@ export default function NewProductForm({
             {filteredCategories.length === 0 ? (
               <div className="p-2 text-sm text-muted-foreground space-y-1">
                 <div>Chưa có danh mục.</div>
-                <Link href="/admin/categories" className="text-sm underline underline-offset-4">
-                  Tạo danh mục
-                </Link>
+                {onCreateCategoryClick ? (
+                  <button type="button" onClick={onCreateCategoryClick} className="text-sm underline underline-offset-4">
+                    Tạo danh mục
+                  </button>
+                ) : (
+                  <Link href="/admin/categories" className="text-sm underline underline-offset-4">
+                    Tạo danh mục
+                  </Link>
+                )}
               </div>
             ) : (
               filteredCategories.map((c) => (
@@ -120,24 +144,49 @@ export default function NewProductForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Nhà cung cấp</label>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <label className="block text-sm font-medium">Nhà cung cấp</label>
+          {onCreateSupplierClick && (
+            <button
+              type="button"
+              onClick={onCreateSupplierClick}
+              className="text-xs underline underline-offset-4"
+            >
+              Tạo nhà cung cấp
+            </button>
+          )}
+        </div>
+        {suppliersError && (
+          <div className="text-xs text-destructive mb-1 p-2 bg-destructive/10 rounded">
+            ⚠️ Không thể tải danh sách nhà cung cấp. Kiểm tra kết nối database.
+          </div>
+        )}
         <Input
           value={supplierQuery}
           onChange={onSupplierQueryChange}
           placeholder="Tìm nhà cung cấp..."
           className="mb-2"
+          disabled={suppliersLoading}
         />
-        <Select value={supplierId} onValueChange={onSupplierChange}>
+        <Select value={supplierId} onValueChange={onSupplierChange} disabled={suppliersLoading}>
           <SelectTrigger>
-            <SelectValue placeholder="Chọn nhà cung cấp" />
+            <SelectValue placeholder={suppliersLoading ? "Đang tải..." : "Chọn nhà cung cấp"} />
           </SelectTrigger>
           <SelectContent>
-            {filteredSuppliers.length === 0 ? (
+            {suppliersLoading ? (
+              <div className="p-2 text-sm text-muted-foreground">Đang tải nhà cung cấp...</div>
+            ) : filteredSuppliers.length === 0 ? (
               <div className="p-2 text-sm text-muted-foreground space-y-1">
-                <div>Chưa có nhà cung cấp.</div>
-                <Link href="/admin/suppliers" className="text-sm underline underline-offset-4">
-                  Tạo nhà cung cấp
-                </Link>
+                <div>Chưa có nhà cung cấp.{suppliersError ? " (Lỗi kết nối DB)" : ""}</div>
+                {onCreateSupplierClick ? (
+                  <button type="button" onClick={onCreateSupplierClick} className="text-sm underline underline-offset-4">
+                    Tạo nhà cung cấp
+                  </button>
+                ) : (
+                  <Link href="/admin/suppliers" className="text-sm underline underline-offset-4">
+                    Tạo nhà cung cấp
+                  </Link>
+                )}
               </div>
             ) : (
               filteredSuppliers.map((s) => (
@@ -148,6 +197,11 @@ export default function NewProductForm({
             )}
           </SelectContent>
         </Select>
+        {suppliers.length > 0 && (
+          <div className="text-xs text-muted-foreground mt-1">
+            {suppliers.length} nhà cung cấp có sẵn
+          </div>
+        )}
       </div>
 
       <div>
