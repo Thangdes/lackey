@@ -122,10 +122,22 @@ export class ShippingService {
       throw new BadRequestException('GHN did not return order_code');
     }
 
+    const deliveryCode = String(ghnOrderCode);
+    const exists = await this.prisma.order.findFirst({
+      where: {
+        deliveryCode,
+        id: { not: order.id },
+      },
+      select: { id: true },
+    });
+    if (exists) {
+      throw new BadRequestException('Delivery code already exists.');
+    }
+
     const updated = await this.prisma.order.update({
       where: { id: order.id },
       data: {
-        deliveryCode: String(ghnOrderCode),
+        deliveryCode,
         status: OrderStatus.PREPARING_SHIPMENT,
       },
       select: { id: true, orderCode: true, deliveryCode: true, status: true },

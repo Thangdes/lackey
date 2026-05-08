@@ -20,15 +20,18 @@ export class GhnService {
     this.apiUrl = this.configService.get<string>('GHN_API_URL');
     this.token = this.configService.get<string>('GHN_TOKEN');
     this.shopId = +this.configService.get<number>('GHN_SHOP_ID');
+  }
 
+  private ensureConfigured() {
     if (!this.apiUrl || !this.token || !this.shopId) {
       throw new Error(
-        'GHN configuration (API_URL, TOKEN, SHOP_ID) is missing in .env file',
+        'GHN configuration (GHN_API_URL, GHN_TOKEN, GHN_SHOP_ID) is missing in .env file',
       );
     }
   }
 
   private getHeaders() {
+    this.ensureConfigured();
     return {
       'Content-Type': 'application/json',
       Token: this.token,
@@ -43,6 +46,7 @@ export class GhnService {
       return cachedData;
     }
     try {
+      this.ensureConfigured();
       const response = await firstValueFrom(
         this.httpService.get(`${this.apiUrl}/master-data/province`, {
           headers: { Token: this.token },
@@ -64,6 +68,7 @@ export class GhnService {
       return cachedData;
     }
     try {
+      this.ensureConfigured();
       const response = await firstValueFrom(
         this.httpService.get(`${this.apiUrl}/master-data/district`, {
           headers: { Token: this.token },
@@ -89,6 +94,7 @@ export class GhnService {
       return cachedData;
     }
     try {
+      this.ensureConfigured();
       const response = await firstValueFrom(
         this.httpService.get(`${this.apiUrl}/master-data/ward`, {
           headers: { Token: this.token },

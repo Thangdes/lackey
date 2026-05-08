@@ -55,4 +55,14 @@ export const shippingService = {
   getWards: async (districtId: number): Promise<GHNResponse<GHNWard[]>> => {
     return http.post<GHNResponse<GHNWard[]>>(API.shipping.wards, { district_id: districtId });
   },
+
+  // Admin: Create GHN shipment for an order
+  createGhnShipment: async (orderId: string) => {
+    return http.post(API.shipping.ghnCreate(orderId));
+  },
+
+  // Admin: Get GHN tracking/order detail
+  getGhnTracking: async (orderId: string) => {
+    return http.get(API.shipping.ghnTracking(orderId));
+  },
 };
