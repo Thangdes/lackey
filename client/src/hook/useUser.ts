@@ -4,13 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/service/user.service";
 import type { UpdateUserPayload, User } from "@/type/user";
 import { userKeys as keys } from "@/constant/key/user";
-import { isLikelyAuthenticated } from "@/utils/http";
+
+import { useIsAuthenticated } from "@/hook/useIsAuthenticated";
 
 export function useUserMe() {
+  const isAuth = useIsAuthenticated();
   return useQuery({
     queryKey: keys.me(),
     queryFn: () => userService.getMe(),
-    enabled: isLikelyAuthenticated(),
+    enabled: isAuth,
   });
 }
 

@@ -3,12 +3,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/service/auth.service";
 import type { User } from "@/type/user";
-import { isLikelyAuthenticated } from "@/utils/http";
+
+import { useIsAuthenticated } from "@/hook/useIsAuthenticated";
 import { authKeys as keys } from "@/constant/key/auth";
 import { cartKeys } from "@/constant/key/cart";
 import { showSuccessToast } from "@/components/toast/AppToast";
 
 export function useAuthProfile() {
+  const isAuth = useIsAuthenticated();
   return useQuery<User | null>({
     queryKey: keys.profile(),
     queryFn: async () => {
@@ -28,7 +30,7 @@ export function useAuthProfile() {
       })();
       return { ...(res as User), email, role } as User;
     },
-    enabled: isLikelyAuthenticated(),
+    enabled: isAuth,
     retry: false,
   });
 }
@@ -56,6 +58,11 @@ export function useLogin() {
         window.dispatchEvent(new CustomEvent("auth:login-success"));
       } catch {}
       qc.invalidateQueries({ queryKey: keys.profile() });
+      // Invalidate tất cả auth-protected queries để chúng refetch với cookie mới
+      qc.invalidateQueries({ predicate: (q) => {
+        const k = q.queryKey;
+        return Array.isArray(k) && (k[0] === "orders" || k[0] === "customers");
+      }});
     },
   });
 }

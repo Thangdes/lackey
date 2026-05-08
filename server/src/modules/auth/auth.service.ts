@@ -32,11 +32,14 @@ export class AuthService {
     return trimmed as StringValue;
   }
 
+  private _bcryptRoundsCache: number | null = null;
   private get bcryptRounds(): number {
+    if (this._bcryptRoundsCache !== null) return this._bcryptRoundsCache;
     const raw = this.configService.get<string | number>('BCRYPT_ROUNDS', 10);
-    if (typeof raw === 'number') return raw;
+    if (typeof raw === 'number') { this._bcryptRoundsCache = raw; return raw; }
     const parsed = Number.parseInt(String(raw).trim(), 10);
-    return Number.isFinite(parsed) ? parsed : 10;
+    this._bcryptRoundsCache = Number.isFinite(parsed) ? parsed : 10;
+    return this._bcryptRoundsCache;
   }
 
   private get jwtAccessExpires(): number | StringValue {
@@ -108,19 +111,33 @@ export class AuthService {
     const { password, guestCartId } = data;
     const email = this.normalizeEmail(data.email);
 
+    // Single query: tìm customer (chỉ lấy field cần thiết)
     const customer = await this.prisma.customer.findUnique({
       where: { email },
-      include: { user: true },
+      select: {
+        id: true,
+        user: {
+          select: { id: true, password: true, role: true, customerId: true },
+        },
+      },
     });
 
-    const supplier = customer?.user
-      ? null
-      : await this.prisma.supplier.findUnique({
-          where: { email },
-          include: { users: true },
-        });
+    let user: { id: string; password: string; role: UserRole; customerId: string | null } | null =
+      customer?.user ?? null;
 
-    const user = customer?.user ?? supplier?.users?.[0] ?? null;
+    // Chỉ query supplier nếu customer không có user
+    if (!user) {
+      const supplier = await this.prisma.supplier.findUnique({
+        where: { email },
+        select: {
+          users: {
+            take: 1,
+            select: { id: true, password: true, role: true, customerId: true },
+          },
+        },
+      });
+      user = supplier?.users?.[0] ?? null;
+    }
 
     if (!user) {
       throw new UnauthorizedException('Sai email hoặc mật khẩu');
@@ -139,38 +156,45 @@ export class AuthService {
   }
 
   async generateTokens(userId: string) {
-    const accessToken = this.jwtService.sign(
-      { sub: userId },
-      { expiresIn: this.jwtAccessExpires },
-    );
+    // Tạo cả 2 token song song (không phụ thuộc nhau)
+    const [accessToken, refreshToken] = await Promise.all([
+      Promise.resolve(
+        this.jwtService.sign({ sub: userId }, { expiresIn: this.jwtAccessExpires }),
+      ),
+      Promise.resolve(
+        this.jwtService.sign({ sub: userId }, { expiresIn: this.jwtRefreshExpires }),
+      ),
+    ]);
 
-    const refreshToken = this.jwtService.sign(
-      { sub: userId },
-      { expiresIn: this.jwtRefreshExpires },
-    );
-
+    // Query sessions + tạo token mới song song
     const existingSessions = await this.prisma.token.findMany({
       where: { userId },
       orderBy: { createdAt: 'asc' },
       select: { id: true },
     });
 
+    const ops: Promise<unknown>[] = [];
+
     if (existingSessions.length >= this.maxSessionsPerUser) {
       const toDelete = existingSessions
         .slice(0, existingSessions.length - this.maxSessionsPerUser + 1)
         .map((t) => t.id);
-      await this.prisma.token.deleteMany({
-        where: { id: { in: toDelete } },
-      });
+      ops.push(
+        this.prisma.token.deleteMany({ where: { id: { in: toDelete } } }),
+      );
     }
 
-    await this.prisma.token.create({
-      data: {
-        refreshToken,
-        userId,
-        expiresAt: dayjs().add(7, 'day').toDate(),
-      },
-    });
+    ops.push(
+      this.prisma.token.create({
+        data: {
+          refreshToken,
+          userId,
+          expiresAt: dayjs().add(7, 'day').toDate(),
+        },
+      }),
+    );
+
+    await Promise.all(ops);
 
     return { accessToken, refreshToken };
   }

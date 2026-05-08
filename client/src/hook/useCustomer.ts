@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { customerService, type CustomerListParams } from "@/service/customer.service";
 import type { Customer } from "@/type/customer";
-import { isLikelyAuthenticated } from "@/utils/http";
+
+import { useIsAuthenticated } from "@/hook/useIsAuthenticated";
 
 export function useCustomerList(params: CustomerListParams) {
   const { page = 1, limit = 10, search } = params;
@@ -32,13 +33,14 @@ export function useCustomerById(id: string) {
 }
 
 export function useCustomerMe() {
+  const isAuth = useIsAuthenticated();
   return useQuery<Customer | null>({
     queryKey: ["customers", "me"],
     queryFn: async () => {
       const r = await customerService.getMe().catch(() => null);
       return r ?? null;
     },
-    enabled: isLikelyAuthenticated(),
+    enabled: isAuth,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
