@@ -171,7 +171,7 @@ model Order {
   paymentEvents     PaymentEvent[]
   ratings           Rating[]
   invoice           Invoice?
-  deliveryCode      String?        @unique @map("delivery_code")
+  deliveryCode      String?        @map("delivery_code")
   discountId        String?        @map("discount_id") @db.ObjectId
   discountAmount    Float          @default(0) @map("discount_amount")
   discount          Discount?      @relation(fields: [discountId], references: [id])

@@ -84,6 +84,10 @@ async function main() {
       path.resolve(__dirname, '../../cvf-client/data/products.json'),
       path.resolve(__dirname, '../../../cvf-client/data/products.json'),
       path.resolve(process.cwd(), '../cvf-client/data/products.json'),
+      // New paths for client folder
+      path.resolve(__dirname, '../../client/data/products.json'),
+      path.resolve(__dirname, '../../../client/data/products.json'),
+      path.resolve(process.cwd(), '../client/data/products.json'),
     ];
 
     let productsRaw: string | null = null;
@@ -399,6 +403,7 @@ async function main() {
         customerId: customerA.id,
         shippingAddressId: addressA.id,
         orderCode,
+        deliveryCode: `DLV${randomCode()}`,
         status,
         subtotalAmount: subtotal,
         shippingFee,
