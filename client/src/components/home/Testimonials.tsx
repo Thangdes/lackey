@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { BsPatchCheck } from "react-icons/bs";
-import { cn } from "@/lib/utils";
 import { IoIosStar } from "react-icons/io";
 import SectionHeader from "@/components/common/SectionHeader";
 
@@ -71,7 +70,7 @@ function RatingStars({ value }: { value: number }) {
   return (
     <div className="flex items-center justify-center gap-0.5" aria-label={`Đánh giá ${full}/5`}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <IoIosStar key={i} className={`h-4 w-4 ${i < full ? "" : "text-neutral-300"}`} />
+        <IoIosStar key={i} className={`h-5 w-5 ${i < full ? "text-yellow-400" : "text-gray-200"}`} />
       ))}
     </div>
   );
@@ -80,41 +79,42 @@ function RatingStars({ value }: { value: number }) {
 const Testimonials: React.FC<TestimonialsProps> = ({ title = "Khách hàng nói gì về chúng tôi", subtitle = "Những chia sẻ chân thực từ khách hàng", items, disableFallback = false }) => {
   const list = (disableFallback ? (items || []) : (items && items.length ? items : defaults)).slice(0, 4);
   return (
-    <section aria-label="Testimonials" className="">
-      <div
-        className=""
-      >
-        <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 mb-10">
+    <section aria-label="Testimonials" className="py-12 bg-gray-50">
+      <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+        <div className="mb-12">
           <SectionHeader
-            title={<h2 className="text-black text-3xl font-bold">{title}</h2>}
+            title={<h2 className="text-gray-900 text-3xl font-bold">{title}</h2>}
             subtitle={subtitle}
             align="center"
           />
+        </div>
 
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border-2 border-black">
-            {list.map((t, index) => {
-              const hero = t.imageUrl || t.avatarUrl || "/logo/logo.jpg";
-              return (
-                <article key={t.id} className={cn("border-black bg-surface overflow-hidden p-6", index === list.length - 1 ? "md:border-r-0" : "md:border-r-2 md:border-b-0 border-b-2")}>
-                  <div className="relative w-full aspect-[16/10]">
-                    <Image src={hero} alt={t.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 25vw" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {list.map((t) => {
+            const hero = t.imageUrl || t.avatarUrl || "/logo/logo.jpg";
+            return (
+              <article key={t.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="relative w-full aspect-[16/10]">
+                  <Image src={hero} alt={t.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-center mb-3">
+                    <RatingStars value={t.rating} />
                   </div>
-                  <div className="p-4">
-                    <div className="flex items-center justify-center">
-                      <RatingStars value={t.rating} />
-                    </div>
-                    <p className="mt-2 text-center text-sm text-neutral-800">“{t.content}”</p>
-                    <div className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-[var(--color-cod-gray-900)]">
-                      <BsPatchCheck />
-                      <span>{t.name}</span>
+                  <p className="text-center text-sm text-gray-600 leading-relaxed line-clamp-4">&quot;{t.content}&quot;</p>
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-center gap-2">
+                      <BsPatchCheck className="text-blue-500 text-base" />
+                      <div className="text-center">
+                        <p className="text-sm font-semibold text-gray-900">{t.name}</p>
+                        {t.role && <p className="text-xs text-gray-500">{t.role}</p>}
+                      </div>
                     </div>
                   </div>
-                </article>
-              );
-            })}
-          </div>
-          </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

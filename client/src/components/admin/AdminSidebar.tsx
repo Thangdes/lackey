@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useLogout } from "@/hook/useAuth";

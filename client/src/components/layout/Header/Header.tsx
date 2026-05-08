@@ -7,7 +7,7 @@ import { useSearchStore } from '@/store/search'
 import { useMegaMenuStore } from '@/store/megaMenu'
 import { Megaphone, X, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import CategoryBar from './CategoryBar'
+
 
 
 const Header: React.FC = (): React.ReactElement => {
@@ -187,7 +187,7 @@ const Header: React.FC = (): React.ReactElement => {
             onClick={() => setSearchOpen(false)}
           />
         )}
-        {!isMobile && <CategoryBar />}
+        {/* CategoryBar hidden - uncomment to show: {!isMobile && <CategoryBar />} */}
       </div>
 
       {(() => {
