@@ -2,11 +2,11 @@ const LoadingProduct = ({ count = 8 }: { count?: number }) => {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-5">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="relative flex flex-col overflow-hidden border-2 border-[#2d2d2d] bg-[#f5f1e8]">
+        <div key={i} className="relative flex flex-col overflow-hidden border-2 border-[#2d2d2d] bg-white">
           <div className="relative w-full pt-[100%] sm:pt-[75%]">
-            <div className="absolute inset-0 bg-[#d4cfc0]">
+            <div className="absolute inset-0 bg-neutral-100">
               <div 
-                className="absolute inset-0 bg-gradient-to-br from-[#c9c4b5] to-[#d4cfc0]"
+                className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200"
                 style={{ 
                   animation: `pulse ${1.5 + (i % 3) * 0.2}s cubic-bezier(0.4, 0, 0.6, 1) infinite`
                 }}

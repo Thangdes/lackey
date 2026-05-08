@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const Loading = () => {
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#f5f1e8]">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-white">
       <style jsx>{`
         @keyframes scanline {
           0% { transform: translateY(-100%); }
