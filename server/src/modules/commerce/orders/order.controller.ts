@@ -7,7 +7,6 @@ import {
   Param,
   UseGuards,
   Req,
-  ParseUUIDPipe,
   applyDecorators,
   Query,
   BadRequestException,
@@ -20,10 +19,10 @@ import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { ShippingService } from '@/modules/commerce/shipping/shipping.service';
-import { Request } from 'express';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
 import { UpdateDeliveryCodeDto } from './dto/update-delivery-code.dto';
 import { OrderStatus } from '@prisma/client';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface UserPayload {
@@ -43,27 +42,23 @@ export class OrderController {
   ) {}
 
   @Post('/checkout')
+  @UseGuards(JwtAuthGuard)
   async create(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
+    @CurrentUser() user: UserPayload,
     @Body() createOrderDto: CreateOrderDto,
   ) {
-    if (user) {
-      const customer = await this.prisma.user.findUnique({
-        where: { id: user.id },
-        select: { customerId: true },
-      });
-      createOrderDto.customerId = customer.customerId;
-    } else {
-      createOrderDto.guestCartId = req.cookies.guestCartId;
-    }
+    const customer = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { customerId: true },
+    });
+    createOrderDto.customerId = customer.customerId;
 
     return this.orderService.create(createOrderDto);
   }
 
   @Post(':id/placed')
   async markPlaced(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
   ) {
     return this.orderService.markPlaced(id);
   }
@@ -112,7 +107,7 @@ export class OrderController {
   @Patch(':id/status')
   @AdminAccess()
   updateStatus(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateDto: UpdateOrderStatusDto,
   ) {
     return this.orderService.updateStatus(id, updateDto);
@@ -145,7 +140,7 @@ export class OrderController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findOne(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @CurrentUser() user: UserPayload,
   ) {
     const loggedInUser = await this.prisma.user.findUnique({
@@ -159,7 +154,7 @@ export class OrderController {
 
   @Post(':id/cancel')
   async cancelPending(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body('orderCode') orderCode?: string,
     @CurrentUser() user?: UserPayload | null,
   ) {
@@ -183,7 +178,7 @@ export class OrderController {
   @Patch(':id/delivery-code')
   @AdminAccess()
   updateDeliveryCode(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateDeliveryCodeDto: UpdateDeliveryCodeDto,
   ) {
     return this.orderService.updateDeliveryCode(
@@ -198,7 +193,7 @@ export class OrderController {
    */
   @Post(':id/create-ghn-shipment')
   @AdminAccess()
-  createGhnShipment(@Param('id', ParseUUIDPipe) id: string) {
+  createGhnShipment(@Param('id', ParseObjectIdPipe) id: string) {
     return this.shippingService.createGhnShipmentForOrder(id);
   }
 
@@ -208,7 +203,7 @@ export class OrderController {
   @Get(':id/tracking')
   @UseGuards(JwtAuthGuard)
   async getGhnTracking(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @CurrentUser() user: UserPayload,
   ) {
     const loggedInUser = await this.prisma.user.findUnique({

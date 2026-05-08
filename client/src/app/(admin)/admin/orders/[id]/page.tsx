@@ -19,6 +19,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Copy, Printer, Package, User as UserIcon, MapPin, CreditCard } from "lucide-react";
 import ManualTracking from "@/components/admin/orders/ManualTracking";
+import GhnTrackingPanel from "@/components/admin/orders/GhnTrackingPanel";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { orderKeys } from "@/constant/key/order";
+import { shippingService } from "@/service/shipping.service";
 import {
   AdminDetailHeader,
   AdminDetailSection,
@@ -78,6 +82,7 @@ export default function AdminOrderDetailPage() {
   const id = String(params?.id || "");
   const { data: me, isLoading: authLoading } = useAuthProfile();
   const { data, isLoading, error } = useOrderById(id);
+  const qc = useQueryClient();
 
   const o: OrderDetail | undefined = data;
   const items = Array.isArray(o?.orderItems) ? o!.orderItems : [];
@@ -86,6 +91,19 @@ export default function AdminOrderDetailPage() {
     const r = (o as unknown as LooseOrder) || {};
     return typeof r.deliveryCode === "string" ? r.deliveryCode : undefined;
   }, [o]);
+
+  const createGhnShipmentMut = useMutation({
+    mutationFn: () => shippingService.createGhnShipment(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: orderKeys.byId(id) });
+      qc.invalidateQueries({ predicate: (q) => Array.isArray(q.queryKey) && q.queryKey[0] === "orders" && q.queryKey[1] === "list" });
+      toast.success("Đã tạo vận đơn GHN");
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err ?? "");
+      toast.error(msg || "Tạo vận đơn GHN thất bại");
+    },
+  });
 
   const isAdmin = !!me && String(me.role || "").toUpperCase() === "ADMIN";
 
@@ -104,6 +122,16 @@ export default function AdminOrderDetailPage() {
     if (v.includes("FAIL") || v.includes("UNPAID")) return "bg-rose-50 text-rose-700 border-rose-200";
     return "bg-muted text-muted-foreground border-border";
   }, []);
+
+  const _o = o as unknown as { paidAt?: string | Date | number; payment?: { paidAt?: string | Date | number } };
+  const rawPaidAt = _o?.paidAt || _o?.payment?.paidAt;
+  const paidAtNormalized = useMemo(() => {
+    if (!rawPaidAt) return undefined;
+    if (rawPaidAt instanceof Date) return rawPaidAt;
+    if (typeof rawPaidAt === 'number') return new Date(rawPaidAt);
+    if (typeof rawPaidAt === 'string') return rawPaidAt;
+    return undefined;
+  }, [rawPaidAt]);
 
   // Loading & Error States
   if (!id) return <div className="p-6">Không tìm thấy mã đơn.</div>;
@@ -157,12 +185,15 @@ export default function AdminOrderDetailPage() {
   const paymentMethod = String(r.paymentMethod || r.payment?.method || "").toUpperCase();
   const paymentType = paymentMethod.includes("VIETQR") ? "VietQR" : paymentMethod.includes("COD") ? "COD" : paymentMethod || "—";
   const paymentStatus = r.paymentStatus || r.payment?.status || "Chưa thanh toán";
-  const paidAt = r.paidAt || r.payment?.paidAt;
+
 
   const discountAmount = Number(r.discountAmount || 0);
   const discountCode = r.discount?.code;
   const notes = r.notes;
   const history = r.history || r.timeline || [];
+
+  const orderStatusUpper = String(o.status || "").toUpperCase();
+  const canCreateGhnShipment = !existingDeliveryCode && (orderStatusUpper === "CONFIRMED" || orderStatusUpper === "PREPARING_SHIPMENT");
 
   return (
     <div className="space-y-6 p-6">
@@ -278,18 +309,24 @@ export default function AdminOrderDetailPage() {
                 </Badge>
               }
             />
-            {paidAt && <AdminDetailField label="Thanh toán lúc" value={formatDate(paidAt)} />}
+            {paidAtNormalized && <AdminDetailField label="Thanh toán lúc" value={formatDate(paidAtNormalized)} />}
           </AdminInfoCard>
 
           {/* Manual Tracking */}
           {existingDeliveryCode && (
             <AdminDetailSection title="Tra cứu vận đơn">
               <ManualTracking
-                defaultCarrier="tramavandon-spx"
+                defaultCarrier="ghn"
                 defaultTracking={existingDeliveryCode}
               />
             </AdminDetailSection>
           )}
+
+          {existingDeliveryCode ? (
+            <AdminDetailSection title="GHN Tracking">
+              <GhnTrackingPanel orderId={id} deliveryCode={existingDeliveryCode} />
+            </AdminDetailSection>
+          ) : null}
 
           {/* Order History */}
           {history.length > 0 && (
@@ -337,7 +374,7 @@ export default function AdminOrderDetailPage() {
               )}
               <Separator />
               <AdminDetailField
-                label={<span className="font-semibold">Tổng cộng</span>}
+                label="Tổng cộng"
                 value={
                   <span className="font-semibold text-lg">
                     {formatVND(o.totalAmount ?? o.total ?? 0)}
@@ -359,6 +396,21 @@ export default function AdminOrderDetailPage() {
               initialCode={existingDeliveryCode}
               currentStatus={o.status}
             />
+
+            {canCreateGhnShipment ? (
+              <div className="mt-3">
+                <Button
+                  type="button"
+                  size="sm"
+                  className="w-full text-xs"
+                  disabled={createGhnShipmentMut.isPending}
+                  onClick={() => createGhnShipmentMut.mutate()}
+                >
+                  {createGhnShipmentMut.isPending ? "Đang tạo vận đơn GHN..." : "Tạo vận đơn GHN"}
+                </Button>
+              </div>
+            ) : null}
+
             {existingDeliveryCode && (
               <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
                 <span>Mã: {existingDeliveryCode}</span>

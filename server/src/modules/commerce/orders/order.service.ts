@@ -26,8 +26,13 @@ export class OrderService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const { customerId, guestCartId, discountCode } = createOrderDto;
-    const cartIdentifier = customerId ? { customerId } : { guestCartId };
+    const { customerId, discountCode } = createOrderDto;
+    if (!customerId) {
+      throw new BadRequestException('Login is required to checkout.');
+    }
+
+    const cartIdentifier = { customerId };
+
     const cartItems = await this.prisma.cartItem.findMany({
       where: cartIdentifier,
       include: { productVariant: true },
@@ -37,23 +42,7 @@ export class OrderService {
       throw new BadRequestException('Your cart is empty.');
     }
 
-    let finalCustomerId: string;
-    if (customerId) {
-      finalCustomerId = customerId;
-    } else {
-      const { email, fullName, phone } = createOrderDto;
-      if (!email || !fullName || !phone) {
-        throw new BadRequestException(
-          'Guest customer information is required.',
-        );
-      }
-      const customer = await this.prisma.customer.upsert({
-        where: { email },
-        update: {},
-        create: { email, fullName, phone },
-      });
-      finalCustomerId = customer.id;
-    }
+    const finalCustomerId = customerId;
 
     let addressForFeeCalc: { city: string; district: string; ward: string };
 
@@ -187,12 +176,6 @@ export class OrderService {
       });
 
       for (const item of cartItems) {
-        if (item.productVariant.stockQuantity < item.quantity) {
-          throw new BadRequestException(
-            `Not enough stock for ${item.productVariant.name}`,
-          );
-        }
-        
         const effectivePrice = OrderCalculator.getEffectivePrice(
           item.productVariant.price,
           item.productVariant.discountPrice,
@@ -207,16 +190,30 @@ export class OrderService {
           },
         });
         
-        // Giảm stock cho COD ngay lập tức
+        // Giảm stock cho COD ngay lập tức với atomic operation
         if (createOrderDto.paymentMethod === PaymentMethod.COD) {
-          await tx.productVariant.update({
-            where: { id: item.productVariantId },
+          const updateResult = await tx.productVariant.updateMany({
+            where: { 
+              id: item.productVariantId,
+              stockQuantity: { gte: item.quantity }
+            },
             data: {
               stockQuantity: {
                 decrement: item.quantity,
               },
             },
           });
+          
+          // Nếu không update được, nghĩa là không đủ stock
+          if (updateResult.count === 0) {
+            const current = await tx.productVariant.findUnique({
+              where: { id: item.productVariantId },
+              select: { stockQuantity: true, name: true }
+            });
+            throw new BadRequestException(
+              `Not enough stock for ${current?.name || 'product'}. Available: ${current?.stockQuantity || 0}, Requested: ${item.quantity}`
+            );
+          }
         }
       }
 
@@ -464,6 +461,18 @@ export class OrderService {
         `Order must be in CONFIRMED or PREPARING_SHIPMENT status to add a delivery code.`,
       );
     }
+
+    const existing = await this.prisma.order.findFirst({
+      where: {
+        deliveryCode,
+        id: { not: orderId },
+      },
+      select: { id: true },
+    });
+    if (existing) {
+      throw new BadRequestException('Delivery code already exists.');
+    }
+
     const updatedOrder = await this.orderRepository.updateDeliveryInfo(
       orderId,
       deliveryCode,

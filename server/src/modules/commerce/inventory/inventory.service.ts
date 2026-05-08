@@ -12,10 +12,6 @@ export class InventoryService {
     const variant = await this.prisma.productVariant.findUnique({ where: { id: dto.productVariantId } });
     if (!variant) throw new NotFoundException('Product variant not found');
 
-    if (dto.type === InventoryMovementType.OUT && variant.stockQuantity < dto.quantity) {
-      throw new BadRequestException('Not enough stock');
-    }
-
     const updatedVariant = await this.prisma.$transaction(async (tx) => {
       // Apply stock change
       if (dto.type === InventoryMovementType.IN) {
@@ -24,10 +20,24 @@ export class InventoryService {
           data: { stockQuantity: { increment: dto.quantity } },
         });
       } else if (dto.type === InventoryMovementType.OUT) {
-        await tx.productVariant.update({
-          where: { id: dto.productVariantId },
+        // Sử dụng atomic operation với check để tránh race condition
+        const updateResult = await tx.productVariant.updateMany({
+          where: { 
+            id: dto.productVariantId,
+            stockQuantity: { gte: dto.quantity }
+          },
           data: { stockQuantity: { decrement: dto.quantity } },
         });
+        
+        if (updateResult.count === 0) {
+          const current = await tx.productVariant.findUnique({
+            where: { id: dto.productVariantId },
+            select: { stockQuantity: true }
+          });
+          throw new BadRequestException(
+            `Not enough stock. Available: ${current?.stockQuantity || 0}, Requested: ${dto.quantity}`
+          );
+        }
       } else {
         // ADJUST: interpret quantity as delta (+/-)
         if (variant.stockQuantity + dto.quantity < 0) {

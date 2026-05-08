@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUUID,
+  IsMongoId,
   ValidateIf,
 } from 'class-validator';
 import { PaymentMethod } from '@prisma/client';
@@ -27,7 +27,7 @@ export class CreateOrderDto {
   @IsOptional()
   phone?: string;
 
-  @IsUUID()
+  @IsMongoId()
   @IsOptional()
   shippingAddressId?: string;
 

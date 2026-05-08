@@ -6,7 +6,7 @@ import { orderKeys as keys } from "@/constant/key/order";
 import type { Paginated } from "@/type/common";
 import type { CheckoutPayload, OrderDetail, OrderSummary } from "@/type/order";
 import { toast } from "sonner";
-import { isLikelyAuthenticated } from "@/utils/http";
+import { useIsAuthenticated } from "@/hook/useIsAuthenticated";
 
 export function useOrderList(
   params?: { page?: number; limit?: number; status?: string; search?: string; code?: string; email?: string; deliveryCode?: string; customerType?: "guest" | "registered" },
@@ -38,6 +38,7 @@ export function useOrderById(id: string) {
 }
 
 export function useMyOrderHistory(initial?: OrderSummary[]) {
+  const isAuth = useIsAuthenticated();
   return useQuery<OrderSummary[]>({
     queryKey: keys.myHistory(),
     queryFn: async () => {
@@ -46,13 +47,14 @@ export function useMyOrderHistory(initial?: OrderSummary[]) {
     },
     initialData: initial ?? [],
     placeholderData: initial ?? [],
-    enabled: isLikelyAuthenticated(),
+    enabled: isAuth,
     retry: false,
   });
 }
 
 export function useMyOrdersPaginated(params: { page?: number; limit?: number; status?: string; search?: string; fromDate?: string; toDate?: string }) {
   const { page, limit, status, search, fromDate, toDate } = params || {};
+  const isAuth = useIsAuthenticated();
   return useQuery<Paginated<OrderSummary>>({
     queryKey: keys.myList(page, limit, status ?? null),
     queryFn: () => orderService.myHistoryPaginated({ page, limit, status, search, fromDate, toDate }),
@@ -61,7 +63,7 @@ export function useMyOrdersPaginated(params: { page?: number; limit?: number; st
     refetchOnMount: "always",
     refetchOnReconnect: true,
     refetchOnWindowFocus: true,
-    enabled: isLikelyAuthenticated(),
+    enabled: isAuth,
     retry: false,
   });
 }
