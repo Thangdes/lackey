@@ -11,6 +11,7 @@ import { PdfService } from '@/integrations/pdf/pdf.service';
 import { CloudinaryService } from '@/integrations/cloudinary/cloudinary.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PaymentConfirmedEvent } from '@/infrastructure/events/commerce.events';
+import { SePayPgClient } from 'sepay-pg-node';
 
 @Injectable()
 export class PaymentService {
@@ -164,10 +165,24 @@ export class PaymentService {
       const isVietQr = pendingPayment.method === PaymentMethod.VIETQR;
       if (isVietQr) {
         for (const item of order.orderItems) {
-          await tx.productVariant.update({
-            where: { id: item.productVariantId },
+          const updateResult = await tx.productVariant.updateMany({
+            where: { 
+              id: item.productVariantId,
+              stockQuantity: { gte: item.quantity }
+            },
             data: { stockQuantity: { decrement: item.quantity } },
           });
+          
+          // Nếu không update được, nghĩa là không đủ stock
+          if (updateResult.count === 0) {
+            const current = await tx.productVariant.findUnique({
+              where: { id: item.productVariantId },
+              select: { stockQuantity: true, name: true }
+            });
+            throw new BadRequestException(
+              `Not enough stock for ${current?.name || 'product'}. Available: ${current?.stockQuantity || 0}, Requested: ${item.quantity}`
+            );
+          }
         }
       }
 
@@ -282,12 +297,26 @@ export class PaymentService {
       const isVietQr = pendingPayment.method === PaymentMethod.VIETQR;
       if (isVietQr) {
         for (const item of order.orderItems) {
-          await tx.productVariant.update({
-            where: { id: item.productVariantId },
+          const updateResult = await tx.productVariant.updateMany({
+            where: { 
+              id: item.productVariantId,
+              stockQuantity: { gte: item.quantity }
+            },
             data: {
               stockQuantity: { decrement: item.quantity },
             },
           });
+          
+          // Nếu không update được, nghĩa là không đủ stock
+          if (updateResult.count === 0) {
+            const current = await tx.productVariant.findUnique({
+              where: { id: item.productVariantId },
+              select: { stockQuantity: true, name: true }
+            });
+            throw new BadRequestException(
+              `Not enough stock for ${current?.name || 'product'}. Available: ${current?.stockQuantity || 0}, Requested: ${item.quantity}`
+            );
+          }
         }
         await tx.cartItem.deleteMany({ where: { customerId: order.customerId } });
       }
@@ -369,6 +398,117 @@ export class PaymentService {
         total,
         totalPages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  /**
+   * Tạo SePay Checkout fields để frontend submit form POST đến SePay.
+   * Luồng:
+   * 1. Validate order tồn tại và đang PENDING_CONFIRMATION
+   * 2. Kiểm tra hết hạn
+   * 3. Dùng sepay-pg-node SDK để build form fields + signature
+   * 4. Trả về checkoutUrl + fields cho frontend
+   */
+  async createSePayCheckout(orderId: string, returnBaseUrl: string) {
+    const order = await this.prisma.order
+      .findUniqueOrThrow({
+        where: { id: orderId },
+        include: { payments: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('Order not found.');
+      });
+
+    if (order.status !== OrderStatus.PENDING_CONFIRMATION) {
+      throw new BadRequestException('This order cannot be paid for.');
+    }
+
+    const pendingPayment = order.payments.find(
+      (p) => p.status === PaymentStatus.PENDING,
+    );
+    if (!pendingPayment) {
+      throw new NotFoundException('No pending payment found for this order.');
+    }
+
+    const windowMinutes = Math.max(
+      1,
+      Number(this.configService.get<number>('ORDER_IDEMPOTENCY_MINUTES', 10)),
+    );
+    const expiresAt = new Date(
+      order.createdAt.getTime() + windowMinutes * 60 * 1000,
+    );
+    const now = new Date();
+    const expiresInSeconds = Math.max(
+      0,
+      Math.floor((expiresAt.getTime() - now.getTime()) / 1000),
+    );
+
+    if (expiresInSeconds <= 0) {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.order.updateMany({
+          where: { id: order.id, status: OrderStatus.PENDING_CONFIRMATION },
+          data: { status: OrderStatus.CANCELED, canceledAt: new Date() },
+        });
+        await tx.payment.updateMany({
+          where: { orderId: order.id, status: PaymentStatus.PENDING },
+          data: { status: PaymentStatus.FAILED },
+        });
+      });
+      throw new BadRequestException(
+        'This payment session has expired. Please re-checkout to get a new link.',
+      );
+    }
+
+    const sepayEnv = this.configService.get<string>('SEPAY_ENV', 'sandbox') as
+      | 'sandbox'
+      | 'production';
+    const merchantId = this.configService.get<string>('SEPAY_MERCHANT_ID', '');
+    const secretKey = this.configService.get<string>('SEPAY_SECRET_KEY', '');
+
+    if (!merchantId || !secretKey) {
+      throw new BadRequestException('SePay credentials not configured.');
+    }
+
+    const client = new SePayPgClient({
+      env: sepayEnv,
+      merchant_id: merchantId,
+      secret_key: secretKey,
+    });
+
+    const checkoutUrl = client.checkout.initCheckoutUrl();
+    const invoiceNumber = `INV-${order.orderCode}`;
+    const amount = Number(order.totalAmount);
+
+    const base = returnBaseUrl.replace(/\/+$/, '');
+    const successUrl = `${base}/checkout/payment-result?result=success&orderId=${order.id}&orderCode=${order.orderCode}`;
+    const errorUrl = `${base}/checkout/payment-result?result=error&orderId=${order.id}&orderCode=${order.orderCode}`;
+    const cancelUrl = `${base}/checkout/payment-result?result=cancel&orderId=${order.id}&orderCode=${order.orderCode}`;
+
+    const fields = client.checkout.initOneTimePaymentFields({
+      operation: 'PURCHASE',
+      payment_method: 'BANK_TRANSFER',
+      order_invoice_number: invoiceNumber,
+      order_amount: amount,
+      currency: 'VND',
+      order_description: `Thanh toan don hang ${order.orderCode}`,
+      success_url: successUrl,
+      error_url: errorUrl,
+      cancel_url: cancelUrl,
+    });
+
+    this.logger.log(
+      `SePay checkout created | order=${order.orderCode} | amount=${amount} | invoice=${invoiceNumber}`,
+    );
+
+    return {
+      checkoutUrl,
+      fields,
+      orderId: order.id,
+      orderCode: order.orderCode,
+      amount,
+      invoiceNumber,
+      expiresAt: expiresAt.toISOString(),
+      expiresInSeconds,
     };
   }
 }

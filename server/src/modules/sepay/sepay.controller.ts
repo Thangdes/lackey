@@ -11,6 +11,7 @@ import {
 import { SepayWebhookService } from './sepay.service';
 import { SepayWebhookDto } from './dto/sepay-webhook.dto';
 import type { Request } from 'express';
+import { PaymentService } from '../commerce/payments/payment.service';
 
 /**
  * SePay Payment Controller
@@ -25,7 +26,10 @@ import type { Request } from 'express';
 export class SepayController {
   private readonly logger = new Logger(SepayController.name);
 
-  constructor(private readonly sepayWebhookService: SepayWebhookService) {}
+  constructor(
+    private readonly sepayWebhookService: SepayWebhookService,
+    private readonly paymentService: PaymentService,
+  ) {}
 
   /**
    * SePay Báo Có Webhook
@@ -87,5 +91,43 @@ export class SepayController {
       return { found: false, message: 'orderCode query param is required' };
     }
     return this.sepayWebhookService.getOrderPaymentStatus(orderCode);
+  }
+
+  /**
+   * SePay Payment Gateway IPN
+   * Nhận kết quả giao dịch thanh toán qua SePay Gateway
+   */
+  @Post('ipn')
+  @HttpCode(200)
+  async handleIpn(@Body() payload: any) {
+    this.logger.log(`SePay IPN received: ${JSON.stringify(payload)}`);
+    if (payload && payload.notification_type === 'ORDER_PAID' && payload.order) {
+      const invoiceNumber = payload.order.order_invoice_number; // e.g. INV-LK-1778211099340
+      if (invoiceNumber) {
+        const orderCode = invoiceNumber.replace(/^INV-/, '');
+        await this.paymentService.confirmPaymentBySepay({
+          orderCode,
+          receivedAmount: Number(payload.transaction?.transaction_amount || payload.order.order_amount),
+          externalTxnId: payload.transaction?.id || `ipn-${Date.now()}`,
+          paidAt: new Date(),
+          metadata: {
+            ipn: true,
+            gateway: payload.transaction?.payment_method || 'SEPAY_LINK',
+          }
+        });
+      }
+    }
+    return { success: true };
+  }
+
+  /**
+   * Tạo form checkout SePay
+   */
+  @Post('create-checkout')
+  async createCheckout(
+    @Body('orderId') orderId: string,
+    @Body('returnUrl') returnUrl: string,
+  ) {
+    return this.paymentService.createSePayCheckout(orderId, returnUrl);
   }
 }

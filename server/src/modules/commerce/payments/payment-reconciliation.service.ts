@@ -88,10 +88,24 @@ export class PaymentReconciliationService {
               include: { orderItems: true },
             });
             for (const item of orderWithItems.orderItems) {
-              await tx.productVariant.update({
-                where: { id: item.productVariantId },
+              const updateResult = await tx.productVariant.updateMany({
+                where: { 
+                  id: item.productVariantId,
+                  stockQuantity: { gte: item.quantity }
+                },
                 data: { stockQuantity: { decrement: item.quantity } },
               });
+              
+              // Nếu không update được, nghĩa là không đủ stock
+              if (updateResult.count === 0) {
+                const current = await tx.productVariant.findUnique({
+                  where: { id: item.productVariantId },
+                  select: { stockQuantity: true, name: true }
+                });
+                throw new Error(
+                  `Not enough stock for ${current?.name || 'product'}. Available: ${current?.stockQuantity || 0}, Requested: ${item.quantity}`
+                );
+              }
             }
             await tx.cartItem.deleteMany({ where: { customerId: order.customerId } });
           }

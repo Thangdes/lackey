@@ -1,10 +1,11 @@
-import { Controller, Post, Body, UseGuards, Param, ParseUUIDPipe, Get, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Param, Get, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { PaymentReconciliationService } from './payment-reconciliation.service';
 import { CreatePaymentLinkDto } from './dto/create-payment-link.dto';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -29,7 +30,7 @@ export class PaymentController {
   @Post(':orderId/confirm-manual')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async confirmPaymentManually(
-    @Param('orderId', ParseUUIDPipe) orderId: string,
+    @Param('orderId', ParseObjectIdPipe) orderId: string,
     @CurrentUser() user: UserPayload,
   ) {
     return this.paymentService.confirmPaymentManually(orderId, user.id);
