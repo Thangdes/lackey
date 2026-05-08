@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Home, Search, ArrowRight } from "lucide-react";
+import { Home, Search, ArrowRight, X } from "lucide-react";
 import { ROUTES, buildProductsByCategory } from "@/constant/route";
 import { useRouter } from "next/navigation";
 import { categoryService, type Category } from "@/service/category.service";
@@ -50,81 +50,73 @@ export default function NotFound() {
   };
 
   return (
-    <main className="relative min-h-[78vh] w-full bg-white py-12 md:py-20 overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
+    <main className="relative min-h-[78vh] w-full bg-gradient-to-br from-neutral-50 via-white to-neutral-50 py-12 md:py-20 overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            linear-gradient(0deg, #000 1px, transparent 1px),
-            linear-gradient(90deg, #000 1px, transparent 1px)
+            radial-gradient(circle at 2px 2px, #000 1px, transparent 0)
           `,
-          backgroundSize: '40px 40px'
+          backgroundSize: '48px 48px'
         }} />
       </div>
 
       <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <div className="max-w-4xl mx-auto">
           
-          <div className="text-center mb-8 md:mb-12">
+          <div className="text-center mb-8 md:mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
             <div className="inline-block relative">
-              <h1 
-                className="font-[family-name:var(--font-retro)] text-[120px] md:text-[200px] lg:text-[280px] font-bold text-black leading-none tracking-wider"
-                style={{
-                  textShadow: "8px 8px 0px #229090, 16px 16px 0px #fff100"
-                }}
-              >
+              <h1 className="text-[100px] md:text-[160px] lg:text-[200px] font-bold bg-gradient-to-br from-neutral-800 via-neutral-600 to-neutral-500 bg-clip-text text-transparent leading-none tracking-tight">
                 404
               </h1>
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-neutral-300 to-transparent rounded-full" />
             </div>
           </div>
 
-          <div className="flex justify-center mb-6 md:mb-8">
-            <div className="inline-block px-6 py-3 bg-[#fff100] border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,144,144,1)]">
-              <span className="font-[family-name:var(--font-retro)] text-xl md:text-2xl text-black uppercase tracking-wider font-bold">
-                TRANG KHÔNG TÌM THẤY
-              </span>
-            </div>
-          </div>
-
-          <div className="text-center mb-8 md:mb-12">
-            <p className="text-base md:text-lg text-black/80 max-w-2xl mx-auto leading-relaxed">
+          <div className="text-center mb-6 md:mb-8 animate-in fade-in slide-in-from-top-6 duration-700 delay-100">
+            <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-3">
+              Trang không tìm thấy
+            </h2>
+            <p className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
               Ối! Trang bạn đang tìm kiếm không tồn tại hoặc đã được chuyển đi. 
-              <br className="hidden md:block" />
               Hãy thử tìm kiếm sản phẩm hoặc quay về trang chủ nhé!
             </p>
           </div>
 
-          <div className="mb-8 md:mb-12">
+          <div className="mb-8 md:mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             <form onSubmit={handleSearch} className="max-w-xl mx-auto">
-              <div className="relative bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,144,144,1)]">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm sản phẩm..."
-                  className="w-full px-6 py-4 text-base md:text-lg text-black placeholder:text-black/40 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-black text-white hover:bg-[#229090] transition-colors"
-                  aria-label="Tìm kiếm"
-                >
-                  <Search className="w-5 h-5" />
-                </button>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-neutral-200 to-neutral-300 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur" />
+                <div className="relative bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Tìm kiếm sản phẩm..."
+                    className="w-full px-5 py-4 text-base md:text-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-none rounded-xl"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors duration-200"
+                    aria-label="Tìm kiếm"
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </form>
           </div>
 
           {popularCats.length > 0 && (
-            <div className="mb-8 md:mb-12">
-              <p className="text-center font-bold text-black uppercase tracking-wide mb-4">
-                Hoặc xem các danh mục phổ biến
+            <div className="mb-8 md:mb-10 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+              <p className="text-center text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">
+                Danh mục phổ biến
               </p>
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="flex flex-wrap justify-center gap-2.5">
                 {popularCats.map((c) => (
                   <Link
                     key={c.id}
                     href={buildProductsByCategory(c.id)}
-                    className="inline-block px-5 py-2.5 bg-white border-4 border-black text-black font-bold uppercase text-sm hover:bg-[#fff100] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+                    className="inline-block px-4 py-2 bg-white border border-neutral-200 rounded-lg text-neutral-700 text-sm font-medium hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 transition-all duration-200 shadow-sm hover:shadow"
                     title={c.name}
                   >
                     {c.name}
@@ -134,58 +126,80 @@ export default function NotFound() {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 md:mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8 md:mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-black text-white hover:bg-[#229090] border-4 border-black font-[family-name:var(--font-retro)] text-lg uppercase tracking-wider transition-all shadow-[8px_8px_0px_0px_rgba(255,241,0,1)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 group"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-neutral-900 text-white rounded-xl font-medium hover:bg-neutral-800 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group"
             >
               <Home className="w-5 h-5" />
               <span>Về trang chủ</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
 
             <Link
               href={ROUTES.contact}
-              className="inline-flex items-center gap-2 px-6 py-4 bg-white text-black hover:bg-[#fff100] border-4 border-black font-bold uppercase text-base transition-colors shadow-[4px_4px_0px_0px_rgba(34,144,144,1)]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-neutral-700 rounded-xl font-medium border border-neutral-200 hover:bg-neutral-50 hover:text-neutral-900 hover:border-neutral-300 transition-all duration-200 shadow-sm hover:shadow"
             >
               Liên hệ hỗ trợ
             </Link>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center animate-in fade-in zoom-in-95 duration-700 delay-500">
             {autoRedirect ? (
-              <div className="inline-flex flex-col sm:flex-row items-center gap-3 px-6 py-3 bg-white border-4 border-black">
-                <span className="text-black font-bold text-sm uppercase">Tự động chuyển sau:</span>
-                <div className="flex items-center gap-2">
-                  <div className="px-4 py-2 bg-black text-[#fff100] font-[family-name:var(--font-retro)] text-2xl font-bold min-w-[60px] text-center">
-                    {secondsLeft}
+              <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-5 py-4 bg-white rounded-xl border border-neutral-200 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <span className="text-neutral-600 text-sm font-medium">Tự động chuyển sau</span>
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-12 h-12">
+                      <svg className="absolute inset-0 -rotate-90" viewBox="0 0 48 48">
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="20"
+                          fill="none"
+                          stroke="#e5e5e5"
+                          strokeWidth="3"
+                        />
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="20"
+                          fill="none"
+                          stroke="#171717"
+                          strokeWidth="3"
+                          strokeDasharray={`${(secondsLeft / 10) * 125.6} 125.6`}
+                          strokeLinecap="round"
+                          className="transition-all duration-1000 ease-linear"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center text-neutral-900 font-bold text-lg">
+                        {secondsLeft}
+                      </div>
+                    </div>
+                    <span className="text-neutral-500 text-sm">giây</span>
                   </div>
-                  <span className="text-black text-sm">giây</span>
                 </div>
                 <button
                   type="button"
-                  className="text-sm underline hover:no-underline font-bold text-black uppercase"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors duration-200"
                   onClick={() => setAutoRedirect(false)}
                 >
+                  <X className="w-4 h-4" />
                   Huỷ
                 </button>
               </div>
             ) : (
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-[#fff100] border-4 border-black">
-                <span className="text-black text-sm">Đã tắt tự động chuyển</span>
+              <div className="inline-flex items-center gap-3 px-5 py-4 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-600 text-sm">Đã tắt tự động chuyển</span>
                 <button
                   type="button"
-                  className="text-sm underline hover:no-underline font-bold text-black uppercase"
+                  className="text-sm font-medium text-neutral-900 hover:text-neutral-700 underline hover:no-underline transition-colors duration-200"
                   onClick={() => { setSecondsLeft(10); setAutoRedirect(true); }}
                 >
                   Bật lại
                 </button>
               </div>
             )}
-          </div>
-
-          <div className="mt-12 md:mt-16 flex justify-center">
-            <div className="h-2 w-32 md:w-48 bg-black" />
           </div>
         </div>
       </div>

@@ -73,7 +73,7 @@ function AdminBlogListClient() {
       width: "80px",
       render: (item) => (
         <Image
-          src={item.thumbnailUrl || "/placeholder.png"}
+          src={item.coverImage || "/placeholder.png"}
           alt={item.title || ""}
           width={60}
           height={40}
@@ -96,8 +96,8 @@ function AdminBlogListClient() {
       label: "Trạng thái",
       width: "120px",
       render: (item) => (
-        <Badge variant={item.published ? "default" : "secondary"}>
-          {item.published ? "Đã xuất bản" : "Nháp"}
+        <Badge variant={item.isPublished ? "default" : "secondary"}>
+          {item.isPublished ? "Đã xuất bản" : "Nháp"}
         </Badge>
       ),
     },

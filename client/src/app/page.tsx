@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/constant/site";
 import BannerLoader from "@/components/home/BannerLoader";
-import ClientOnly from "@/components/common/ClientOnly";
-import TestimonialsLoader from "@/components/home/TestimonialsLoader";
+
 import PromoStripLoader from "@/components/home/PromoStripLoader";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import ProductSection from "@/components/home/ProductSection";
@@ -101,9 +100,10 @@ export default function Home() {
       
       <RetroSaleBanner />
 
-      <ClientOnly>
+      {/* Testimonials section - temporarily hidden */}
+      {/* <ClientOnly>
         <TestimonialsLoader />
-      </ClientOnly>
+      </ClientOnly> */}
 
       <CategoryIcons />
 
