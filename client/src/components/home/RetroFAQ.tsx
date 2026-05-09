@@ -60,124 +60,76 @@ const RetroFAQ: React.FC<RetroFAQProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-white py-12 md:py-20 overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            repeating-linear-gradient(
-              0deg,
-              #000 0px,
-              #000 1px,
-              transparent 1px,
-              transparent 15px
-            ),
-            repeating-linear-gradient(
-              90deg,
-              #000 0px,
-              #000 1px,
-              transparent 1px,
-              transparent 15px
-            )
-          `,
-        }} />
-      </div>
-
-      {/* Container */}
-      <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        <div className="max-w-4xl mx-auto">
-          
+    <section className="w-full bg-white py-16 md:py-24">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10 md:mb-16">
-            {/* Icon Badge */}
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-[#fff100] border-4 border-black rounded-full flex items-center justify-center shadow-[8px_8px_0px_0px_rgba(34,144,144,1)] hover:rotate-12 transition-transform">
-                <HelpCircle className="w-10 h-10 md:w-12 md:h-12 text-black" />
-              </div>
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 mb-6 shadow-sm">
+              <HelpCircle className="w-8 h-8" />
             </div>
-
-            {/* Title */}
-            <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-black mb-4 tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               {title}
             </h2>
-
-            {/* Subtitle */}
             {subtitle && (
-              <p className="text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
+              <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto">
                 {subtitle}
               </p>
             )}
           </div>
 
           {/* FAQ Items */}
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-4">
             {items.map((item, index) => {
               const isOpen = openIndex === index;
-              
+
               return (
                 <div
                   key={index}
-                  className="bg-white border-4 border-black transition-all duration-300"
-                  style={{
-                    boxShadow: isOpen 
-                      ? "8px 8px 0px 0px rgba(34,144,144,1)" 
-                      : "4px 4px 0px 0px rgba(0,0,0,1)",
-                  }}
+                  className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
+                    isOpen ? "border-blue-200 bg-blue-50/30 shadow-md" : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                  }`}
                 >
-                  {/* Question Button */}
                   <button
                     onClick={() => toggleItem(index)}
-                    className="w-full p-6 md:p-8 flex items-center justify-between gap-4 text-left hover:bg-[#fff100] transition-colors group"
+                    className="w-full px-6 py-5 flex items-center justify-between gap-4 text-left focus:outline-none"
                     aria-expanded={isOpen}
                   >
                     <div className="flex items-center gap-4 flex-1">
-                      {/* Icon */}
                       {item.icon && (
-                        <span className="text-3xl md:text-4xl flex-shrink-0">
+                        <span className={`flex-shrink-0 transition-colors duration-300 ${isOpen ? "text-blue-600" : "text-gray-400"}`}>
                           {item.icon}
                         </span>
                       )}
-                      
-                      {/* Question Text */}
-                      <span className="font-[family-name:var(--font-retro)] text-lg md:text-xl lg:text-2xl font-bold text-black uppercase tracking-wide">
+                      <span className={`text-base md:text-lg font-semibold transition-colors duration-300 ${isOpen ? "text-blue-900" : "text-gray-900"}`}>
                         {item.question}
                       </span>
                     </div>
-
-                    {/* Chevron Icon */}
                     <div
-                      className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 bg-black border-4 border-black rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen ? "rotate-180 bg-[#229090]" : "group-hover:bg-[#229090]"
+                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isOpen ? "bg-blue-100 text-blue-600 rotate-180" : "bg-gray-100 text-gray-500"
                       }`}
                     >
-                      <ChevronDown className="w-5 h-5 md:w-6 md:h-6 text-[#fff100]" />
+                      <ChevronDown className="w-5 h-5" />
                     </div>
                   </button>
 
-                  {/* Answer Panel */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
-                    <div className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
-                      {/* Divider */}
-                      <div className="h-1 w-full bg-black mb-6" />
-                      
-                      {/* Answer Text */}
-                      <p className="text-base md:text-lg text-black/80 leading-relaxed">
-                        {item.answer}
-                      </p>
+                    <div className="overflow-hidden">
+                      <div className="px-6 pb-5 pt-0">
+                        <p className="text-gray-600 leading-relaxed md:ml-9">
+                          {item.answer}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               );
             })}
-          </div>
-
-          {/* Decorative Bottom Line */}
-          <div className="mt-12 flex justify-center">
-            <div className="h-1 w-48 bg-black" />
           </div>
         </div>
       </div>

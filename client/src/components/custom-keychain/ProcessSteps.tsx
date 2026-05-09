@@ -10,54 +10,42 @@ const STEP_ICONS = {
 
 export function ProcessSteps() {
   return (
-    <section className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-16 md:py-24">
+    <section className="container mx-auto px-4 md:px-6 py-20 md:py-32">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="font-[family-name:var(--font-retro)] text-4xl md:text-5xl lg:text-6xl font-bold uppercase text-black mb-4 tracking-wider">
+        <div className="text-center mb-16 md:mb-24">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
             QUY TRÌNH ĐẶT HÀNG
           </h2>
-          <p className="text-lg md:text-xl text-black/70">Đơn giản chỉ với 4 bước</p>
+          <p className="text-lg text-gray-600">Đơn giản chỉ với 4 bước</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {PROCESS_STEPS.map((step, index) => {
-            const rotations = [2, -2, 2, -2];
-            const rotation = rotations[index];
-            
             return (
-              <div key={index} className="relative" style={{ transform: `rotate(${rotation}deg)` }}>
-                <div 
-                  className="bg-white border-4 border-black p-8 h-full flex flex-col hover:scale-105 transition-all"
-                  style={{ 
-                    boxShadow: "8px 8px 0px 0px rgba(0,0,0,1)",
-                    transform: `rotate(${-rotation}deg)`,
-                  }}
-                >
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-[#fff100] border-4 border-black flex items-center justify-center">
-                    <span className="font-[family-name:var(--font-retro)] text-xl font-bold">{step.number}</span>
+              <div key={index} className="relative group">
+                <div className="bg-white rounded-3xl p-8 h-full flex flex-col shadow-sm border border-gray-100 group-hover:shadow-xl transition-all duration-300">
+                  <div className="absolute -top-5 -left-5 w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-md">
+                    <span className="text-lg font-bold">{step.number}</span>
                   </div>
                   
-                  <div className="flex justify-center mb-6 pt-4">
-                    <div className="w-16 h-16 bg-black border-4 border-black flex items-center justify-center text-[#fff100]">
+                  <div className="flex justify-center mb-8 pt-4">
+                    <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform duration-300">
                       {STEP_ICONS[step.number as keyof typeof STEP_ICONS]}
                     </div>
                   </div>
                   
-                  <h3 className="font-[family-name:var(--font-retro)] text-xl font-bold uppercase text-black text-center mb-3 tracking-wide">
+                  <h3 className="text-xl font-bold text-gray-900 text-center mb-4">
                     {step.title}
                   </h3>
                   
-                  <p className="text-sm text-black/80 text-center leading-relaxed flex-grow">
+                  <p className="text-sm text-gray-600 text-center leading-relaxed flex-grow font-medium">
                     {step.description}
                   </p>
                 </div>
                 
                 {index < PROCESS_STEPS.length - 1 && (
-                  <div 
-                    className="hidden lg:block absolute top-1/2 -right-6 z-10"
-                    style={{ transform: `translateY(-50%) rotate(${-rotation}deg)` }}
-                  >
-                    <ArrowRight className="w-8 h-8 text-[#229090]" />
+                  <div className="hidden lg:flex absolute top-1/2 -right-4 w-8 items-center justify-center -translate-y-1/2 z-10">
+                    <ArrowRight className="w-6 h-6 text-gray-300" />
                   </div>
                 )}
               </div>

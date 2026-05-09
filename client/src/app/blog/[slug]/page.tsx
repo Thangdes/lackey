@@ -4,20 +4,78 @@ import Script from "next/script";
 import Link from "next/link";
 import { Home, ChevronRight, Calendar, List } from "lucide-react";
 import type { BlogPost } from "@/type/blog";
-import { postService } from "@/service/post.service";
 import { siteConfig } from "@/constant/site";
 import { ROUTES } from "@/constant/route";
 import { sanitizeHtml } from "@/utils/sanitize";
 import { getBlogPostSeo, buildBlogPostJsonLd } from "@/config/seo";
 
+export const dynamic = "force-dynamic";
+
+const RAW_PREFIX = process.env.NEXT_INTERNAL_API_PREFIX || "/api/v1";
+const API_PREFIX = `/${RAW_PREFIX.replace(/^\/+/, "").replace(/\/$/, "")}`;
+
+function getBackendBase(): string {
+  const internal = process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "");
+  if (internal) return `${internal}${API_PREFIX}`;
+
+  const pub = process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "");
+  if (pub && /^https?:\/\//i.test(pub)) return pub;
+
+  return `http://localhost:8000${API_PREFIX}`;
+}
+
+function normalizePost(raw: unknown): BlogPost | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const r = raw as Record<string, unknown>;
+  const s = (v: unknown, fb = "") => (typeof v === "string" ? v : v != null ? String(v) : fb);
+  const su = (v: unknown) => (typeof v === "string" ? v : undefined);
+  const id = s(r["id"]);
+  const slug = s(r["slug"]);
+  if (!id && !slug) return undefined;
+  const createdAt = s(r["createdAt"], new Date().toISOString());
+  const author = r["author"] as { username?: unknown } | undefined;
+  return {
+    id: id || slug,
+    slug,
+    title: s(r["title"]),
+    excerpt: s(r["excerpt"], ""),
+    contentHtml: s(r["content"], ""),
+    createdAt,
+    date: createdAt,
+    updatedAt: su(r["updatedAt"]),
+    coverImage: su(r["thumbnailUrl"]),
+    authorUsername: typeof author?.username === "string" ? author.username : undefined,
+    metaTitle: su(r["metaTitle"]),
+    metaDescription: su(r["metaDescription"]),
+    isPublished: typeof r["isPublished"] === "boolean" ? r["isPublished"] : undefined,
+  } as BlogPost;
+}
+
+async function fetchPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const backendBase = getBackendBase();
+  const url = `${backendBase}/posts/${encodeURIComponent(slug)}`;
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) return undefined;
+    const json = await res.json();
+    // Unwrap { success, data } envelope if present
+    const raw =
+      json && typeof json === "object" && (json as { success?: boolean }).success === true && "data" in json
+        ? (json as { data: unknown }).data
+        : json;
+    return normalizePost(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+// ─── Metadata ────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  let post: BlogPost | undefined;
-  try {
-    post = await postService.getBySlug(slug);
-  } catch {
-    post = undefined;
-  }
+  const post = await fetchPostBySlug(slug);
   if (post) return getBlogPostSeo(post);
   const url = `${siteConfig.url}/blog/${slug}`;
   return {
@@ -34,14 +92,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  let post: BlogPost | undefined;
-  try {
-    post = await postService.getBySlug(slug);
-  } catch {
-    post = undefined;
-  }
+  const post = await fetchPostBySlug(slug);
   if (!post) return notFound();
   return (
     <main className="mx-auto max-w-screen-2xl px-4 py-12 md:py-20 md:px-6 lg:px-8 mt-20">

@@ -38,7 +38,7 @@ export function VietQRPanel({ qrUrl, transferNote, bank, onCopyNote, onCancel }:
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={qrUrl || (fallbackQrUrl ?? "")}
-            alt="VietQR"
+            alt="SePay"
             className="h-48 w-48 md:h-56 md:w-56 object-contain"
             referrerPolicy="no-referrer"
             onError={(e) => {

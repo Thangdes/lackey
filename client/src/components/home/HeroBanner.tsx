@@ -31,8 +31,8 @@ export default function HeroBanner() {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
         <div className="relative h-full flex items-center justify-center">
           <div className="text-center">
-            <div className="w-64 h-8 bg-gray-700 rounded mb-4 mx-auto" />
-            <div className="w-48 h-6 bg-gray-700 rounded mx-auto" />
+            <div className="w-64 h-8 bg-gray-700 rounded-full mb-4 mx-auto" />
+            <div className="w-48 h-6 bg-gray-700 rounded-full mx-auto" />
           </div>
         </div>
       </section>
@@ -56,51 +56,51 @@ export default function HeroBanner() {
           src={currentSlide.imageUrl}
           alt={currentSlide.title}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-1000 scale-105"
           priority
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/50 to-transparent" />
       </div>
 
       <div className="relative h-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 flex items-center">
-        <div className={`max-w-2xl w-full ${currentSlide.textPosition === "center" ? "mx-auto text-center" : "text-left"}`}>
-          <h1 className="font-[family-name:var(--font-retro)] text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-white mb-3 sm:mb-4 tracking-wider uppercase leading-tight whitespace-pre-line">
+        <div className={`max-w-3xl w-full ${currentSlide.textPosition === "center" ? "mx-auto text-center" : "text-left"} transition-all duration-700 animate-in fade-in slide-in-from-bottom-8`}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 tracking-tight leading-tight whitespace-pre-line drop-shadow-md">
             {currentSlide.title}
           </h1>
 
           {currentSlide.subtitle && (
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white/90 mb-4 sm:mb-6 md:mb-8 font-medium">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-6 sm:mb-8 md:mb-10 font-medium max-w-2xl drop-shadow">
               {currentSlide.subtitle}
             </p>
           )}
 
           <Link
             href={currentSlide.ctaLink}
-            className="inline-block px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 bg-white text-black font-bold text-xs sm:text-sm md:text-base lg:text-lg uppercase tracking-wider hover:bg-black hover:text-white border-2 border-white transition-all"
+            className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 bg-white text-gray-900 font-semibold text-sm sm:text-base rounded-full hover:bg-gray-100 hover:scale-105 transition-all shadow-lg hover:shadow-xl"
           >
             {currentSlide.ctaText}
           </Link>
         </div>
       </div>
 
-      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 flex items-center gap-2 sm:gap-3 md:gap-4 z-10">
+      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 md:bottom-12 md:right-12 flex items-center gap-3 z-10">
         <button
           onClick={goToPrev}
-          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/20 hover:bg-white hover:text-black text-white border-2 border-white flex items-center justify-center transition-all"
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white text-white hover:text-gray-900 backdrop-blur-md flex items-center justify-center transition-all shadow-sm"
           aria-label="Previous slide"
         >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
         </button>
         <button
           onClick={goToNext}
-          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/20 hover:bg-white hover:text-black text-white border-2 border-white flex items-center justify-center transition-all"
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/10 hover:bg-white text-white hover:text-gray-900 backdrop-blur-md flex items-center justify-center transition-all shadow-sm"
           aria-label="Next slide"
         >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
         </button>
       </div>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 sm:bottom-6 md:bottom-8 flex items-center gap-1.5 sm:gap-2 z-10">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:bottom-12 flex items-center gap-2 sm:gap-3 z-10">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -108,10 +108,10 @@ export default function HeroBanner() {
               setCurrentIndex(index);
               setIsAutoPlaying(false);
             }}
-            className={`h-0.5 sm:h-1 transition-all ${
+            className={`h-1.5 sm:h-2 rounded-full transition-all ${
               index === currentIndex
-                ? "w-8 sm:w-10 md:w-12 bg-white"
-                : "w-4 sm:w-5 md:w-6 bg-white/50 hover:bg-white/75"
+                ? "w-8 sm:w-10 bg-white"
+                : "w-1.5 sm:w-2 bg-white/50 hover:bg-white/80"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

@@ -3,49 +3,43 @@ import { Upload, Sparkles, ArrowRight } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#fff100] border-y-4 border-black">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            repeating-linear-gradient(45deg, #000 0px, #000 2px, transparent 2px, transparent 10px)
-          `,
-        }} />
-      </div>
-      <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-16 md:py-24">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-black border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,144,144,1)]">
-            <Sparkles className="w-5 h-5 text-[#fff100]" />
-            <span className="font-[family-name:var(--font-retro)] text-base md:text-lg font-bold uppercase text-white tracking-wider">
+    <section className="relative overflow-hidden bg-white border-b border-gray-100">
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent" />
+      <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-20 md:py-32">
+        <div className="max-w-5xl mx-auto text-center space-y-10">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50">
+            <Sparkles className="w-4 h-4" />
+            <span className="text-sm font-semibold uppercase tracking-wide">
               THIẾT KẾ RIÊNG CHO BẠN
             </span>
           </div>
           
-          <h1 className="font-[family-name:var(--font-retro)] text-5xl md:text-7xl lg:text-8xl font-bold tracking-wider uppercase text-black leading-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-gray-900 leading-tight">
             CUSTOM<br />
-            <span className="text-[#229090]">MÓC KHÓA</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">MÓC KHÓA</span>
           </h1>
           
-          <div className="inline-block bg-white border-4 border-black px-8 py-6 shadow-[8px_8px_0px_0px_#B5CCBC] max-w-3xl">
-            <p className="text-lg md:text-xl font-medium text-black leading-relaxed">
+          <div className="mx-auto max-w-3xl">
+            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
               Biến ý tưởng của bạn thành hiện thực! Gửi hình ảnh, concept, nhân vật yêu thích. 
               Chúng tôi thiết kế và in móc khóa acrylic chất lượng cao, hoàn toàn độc quyền.
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             <Link
               href="/contact?type=custom"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-black text-white hover:bg-white hover:text-black border-4 border-black font-[family-name:var(--font-retro)] text-xl uppercase tracking-wider transition-all shadow-[8px_8px_0px_0px_rgba(34,144,144,1)] hover:shadow-none hover:translate-x-2 hover:translate-y-2"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               <Upload className="w-5 h-5" />
               <span>ĐẶT NGAY</span>
             </Link>
             <Link
               href="#packages"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black hover:bg-black hover:text-white border-4 border-black font-bold text-xl uppercase tracking-wide transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1.5 hover:translate-y-1.5"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
             >
               <span>XEM GIÁ</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 opacity-70" />
             </Link>
           </div>
         </div>

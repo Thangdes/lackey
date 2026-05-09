@@ -25,7 +25,7 @@ export default function RetroSaleBanner() {
     if (!expiresAt) return null;
     const end = new Date(expiresAt).getTime();
     const diff = Math.max(0, Math.floor((end - now) / 1000));
-    if (diff <= 0) return ["00","00","00"] as const;
+    if (diff <= 0) return ["00", "00", "00"] as const;
     const h = Math.floor(diff / 3600);
     const m = Math.floor((diff % 3600) / 60);
     const s = diff % 60;
@@ -50,7 +50,7 @@ export default function RetroSaleBanner() {
 
       <div className="relative px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <div className="max-w-6xl mx-auto">
-          
+
           <div className="flex justify-center mb-6 md:mb-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-black border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,144,144,1)]">
               <Zap className="w-6 h-6 text-[#fff100] fill-[#fff100]" />
@@ -65,7 +65,7 @@ export default function RetroSaleBanner() {
             <h2 className="font-[family-name:var(--font-retro)] text-5xl md:text-7xl lg:text-9xl text-black mb-6 tracking-wider uppercase leading-none">
               SALE
             </h2>
-            
+
             <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6 md:mb-8">
               {['-20%', '-30%', '-40%', '-50%'].map((discount, index) => (
                 <div

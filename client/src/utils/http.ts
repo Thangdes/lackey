@@ -63,10 +63,29 @@ const PUBLIC_BASE = (() => {
   }
   return normalized;
 })();
-const SSR_BASE = (process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "") || "http://localhost:8000");
+// For SSR: prefer NEXT_INTERNAL_API_BASE (internal/private network URL).
+// If not set (e.g. Vercel serverless without Docker), fall back to NEXT_PUBLIC_API_BASE
+// if it is an absolute URL (https://...), otherwise fall back to localhost for local dev.
+const _internalApiBase = process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "");
+const _publicApiBase = process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "");
+const SSR_BASE = _internalApiBase
+  ? _internalApiBase
+  : _publicApiBase && /^https?:\/\//i.test(_publicApiBase)
+  ? _publicApiBase
+  : "http://localhost:8000";
 
 const ensureTrailingSlash = (v: string) => (v.endsWith('/') ? v : `${v}/`);
-export const API_BASE = ensureTrailingSlash(isServer ? `${SSR_BASE}${API_PREFIX}` : PUBLIC_BASE);
+// When SSR_BASE is already an absolute URL that contains the API prefix path, don't append API_PREFIX again.
+const buildSsrBase = () => {
+  if (/^https?:\/\//i.test(SSR_BASE)) {
+    // If SSR_BASE already ends with the api prefix path, use as-is
+    const prefixPath = API_PREFIX.replace(/^\//,"").replace(/\/$/,"");
+    if (SSR_BASE.includes(`/${prefixPath}`)) return SSR_BASE;
+    return `${SSR_BASE}${API_PREFIX}`;
+  }
+  return `${SSR_BASE}${API_PREFIX}`;
+};
+export const API_BASE = ensureTrailingSlash(isServer ? buildSsrBase() : PUBLIC_BASE);
 
 
 export const api = axios.create({

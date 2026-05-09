@@ -19,7 +19,7 @@ export const FAQS: FAQItem[] = [
   },
   {
     q: 'Thanh toán như thế nào?',
-    a: 'Hỗ trợ tiền mặt khi nhận hàng (COD), chuyển khoản VietQR và các ví điện tử phổ biến.',
+    a: 'Hỗ trợ tiền mặt khi nhận hàng (COD), chuyển khoản SePay và các ví điện tử phổ biến.',
   },
   {
     q: 'Phí ship và thời gian giao tại TP.HCM?',

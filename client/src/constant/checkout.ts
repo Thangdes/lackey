@@ -102,9 +102,9 @@ export const PAYMENT_UI = {
 } as const;
 
 export const VIETQR_MODAL = {
-  title: "Quét mã VietQR để thanh toán",
+  title: "Quét mã SePay để thanh toán",
   closeAria: "Đóng",
-  imageAlt: "VietQR",
+  imageAlt: "SePay",
   labels: {
     bank: "Ngân hàng",
     accountNumber: "Số tài khoản",

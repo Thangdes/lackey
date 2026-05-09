@@ -337,7 +337,7 @@ export default function CheckoutClient() {
     if (m !== "VIETQR") return;
     const pre = await preSubmitChecks("VIETQR");
     if (!pre.ok) {
-      if (pre.msg) showErrorToast({ title: "Không thể tạo VietQR", message: pre.msg });
+      if (pre.msg) showErrorToast({ title: "Không thể tạo SePay", message: pre.msg });
       return;
     }
     const payload = buildPayload("VIETQR", buyer, alt, appliedCode, shippingFee);
@@ -478,7 +478,7 @@ export default function CheckoutClient() {
     } catch { }
     setVietQRAcknowledged(false);
     setOrderSuccessOpen(true);
-    showSuccessToast({ title: "Đặt hàng thành công", message: "Cảm ơn bạn đã thanh toán qua VietQR!" });
+    showSuccessToast({ title: "Đặt hàng thành công", message: "Cảm ơn bạn đã thanh toán qua SePay!" });
   }, [cart, pendingVietQROrderId, setVietQRAcknowledged]);
 
   const handleSubmit = useCheckoutSubmit({

@@ -15,7 +15,7 @@ export const shortLabel: Record<Method, string> = {
 export const MethodLogo: React.FC<{ m: Method; className?: string }> = ({ m, className }) => {
   const cls = `h-6 md:h-6 lg:h-8 ${className || ""}`;
   if (m === "COD") return (<img src="/logo/payment/cash.svg" alt="Tiền mặt" className={cls} />);
-  if (m === "VIETQR") return (<img src="/logo/payment/vnpay.svg" alt="VietQR" className={cls} />);
+  if (m === "VIETQR") return (<img src="/logo/payment/vnpay.svg" alt="SePay" className={cls} />);
   if (m === "BANK_TRANSFER") return (<img src="/logo/payment/atm.svg" alt="Chuyển khoản" className={cls} />);
   if (m === "MOMO") return (<img src="/logo/payment/momo.svg" alt="MoMo" className={cls} />);
   if (m === "ZALOPAY") return (<img src="/logo/payment/zalopay.svg" alt="ZaloPay" className={cls} />);

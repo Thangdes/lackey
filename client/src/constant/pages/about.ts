@@ -48,7 +48,7 @@ export const ABOUT_PAGE = {
   
     payments: {
       title: "Thanh toán",
-      supportNote: "Hỗ trợ chuyển khoản VietQR hoặc thanh toán khi nhận hàng (COD).",
+      supportNote: "Hỗ trợ chuyển khoản qua SePay hoặc thanh toán khi nhận hàng (COD).",
       labels: {
         bank: "Ngân hàng:",
         accountName: "Chủ TK:",

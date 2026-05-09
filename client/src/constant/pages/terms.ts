@@ -1,7 +1,7 @@
 export const TERMS_PAGE = {
   metadata: {
     description:
-      "Điều khoản sử dụng, đặt hàng, thanh toán (bao gồm VietQR), giao hàng và đổi trả tại LắcKey.",
+      "Điều khoản sử dụng, đặt hàng, thanh toán (bao gồm SePay), giao hàng và đổi trả tại LắcKey.",
   },
   badge: "Pháp lý",
   title: "Điều khoản sử dụng",
@@ -16,8 +16,8 @@ export const TERMS_PAGE = {
       title: "2. Đặt hàng & thanh toán",
       items: [
         "Đơn hàng được ghi nhận sau khi bạn hoàn tất các bước đặt hàng trên website.",
-        "Hỗ trợ nhiều phương thức thanh toán. Với VietQR, vui lòng ghi mã đơn hàng ở phần nội dung chuyển khoản.",
-        "Thanh toán VietQR được xác nhận thủ công bởi bộ phận hỗ trợ; thời gian xử lý có thể chậm hơn bình thường.",
+        "Hỗ trợ nhiều phương thức thanh toán. Với SePay, vui lòng ghi mã đơn hàng ở phần nội dung chuyển khoản.",
+        "Thanh toán SePay được xác nhận tự động bởi cổng thanh toán, đơn hàng sẽ được xử lý ngay lập tức.",
         "Đơn hàng sẽ được xác nhận sau khi thanh toán được kiểm tra và xác nhận thành công.",
       ],
     },

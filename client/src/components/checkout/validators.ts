@@ -35,13 +35,7 @@ export function validate(params: {
   // Email is not required - will use default email if empty
   // Phone is always required
   if (!phone.trim()) return CHECKOUT_ERROR.phoneRequired;
-  // If authenticated, username is required
-  if (user && typeof user === 'object' && user !== null) {
-    const u = user as { username?: string };
-    if (!u.username || !String(u.username).trim()) {
-      return "Vui lòng cập nhật Username trong hồ sơ tài khoản";
-    }
-  }
+
   if (!city) return CHECKOUT_ERROR.cityRequired;
   if (!street.trim()) return CHECKOUT_ERROR.streetRequired;
   if (shipToDifferent) {
@@ -79,12 +73,7 @@ export function validateForVietQR(params: {
     return "Vui lòng nhập Địa chỉ (số nhà, tên đường)";
   }
   
-  if (user && typeof user === 'object' && user !== null) {
-    const u = user as { username?: string };
-    if (!u.username || !String(u.username).trim()) {
-      return "Vui lòng cập nhật Username trong hồ sơ tài khoản";
-    }
-  }
+
   return null;
 }
 

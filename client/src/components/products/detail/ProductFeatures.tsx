@@ -5,24 +5,24 @@ import { FiTruck, FiRotateCcw } from "react-icons/fi";
 
 const ProductFeatures: React.FC = () => {
   return (
-    <div className="bg-[#B5CCBC] border-4 border-black p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="flex items-start gap-3 bg-white border-2 border-black p-3">
-          <div className="flex h-10 w-10 items-center justify-center bg-black text-white shrink-0">
-            <FiTruck className="h-5 w-5" />
+    <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex items-start gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100/50">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600 shrink-0">
+            <FiTruck className="h-6 w-6" />
           </div>
-          <div>
-            <div className="font-bold text-sm uppercase text-black">Giao hàng nhanh</div>
-            <div className="text-xs text-neutral-700 mt-1">Miễn phí nội thành với đơn từ 300k</div>
+          <div className="flex-1 pt-1">
+            <div className="font-semibold text-sm text-gray-900">Giao hàng nhanh</div>
+            <div className="text-xs text-gray-500 mt-1 leading-relaxed">Miễn phí nội thành với đơn từ 300k</div>
           </div>
         </div>
-        <div className="flex items-start gap-3 bg-white border-2 border-black p-3">
-          <div className="flex h-10 w-10 items-center justify-center bg-black text-white shrink-0">
-            <FiRotateCcw className="h-5 w-5" />
+        <div className="flex items-start gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100/50">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+            <FiRotateCcw className="h-6 w-6" />
           </div>
-          <div>
-            <div className="font-bold text-sm uppercase text-black">Đổi trả linh hoạt</div>
-            <div className="text-xs text-neutral-700 mt-1">Đổi trả trong 7 ngày nếu lỗi nhà sản xuất</div>
+          <div className="flex-1 pt-1">
+            <div className="font-semibold text-sm text-gray-900">Đổi trả linh hoạt</div>
+            <div className="text-xs text-gray-500 mt-1 leading-relaxed">Đổi trả trong 7 ngày nếu lỗi nhà sản xuất</div>
           </div>
         </div>
       </div>
