@@ -40,6 +40,7 @@ async function bootstrap() {
     'http://client:3000',
     'http://client',
     'http://client:80',
+    'https://lackey.click',
   ];
   app.enableCors({
     origin: process.env.NODE_ENV === 'development' ? true : corsOrigins,
