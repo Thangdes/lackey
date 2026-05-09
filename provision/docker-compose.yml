@@ -40,9 +40,9 @@ services:
     build:
       context: ../server
       dockerfile: Dockerfile
-    depends_on:
-      - mongo
-      - redis
+    # depends_on:
+    #   - mongo
+    #   - redis
     ports:
       - "8000:8000"
     expose:
