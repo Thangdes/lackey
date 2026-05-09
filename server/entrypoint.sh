@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
-echo "[entrypoint] Running Prisma migrate deploy..."
-./node_modules/.bin/prisma migrate deploy
+echo "[entrypoint] Running Prisma db push for MongoDB..."
+./node_modules/.bin/prisma db push
 
 if [ "$SEED_ON_START" = "true" ]; then
   echo "[entrypoint] SEED_ON_START=true -> running seed..."
