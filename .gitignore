@@ -11,12 +11,12 @@
 provision/.env
 cvf-server/.env
 cvf-client/.env
-
+docs/
 # Node and build
 node_modules/
 dist/
 build/
-
+report-research/
 # Logs
 logs/
 *.log
