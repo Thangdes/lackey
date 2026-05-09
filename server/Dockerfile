@@ -30,7 +30,7 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 
 # Copy templates from builder
-COPY --from=builder /usr/src/app/src/mail/templates ./src/mail/templates
+COPY --from=builder /usr/src/app/src/integrations/mail/templates ./src/integrations/mail/templates
 
 # Copy entrypoint script
 COPY --from=builder /usr/src/app/entrypoint.sh ./entrypoint.sh
