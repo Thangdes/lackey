@@ -53,7 +53,8 @@ export class GhnService {
         }),
       );
       const provinces = response.data.data;
-      await this.cacheManager.set(cacheKey, provinces, 3600 * 24 * 7);
+      // Cache for 1 hour instead of 7 days to reduce Redis storage
+      await this.cacheManager.set(cacheKey, provinces, 3600);
       return provinces;
     } catch (error) {
       this.logger.error('Failed to fetch GHN provinces', error.response?.data);
@@ -76,7 +77,8 @@ export class GhnService {
         }),
       );
       const districts = response.data.data;
-      await this.cacheManager.set(cacheKey, districts, 3600 * 24 * 7);
+      // Cache for 1 hour instead of 7 days to reduce Redis storage
+      await this.cacheManager.set(cacheKey, districts, 3600);
       return districts;
     } catch (error) {
       this.logger.error(
@@ -102,7 +104,8 @@ export class GhnService {
         }),
       );
       const wards = response.data.data;
-      await this.cacheManager.set(cacheKey, wards, 3600 * 24 * 7);
+      // Cache for 1 hour instead of 7 days to reduce Redis storage
+      await this.cacheManager.set(cacheKey, wards, 3600);
       return wards;
     } catch (error) {
       this.logger.error(

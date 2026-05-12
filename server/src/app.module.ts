@@ -47,6 +47,8 @@ import { SepayModule } from './modules/sepay/subscription.module';
     CacheModule.register({
       isGlobal: true,
       ttl: Number(process.env.CACHE_TTL_SECONDS) || 60 * 60 * 24, // default 1 day
+      // Using memory store instead of Redis to reduce Redis commands
+      // If you need Redis cache, install @nestjs/cache-manager/redis and configure it
     }),
     // GhnModule,
     LoggerModule,
