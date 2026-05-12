@@ -210,13 +210,22 @@ function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
       const status = e?.response?.status;
       const data = e?.response?.data as unknown;
       let msg: string | undefined;
+      
+      // Handle string response
       if (typeof data === "string") {
         msg = data;
-      } else if (data && typeof (data as { message?: unknown }).message !== "undefined") {
+      } 
+      // Handle object response with message property (NestJS exceptions)
+      else if (data && typeof data === "object") {
         const m = (data as { message?: unknown }).message;
-        if (Array.isArray(m)) msg = m.join("; ");
-        else if (typeof m === "string") msg = m;
+        if (Array.isArray(m)) {
+          msg = m.join("; ");
+        } else if (typeof m === "string") {
+          msg = m;
+        }
       }
+      
+      // Fallback to status code or generic message
       if (!msg) msg = status ? `HTTP ${status}` : e?.message || "Request failed";
       throw new Error(msg);
     });
