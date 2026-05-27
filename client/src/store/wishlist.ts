@@ -75,11 +75,12 @@ export const useWishlistStore = create<WishlistState>()(
       },
 
       setItems: (items: WishlistItem[]) => {
-        const productIds = new Set(items.map(i => i.productId))
+        const safeItems = Array.isArray(items) ? items : []
+        const productIds = new Set(safeItems.map(i => i.productId))
         set({
-          items,
+          items: safeItems,
           productIds,
-          totalItems: items.length,
+          totalItems: safeItems.length,
         })
       },
 

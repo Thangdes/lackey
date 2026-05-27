@@ -19,17 +19,22 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   {
     pattern: /username.*already.*exists|username.*taken/i,
     message: "Username already exists",
-    userMessage: "Tên người dùng này đã tồn tại. Vui lòng chọn tên khác.",
+    userMessage: "Email này đã được đăng ký. Vui lòng đăng nhập hoặc dùng email khác.",
+  },
+  {
+    pattern: /sai email|sai mật khẩu|email.*mật khẩu|mật khẩu.*email/i,
+    message: "Wrong credentials",
+    userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
   },
   {
     pattern: /password.*incorrect|wrong.*password|invalid.*password/i,
     message: "Invalid password",
-    userMessage: "Email hoặc mật khẩu không chính xác.",
+    userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
   },
   {
     pattern: /sai email hoặc mật khẩu/i,
     message: "Invalid credentials",
-    userMessage: "Email hoặc mật khẩu không chính xác.",
+    userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
   },
   {
     pattern: /user.*not.*found|account.*not.*found/i,
@@ -164,15 +169,45 @@ export function normalizeErrorForUser(
   let errorMessage = "";
 
   if (error instanceof Error) {
-    errorMessage = error.message;
+    // Axios error: thử lấy message từ response.data trước
+    const axiosLike = error as unknown as {
+      response?: { data?: { message?: unknown } | string; status?: number };
+    };
+    const respData = axiosLike?.response?.data;
+    if (respData && typeof respData === "object") {
+      const m = (respData as { message?: unknown }).message;
+      if (typeof m === "string" && m.trim()) {
+        errorMessage = m.trim();
+      } else if (Array.isArray(m) && m.length > 0) {
+        errorMessage = m.join("; ");
+      }
+    } else if (typeof respData === "string" && respData.trim()) {
+      errorMessage = respData.trim();
+    }
+    // Fallback to Error.message (đã được unwrap() xử lý thành server message)
+    if (!errorMessage) {
+      errorMessage = error.message;
+    }
   } else if (typeof error === "string") {
     errorMessage = error;
   } else if (error && typeof error === "object") {
     const err = error as Record<string, unknown>;
-    if (typeof err.message === "string") {
-      errorMessage = err.message;
-    } else if (typeof err.error === "string") {
-      errorMessage = err.error;
+    // Axios-style object
+    const respData = (err.response as Record<string, unknown> | undefined)?.data;
+    if (respData && typeof respData === "object") {
+      const m = (respData as { message?: unknown }).message;
+      if (typeof m === "string" && m.trim()) {
+        errorMessage = m.trim();
+      } else if (Array.isArray(m) && m.length > 0) {
+        errorMessage = m.join("; ");
+      }
+    }
+    if (!errorMessage) {
+      if (typeof err.message === "string") {
+        errorMessage = err.message;
+      } else if (typeof err.error === "string") {
+        errorMessage = err.error;
+      }
     }
   }
 
@@ -212,7 +247,7 @@ export const errorNormalizers = {
     normalizeErrorForUser(error, "Tạo tài khoản thất bại. Vui lòng thử lại."),
   
   login: (error: unknown) =>
-    normalizeErrorForUser(error, "Đăng nhập thất bại. Vui lòng thử lại."),
+    normalizeErrorForUser(error, "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại."),
   
   cart: (error: unknown) =>
     normalizeErrorForUser(error, "Lỗi giỏ hàng. Vui lòng thử lại."),

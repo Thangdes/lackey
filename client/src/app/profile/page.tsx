@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Plus, UserCircle } from "lucide-react";
 import { useAuthProfile } from "@/hook/useAuth";
 import { PROFILE_TEXT as T } from "@/constant/profile";
@@ -88,6 +88,10 @@ export default function ProfilePage() {
     setToDate(toDateFromUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const handleTotalChange = useCallback((n: number) => {
+    setActiveTabTotal(n);
+  }, []);
 
   const updateUrl = (nextSection: "account" | "orders", nextTab: OrderTabKey, nextPage = page, nextLimit = limit, nextQ = q, nextFrom = fromDate, nextTo = toDate) => {
     const sp = new URLSearchParams(searchParams.toString());
@@ -364,7 +368,7 @@ export default function ProfilePage() {
                   toDate={toDate}
                   onPageChange={(p) => { setPage(p); updateUrl("orders", activeOrderTab, p, limit); }}
                   onLimitChange={(l) => { setLimit(l); setPage(1); updateUrl("orders", activeOrderTab, 1, l); }}
-                  onTotalChange={(n) => setActiveTabTotal(n)}
+                  onTotalChange={handleTotalChange}
                 />
               </Suspense>
             </div>
