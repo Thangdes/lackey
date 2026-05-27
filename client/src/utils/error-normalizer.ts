@@ -22,18 +22,13 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Email này đã được đăng ký. Vui lòng đăng nhập hoặc dùng email khác.",
   },
   {
-    pattern: /sai email|sai mật khẩu|email.*mật khẩu|mật khẩu.*email/i,
+    pattern: /sai.*email|sai.*m.t.*kh.u|email.*m.t.*kh.u|m.t.*kh.u.*email|wrong.*credentials|invalid.*credentials/i,
     message: "Wrong credentials",
     userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
   },
   {
     pattern: /password.*incorrect|wrong.*password|invalid.*password/i,
     message: "Invalid password",
-    userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
-  },
-  {
-    pattern: /sai email hoặc mật khẩu/i,
-    message: "Invalid credentials",
     userMessage: "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.",
   },
   {
@@ -246,8 +241,14 @@ export const errorNormalizers = {
   signup: (error: unknown) =>
     normalizeErrorForUser(error, "Tạo tài khoản thất bại. Vui lòng thử lại."),
   
-  login: (error: unknown) =>
-    normalizeErrorForUser(error, "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại."),
+  login: (error: unknown) => {
+    const errWithStatus = error as { status?: number; response?: { status?: number } };
+    const status = errWithStatus?.status ?? errWithStatus?.response?.status;
+    if (status === 401) {
+      return "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.";
+    }
+    return normalizeErrorForUser(error, "Thông tin tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.");
+  },
   
   cart: (error: unknown) =>
     normalizeErrorForUser(error, "Lỗi giỏ hàng. Vui lòng thử lại."),

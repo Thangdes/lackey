@@ -191,6 +191,17 @@ export type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 type AxiosErrorLike = { response?: { status?: number; data?: unknown }; message?: string };
 
+export class ApiError extends Error {
+  status?: number;
+  data?: unknown;
+  constructor(message: string, status?: number, data?: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.data = data;
+  }
+}
+
 function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
   return p
     .then((r) => {
@@ -227,7 +238,7 @@ function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
       
       // Fallback to status code or generic message
       if (!msg) msg = status ? `HTTP ${status}` : e?.message || "Request failed";
-      throw new Error(msg);
+      throw new ApiError(msg, status, data);
     });
 }
 
