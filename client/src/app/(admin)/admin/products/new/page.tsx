@@ -376,16 +376,13 @@ export default function NewProductPage() {
         isActive,
         categoryId,
         supplierId,
+        images,
         initialBuyCount: initialBuyCount === "" ? undefined : Number(initialBuyCount),
         variants: variants as unknown as CreateProductPayload["variants"],
       };
       const created = await productService.create(createPayload);
       if (thumbnail) {
         await productService.updateThumbnail(created.id, thumbnail);
-      }
-      // Add images if needed (skip if no method available)
-      if (images.length > 0) {
-        // Images will be added separately if API supports it
       }
       toast.success("Đã tạo sản phẩm");
       router.push("/admin/products");

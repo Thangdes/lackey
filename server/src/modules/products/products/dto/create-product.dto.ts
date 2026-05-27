@@ -44,6 +44,15 @@ export class CreateProductDto {
   initialBuyCount?: number;
 
   @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  images?: string[];
+
+  @IsString()
+  @IsOptional()
+  thumbnailUrl?: string;
+
+  @IsArray()
   @ArrayMinSize(1, { message: 'Phải có ít nhất 1 biến thể' })
   @ValidateNested({ each: true })
   @Type(() => ProductVariantDto)

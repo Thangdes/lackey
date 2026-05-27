@@ -284,9 +284,7 @@ export class ProductService {
     const product = await this.findOne(productId);
 
     if (!product.images.includes(imageUrl)) {
-      throw new NotFoundException(
-        `Image URL not found in product with ID '${productId}'`,
-      );
+      return product;
     }
 
     try {

@@ -186,6 +186,12 @@ export default function EditProductPage() {
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       const url = e.currentTarget.dataset.url as string;
       if (!url) return;
+
+      if (data && !data.images?.includes(url)) {
+        setImages((prev) => prev.filter((x) => x !== url));
+        return;
+      }
+
       try {
         const updated = await productService.removeImage(id, url);
         setImages(updated.images || []);
@@ -195,7 +201,7 @@ export default function EditProductPage() {
         showErrorToast({ title: "Không thể xóa ảnh", message: msg });
       }
     },
-    [id]
+    [id, data]
   );
 
   const handleFilesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,6 +254,7 @@ export default function EditProductPage() {
         description: data.description,
         isActive: data.isActive ?? true,
         categoryId,
+        images,
       };
       await productService.update(id, payload);
       if (thumbnail) {
