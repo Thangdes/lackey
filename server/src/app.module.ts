@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './infrastructure/database/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CloudinaryModule } from './integrations/cloudinary/cloudinary.module';
@@ -15,7 +14,7 @@ import { OrderModule } from './modules/commerce/orders/order.module';
 import { PaymentModule } from './modules/commerce/payments/payment.module';
 import { PdfModule } from './integrations/pdf/pdf.module';
 // import { TelegramModule } from './integrations/telegram/telegram.module';
-import { WorkersModule } from './infrastructure/workers/workers.module';
+// import { WorkersModule } from './infrastructure/workers/workers.module';
 import { ShippingModule } from './modules/commerce/shipping/shipping.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './infrastructure/schedulers/tasks.module';
@@ -52,41 +51,6 @@ import { SepayModule } from './modules/sepay/subscription.module';
     }),
     // GhnModule,
     LoggerModule,
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        connection: (() => {
-          const redisUrl = configService.get<string>('REDIS_URL');
-          if (redisUrl) {
-            const u = new URL(redisUrl);
-            const isTls = u.protocol === 'rediss:';
-            return {
-              host: u.hostname,
-              port: u.port ? Number(u.port) : 6379,
-              username: u.username || undefined,
-              password: u.password || undefined,
-              tls: isTls ? {} : undefined,
-            };
-          }
-
-          const host = configService.get<string>('REDIS_HOST', 'localhost');
-          const port = configService.get<number>('REDIS_PORT', 6379);
-          const password = configService.get<string>('REDIS_PASSWORD');
-          const tlsEnabled = configService.get<string>('REDIS_TLS', '0') === '1';
-
-          return {
-            host,
-            port,
-            password: password || undefined,
-            tls: tlsEnabled ? {} : undefined,
-          };
-        })(),
-      }),
-    }),
-    BullModule.registerQueue({
-      name: 'notifications',
-    }),
     PrismaModule,
     AuthModule,
     CloudinaryModule,
@@ -99,8 +63,6 @@ import { SepayModule } from './modules/sepay/subscription.module';
     OrderModule,
     PaymentModule,
     PdfModule,
-    // TelegramModule,
-    WorkersModule,
     ShippingModule,
     TasksModule,
     DashboardModule,
