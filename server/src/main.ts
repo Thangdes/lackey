@@ -10,12 +10,16 @@ import { TimeoutInterceptor } from './infrastructure/common/interceptors/timeout
 import { HttpExceptionFilter } from './infrastructure/common/filters/http-exception.filter';
 import { RequestLoggerMiddleware } from './infrastructure/common/middleware/request-logger.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   // Create app with logger
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ limit: '10mb', extended: true }));
 
   // Get logger service from DI container
   const logger = app.get(LoggerService);

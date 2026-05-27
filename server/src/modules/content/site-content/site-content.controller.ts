@@ -7,7 +7,6 @@ import {
     Param,
     Delete,
     UseGuards,
-    ParseUUIDPipe,
     Query,
     HttpCode,
     HttpStatus,
@@ -26,25 +25,26 @@ import {
 import { UpdateSiteContentDto } from './dto/update-site-content.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
+ 
   const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
-
+ 
   @ApiTags('Site Content')
   @ApiBearerAuth()
   @Controller('site-content')
   export class SiteContentController {
     constructor(private readonly siteContentService: SiteContentService) {}
-
+ 
     @Get('/banners')
     findBanners() {
       return this.siteContentService.findPublishedBanners();
     }
-
+ 
     @Get('/testimonials')
     findTestimonials() {
       return this.siteContentService.findPublishedTestimonials();
     }
-
+ 
     @Get('/gallery')
     findGallery() {
       return this.siteContentService.findPublishedGallery();
@@ -64,25 +64,25 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
   
     @Get('/admin/:id')
     @AdminAccess()
-    findOne(@Param('id', ParseUUIDPipe) id: string) {
+    findOne(@Param('id', ParseObjectIdPipe) id: string) {
       return this.siteContentService.findOne(id);
     }
   
     @Patch('/admin/:id')
     @AdminAccess()
     update(
-      @Param('id', ParseUUIDPipe) id: string,
+      @Param('id', ParseObjectIdPipe) id: string,
       @Body() updateSiteContentDto: UpdateSiteContentDto,
     ) {
       return this.siteContentService.update(id, updateSiteContentDto);
     }
-
+ 
     @Post('/admin/:id/thumbnail')
     @AdminAccess()
     @UseInterceptors(FileInterceptor('thumbnail'))
     @HttpCode(HttpStatus.OK)
     updateThumbnail(
-      @Param('id', ParseUUIDPipe) id: string,
+      @Param('id', ParseObjectIdPipe) id: string,
       @UploadedFile(
         new ParseFilePipe({
           validators: [
@@ -96,10 +96,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
     ) {
       return this.siteContentService.updateThumbnail(id, thumbnailFile);
     }
-
+ 
     @Delete('/admin/:id')
     @AdminAccess()
-    remove(@Param('id', ParseUUIDPipe) id: string) {
+    remove(@Param('id', ParseObjectIdPipe) id: string) {
       return this.siteContentService.remove(id);
     }
   }
