@@ -36,37 +36,20 @@ export function useAuthProfile() {
 }
 
 export function useSignup() {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: { fullName?: string; email: string; password: string }) =>
       authService.signup(payload),
-    onSuccess: () => {
-      try {
-        window.dispatchEvent(new CustomEvent("auth:login-success"));
-      } catch {}
-      // Fire-and-forget: don't let background refetch failures surface as mutation errors
-      qc.invalidateQueries({ queryKey: keys.profile() }).catch(() => {});
-    },
+    // No side-effects in onSuccess — caller is responsible for dispatching events
   });
 }
 
 export function useLogin() {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: { email: string; password: string }) => authService.login(payload),
-    onSuccess: () => {
-      try {
-        window.dispatchEvent(new CustomEvent("auth:login-success"));
-      } catch {}
-      // Fire-and-forget: don't let background refetch failures surface as mutation errors
-      qc.invalidateQueries({ queryKey: keys.profile() }).catch(() => {});
-      qc.invalidateQueries({ predicate: (q) => {
-        const k = q.queryKey;
-        return Array.isArray(k) && (k[0] === "orders" || k[0] === "customers");
-      }}).catch(() => {});
-    },
+    // No side-effects in onSuccess — caller is responsible for dispatching events
   });
 }
+
 
 export function useRefresh() {
   const qc = useQueryClient();

@@ -10,6 +10,8 @@ import { useSignup } from '@/hook/useAuth'
 import { toast } from 'sonner'
 import { showSuccessToast } from '@/components/toast/AppToast'
 import { errorNormalizers } from '@/utils/error-normalizer'
+import { useQueryClient } from '@tanstack/react-query'
+import { authKeys } from '@/constant/key/auth'
 
 const useIsMounted = () => {
   const [mounted, setMounted] = React.useState(false)
@@ -71,12 +73,17 @@ const SignInForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [error, setError] = React.useState<string | null>(null)
   const [showPassword, setShowPassword] = React.useState(false)
   const { mutateAsync, isPending } = useLogin()
+  const qc = useQueryClient()
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     try {
       await mutateAsync({ email, password })
+      // Dispatch AFTER mutateAsync fully resolves to avoid triggering
+      // profile refetch inside the mutation's onSuccess callback
+      try { window.dispatchEvent(new CustomEvent('auth:login-success')); } catch {}
+      qc.invalidateQueries({ queryKey: authKeys.profile() }).catch(() => {})
       showSuccessToast({ title: 'Đăng nhập thành công', message: 'Chào mừng bạn quay lại LắcKey!' })
       close()
     } catch (err) {
@@ -84,7 +91,7 @@ const SignInForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       setError(msg)
       toast.error(msg)
     }
-  }, [mutateAsync, email, password, close])
+  }, [mutateAsync, email, password, close, qc])
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -169,6 +176,7 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [showConfirm, setShowConfirm] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const { mutateAsync, isPending } = useSignup()
+  const qc = useQueryClient()
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
@@ -187,6 +195,9 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     }
     try {
       await mutateAsync({ fullName: username, email, password })
+      // Dispatch AFTER mutateAsync fully resolves
+      try { window.dispatchEvent(new CustomEvent('auth:login-success')); } catch {}
+      qc.invalidateQueries({ queryKey: authKeys.profile() }).catch(() => {})
       showSuccessToast({ title: 'Tạo tài khoản thành công', message: 'Chào mừng bạn đến với LắcKey!' })
       close()
     } catch (err) {
@@ -194,7 +205,7 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       setError(msg)
       toast.error(msg)
     }
-  }, [mutateAsync, username, email, password, confirmPassword, close])
+  }, [mutateAsync, username, email, password, confirmPassword, close, qc])
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
