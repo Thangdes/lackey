@@ -127,6 +127,24 @@ export default function CheckoutClient() {
   const [successCountdown, setSuccessCountdown] = useState(10);
   const [noAutoDismiss, setNoAutoDismiss] = useState(false);
   const [pendingRedirectHome, setPendingRedirectHome] = useState(false);
+
+  useEffect(() => {
+    if (lastOrderCodeState && pathname) {
+      const params = new URLSearchParams(searchParams?.toString() || "");
+      if (params.get("orderCode") !== lastOrderCodeState) {
+        params.set("orderCode", lastOrderCodeState);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+    }
+  }, [lastOrderCodeState, pathname, router, searchParams]);
+
+  useEffect(() => {
+    const code = searchParams?.get("orderCode");
+    if (code && !lastOrderCodeState) {
+      setLastOrderCodeState(code);
+      setOrderSuccessOpen(true);
+    }
+  }, [searchParams, lastOrderCodeState]);
   const allowExitRef = useRef(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const handlingPopRef = useRef(false);
@@ -283,7 +301,7 @@ export default function CheckoutClient() {
   }, []);
 
   useEffect(() => {
-    const guardActive = !orderSuccessOpen && (!!pendingVietQROrderId || !!formDirty);
+    const guardActive = !orderSuccessOpen && !lastOrderCodeState && (!!pendingVietQROrderId || !!formDirty);
     if (!guardActive) return;
     try {
       history.pushState({ __exit_guard: true }, '', location.href);
@@ -291,7 +309,7 @@ export default function CheckoutClient() {
     } catch { }
     return () => {
     };
-  }, [pendingVietQROrderId, formDirty, orderSuccessOpen]);
+  }, [pendingVietQROrderId, formDirty, orderSuccessOpen, lastOrderCodeState]);
 
   const { preSubmitChecks, afterOrderCreated } = useCheckoutFlow({
     validateForMethod,
@@ -504,23 +522,29 @@ export default function CheckoutClient() {
     } catch { }
   }, []);
   const onViewOrder = useCallback(() => {
+    allowExitRef.current = true;
     try {
       router.push("/profile?section=orders&tab=all&page=1&limit=10");
     } catch { }
   }, [router]);
   const onCloseSuccessModal = useCallback(() => {
+    allowExitRef.current = true;
     setOrderSuccessOpen(false);
     try {
       sessionStorage.removeItem("lastOrderCode");
     } catch { }
     setLastOrderCodeState(undefined);
-  }, []);
-  const onGoHome = useCallback(() => router.push("/"), [router]);
+    router.push("/");
+  }, [router]);
+  const onGoHome = useCallback(() => {
+    allowExitRef.current = true;
+    router.push("/");
+  }, [router]);
 
   useEffect(() => {
     const onDocumentClick = (e: MouseEvent) => {
       if (allowExitRef.current) return;
-      if (orderSuccessOpen) return;
+      if (orderSuccessOpen || lastOrderCodeState) return;
       if (!pendingVietQROrderId && !formDirty) return;
       if (exitModalOpen) return;
       if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -544,24 +568,24 @@ export default function CheckoutClient() {
     };
     document.addEventListener('click', onDocumentClick, true);
     return () => document.removeEventListener('click', onDocumentClick, true);
-  }, [pendingVietQROrderId, formDirty, exitModalOpen, orderSuccessOpen]);
+  }, [pendingVietQROrderId, formDirty, exitModalOpen, orderSuccessOpen, lastOrderCodeState]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (allowExitRef.current) return;
-      if (orderSuccessOpen) return;
+      if (orderSuccessOpen || lastOrderCodeState) return;
       if (!pendingVietQROrderId && !formDirty) return;
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [pendingVietQROrderId, formDirty, orderSuccessOpen]);
+  }, [pendingVietQROrderId, formDirty, orderSuccessOpen, lastOrderCodeState]);
 
   useEffect(() => {
     const onPopState = () => {
       if (allowExitRef.current) return;
-      if (orderSuccessOpen) return;
+      if (orderSuccessOpen || lastOrderCodeState) return;
       if (!pendingVietQROrderId && !formDirty) return;
       if (handlingPopRef.current) return;
       handlingPopRef.current = true;
@@ -576,7 +600,7 @@ export default function CheckoutClient() {
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [pendingVietQROrderId, formDirty, orderSuccessOpen]);
+  }, [pendingVietQROrderId, formDirty, orderSuccessOpen, lastOrderCodeState]);
 
   const onExitConfirm = useCallback(async () => {
     try {

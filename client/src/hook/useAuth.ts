@@ -38,7 +38,7 @@ export function useAuthProfile() {
 export function useSignup() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { username: string; email: string; password: string }) =>
+    mutationFn: (payload: { fullName?: string; email: string; password: string }) =>
       authService.signup(payload),
     onSuccess: () => {
       try {

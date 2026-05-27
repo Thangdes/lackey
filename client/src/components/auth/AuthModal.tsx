@@ -186,7 +186,7 @@ const SignUpForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       return
     }
     try {
-      await mutateAsync({ username, email, password })
+      await mutateAsync({ fullName: username, email, password })
       showSuccessToast({ title: 'Tạo tài khoản thành công', message: 'Chào mừng bạn đến với LắcKey!' })
       close()
     } catch (err) {

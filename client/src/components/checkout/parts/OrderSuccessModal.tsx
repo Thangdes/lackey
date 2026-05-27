@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, Eye, Home, X } from "lucide-react";
+import { CheckCircle2, Eye, Home } from "lucide-react";
 
 export type OrderSuccessModalProps = {
   open: boolean;
@@ -25,7 +25,6 @@ export function OrderSuccessModal({
   onMouseLeave,
   onToggleNoAutoDismiss,
   onViewOrder,
-  onClose,
   onGoHome,
 }: OrderSuccessModalProps) {
   if (!open) return null;
@@ -93,13 +92,6 @@ export function OrderSuccessModal({
               <Home size={14} className="sm:w-4 sm:h-4" />
               <span className="hidden xs:inline">Về trang chủ</span>
               <span className="xs:hidden">Trang chủ</span>
-            </button>
-            <button
-              className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-black/10 bg-white px-3 sm:px-4 py-2 text-xs sm:text-sm text-black/70 transition-colors hover:bg-black/[0.03]"
-              onClick={onClose}
-            >
-              <X size={14} className="sm:w-4 sm:h-4" />
-              Đóng
             </button>
           </div>
         </div>

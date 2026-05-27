@@ -3,7 +3,7 @@ import { API } from "@/constant/api";
 import type { User } from "@/type/user";
 
 export const authService = {
-  signup: (payload: { username: string; email: string; password: string }) =>
+  signup: (payload: { fullName?: string; email: string; password: string }) =>
     httpSuccess.postData<{ message: string }>(API.auth.signup, payload),
 
   login: (payload: { email: string; password: string }) =>

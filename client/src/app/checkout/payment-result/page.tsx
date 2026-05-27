@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSmartCart } from "@/hook/useCart";
 import { CheckCircle, XCircle } from "lucide-react";
@@ -13,10 +13,12 @@ function PaymentResultContent() {
   
   const result = searchParams?.get("result");
   const orderCode = searchParams?.get("orderCode");
+  const clearedRef = useRef(false);
 
   useEffect(() => {
     // Clear cart if successful
-    if (result === "success") {
+    if (result === "success" && !clearedRef.current) {
+      clearedRef.current = true;
       try { localStorage.removeItem("cartItems"); } catch {}
       cart.clear();
       if (orderCode) {

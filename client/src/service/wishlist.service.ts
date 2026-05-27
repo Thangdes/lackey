@@ -1,4 +1,5 @@
 import { http } from "@/utils/http";
+import { unwrapDataArray } from "@/utils/response";
 import type { WishlistItem, CreateWishlistItemDto } from "@/type/wishlist";
 
 class WishlistService {
@@ -6,8 +7,8 @@ class WishlistService {
 
   async getWishlist(): Promise<WishlistItem[]> {
     try {
-      const data = await http.get<WishlistItem[]>(this.baseURL);
-      return data;
+      const data = await http.get<unknown>(this.baseURL);
+      return unwrapDataArray<WishlistItem>(data);
     } catch (error) {
       console.error("[WISHLIST_SERVICE] Failed to fetch wishlist:", error);
       throw error;
@@ -16,7 +17,7 @@ class WishlistService {
 
   async addItem(dto: CreateWishlistItemDto): Promise<WishlistItem> {
     try {
-      const data = await http.post<WishlistItem>(this.baseURL, dto);
+      const data = await http.post<WishlistItem>(`${this.baseURL}/${dto.productId}`);
       return data;
     } catch (error) {
       console.error("[WISHLIST_SERVICE] Failed to add item:", error);
@@ -24,12 +25,10 @@ class WishlistService {
     }
   }
 
-  async removeItem(productId: string, variantId?: string): Promise<void> {
+  async removeItem(productId: string, _variantId?: string): Promise<void> {
     try {
-      const url = variantId 
-        ? `${this.baseURL}/${productId}/${variantId}`
-        : `${this.baseURL}/${productId}`;
-      
+      void _variantId;
+      const url = `${this.baseURL}/${productId}`;
       await http.delete(url);
     } catch (error) {
       console.error("[WISHLIST_SERVICE] Failed to remove item:", error);
@@ -48,13 +47,13 @@ class WishlistService {
 
   async syncWishlist(items: WishlistItem[]): Promise<WishlistItem[]> {
     try {
-      const data = await http.post<WishlistItem[]>(`${this.baseURL}/sync`, {
+      const data = await http.post<unknown>(`${this.baseURL}/sync`, {
         items: items.map(item => ({
           productId: item.productId,
           variantId: item.variantId,
         })),
       });
-      return data;
+      return unwrapDataArray<WishlistItem>(data);
     } catch (error) {
       console.error("[WISHLIST_SERVICE] Failed to sync wishlist:", error);
       throw error;

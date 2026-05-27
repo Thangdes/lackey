@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [persist, qc]);
 
   const register = useCallback(async ({ name, email, password, remember }: { name?: string; email: string; password: string; remember?: boolean }) => {
-    await authService.signup({ username: name || email.split("@")[0], email, password });
+    await authService.signup({ fullName: name, email, password });
     const prof = await authService.profile().catch(() => null);
     const u = prof ? ({ name: (prof.name ?? prof.username ?? name), email: prof.email || email } as AuthUser) : ({ name, email } as AuthUser);
     persist(u, remember);
