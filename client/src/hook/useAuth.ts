@@ -44,7 +44,8 @@ export function useSignup() {
       try {
         window.dispatchEvent(new CustomEvent("auth:login-success"));
       } catch {}
-      qc.invalidateQueries({ queryKey: keys.profile() });
+      // Fire-and-forget: don't let background refetch failures surface as mutation errors
+      qc.invalidateQueries({ queryKey: keys.profile() }).catch(() => {});
     },
   });
 }
@@ -57,12 +58,12 @@ export function useLogin() {
       try {
         window.dispatchEvent(new CustomEvent("auth:login-success"));
       } catch {}
-      qc.invalidateQueries({ queryKey: keys.profile() });
-      // Invalidate tất cả auth-protected queries để chúng refetch với cookie mới
+      // Fire-and-forget: don't let background refetch failures surface as mutation errors
+      qc.invalidateQueries({ queryKey: keys.profile() }).catch(() => {});
       qc.invalidateQueries({ predicate: (q) => {
         const k = q.queryKey;
         return Array.isArray(k) && (k[0] === "orders" || k[0] === "customers");
-      }});
+      }}).catch(() => {});
     },
   });
 }
