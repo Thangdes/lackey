@@ -17,7 +17,7 @@ export default function AdminCustomerDetailPage() {
   const { data, isLoading, error } = useCustomerById(id);
 
   const c = data;
-  const isAdmin = me?.role === "admin";
+  const isAdmin = !!me && String(me.role || "").toUpperCase() === "ADMIN";
 
   const createdAtText = useMemo(() => (c?.createdAt ? new Date(c.createdAt).toLocaleString("vi-VN") : "-"), [c?.createdAt]);
 

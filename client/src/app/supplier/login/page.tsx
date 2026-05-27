@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authService } from "@/service/auth.service";
+import { useAuthProfile } from "@/hook/useAuth";
 import { Mail, Lock, LogIn } from "lucide-react";
 
 export default function SupplierLoginPrettyPage() {
@@ -12,6 +13,17 @@ export default function SupplierLoginPrettyPage() {
   const redirectTo = useMemo(() => sp?.get("redirect") || "/supplier", [sp]);
   const already = useMemo(() => sp?.get("already") === "1", [sp]);
   const toAfterAlready = useMemo(() => sp?.get("to") || "/supplier", [sp]);
+
+  const { data: me } = useAuthProfile();
+
+  useEffect(() => {
+    if (me) {
+      const role = String(me.role || "").toUpperCase();
+      if (role === "SUPPLIER" || role === "ADMIN") {
+        router.replace(redirectTo || "/supplier");
+      }
+    }
+  }, [me, router, redirectTo]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

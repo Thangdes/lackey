@@ -26,34 +26,46 @@ export class SiteContentService {
     });
   }
 
-  findPublishedBanners() {
-    return this.prisma.siteContent.findMany({
-      where: {
-        type: ContentType.BANNER,
-        isPublished: true,
-      },
-      orderBy: { displayOrder: 'asc' },
-    });
+  async findPublishedBanners() {
+    try {
+      return await this.prisma.siteContent.findMany({
+        where: {
+          type: ContentType.BANNER,
+          isPublished: true,
+        },
+        orderBy: { displayOrder: 'asc' },
+      });
+    } catch {
+      return [];
+    }
   }
 
-  findPublishedTestimonials() {
-    return this.prisma.siteContent.findMany({
-      where: {
-        type: ContentType.TESTIMONIAL,
-        isPublished: true,
-      },
-      orderBy: { displayOrder: 'asc' },
-    });
+  async findPublishedTestimonials() {
+    try {
+      return await this.prisma.siteContent.findMany({
+        where: {
+          type: ContentType.TESTIMONIAL,
+          isPublished: true,
+        },
+        orderBy: { displayOrder: 'asc' },
+      });
+    } catch {
+      return [];
+    }
   }
 
-  findPublishedGallery() {
-    return this.prisma.siteContent.findMany({
-      where: {
-        type: ContentType.GALLERY,
-        isPublished: true,
-      },
-      orderBy: { displayOrder: 'asc' },
-    });
+  async findPublishedGallery() {
+    try {
+      return await this.prisma.siteContent.findMany({
+        where: {
+          type: ContentType.GALLERY,
+          isPublished: true,
+        },
+        orderBy: { displayOrder: 'asc' },
+      });
+    } catch {
+      return [];
+    }
   }
 
   async findOne(id: string) {

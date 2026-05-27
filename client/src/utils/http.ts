@@ -56,6 +56,19 @@ const PUBLIC_BASE = (() => {
   const rawPublic = process.env.NEXT_PUBLIC_API_BASE || API_PREFIX;
   let normalized = ensureLeadingSlashOrAbs(rawPublic) as string;
   const isAbsolute = /^https?:\/\//i.test(normalized);
+  if (!isServer && isAbsolute) {
+    try {
+      const publicUrl = new URL(normalized);
+      const pageHost = window.location.hostname;
+      const isSameLackeySite =
+        (pageHost === "lackey.click" || pageHost === "www.lackey.click") &&
+        publicUrl.hostname === "api.lackey.click";
+
+      if (isSameLackeySite) {
+        return API_PREFIX;
+      }
+    } catch { }
+  }
   if (!isAbsolute) {
     if (!normalized.startsWith("/api/")) {
       normalized = `/api${normalized.startsWith("/") ? "" : "/"}${normalized.replace(/^\//, "")}`;
