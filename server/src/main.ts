@@ -26,7 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // CORS configuration
-  const corsOrigins = [
+  const defaultCorsOrigins = [
     'http://localhost',
     'http://localhost:80',
     'http://localhost:3000',
@@ -41,9 +41,29 @@ async function bootstrap() {
     'http://client',
     'http://client:80',
     'https://lackey.click',
+    'https://www.lackey.click',
   ];
+
+  const corsOrigins = [
+    ...defaultCorsOrigins,
+    ...(process.env.CORS_ORIGINS || process.env.FRONTEND_ORIGINS || '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  ];
+
   app.enableCors({
-    origin: process.env.NODE_ENV === 'development' ? true : corsOrigins,
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? true
+        : (origin, callback) => {
+            if (!origin || corsOrigins.includes(origin)) {
+              callback(null, true);
+              return;
+            }
+
+            callback(new Error(`Origin ${origin} is not allowed by CORS`));
+          },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: [
       'Content-Type',

@@ -17,11 +17,15 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 /** Compute cookie options based on environment to avoid repetition. */
 function buildCookieOptions(isProduction: boolean) {
+  const configuredDomain =
+    process.env.AUTH_COOKIE_DOMAIN || process.env.COOKIE_DOMAIN;
+
   return {
     httpOnly: true,
     secure: isProduction,
     sameSite: 'lax' as const, // client & server share parent domain (e.g. api.domain.com / domain.com)
     path: '/',
+    ...(configuredDomain ? { domain: configuredDomain } : {}),
   };
 }
 
