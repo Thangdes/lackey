@@ -171,7 +171,7 @@ export default function OrderRow(props: OrderRowProps) {
           const raw = String(paymentMethod || '').toUpperCase();
           const isVietQR = raw.includes('VIETQR');
           const isCOD = raw.includes('COD');
-          const type = isVietQR ? 'VIET QR' : (isCOD ? 'COD' : (raw || '-'));
+          const type = isVietQR ? 'QR' : (isCOD ? 'COD' : (raw || '-'));
           const cls = isVietQR
             ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
             : (isCOD ? 'text-slate-700 bg-slate-50 border-slate-200' : 'text-slate-700 bg-slate-50 border-slate-200');

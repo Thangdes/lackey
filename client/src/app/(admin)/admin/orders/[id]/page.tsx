@@ -183,7 +183,7 @@ export default function AdminOrderDetailPage() {
   const recipientName = r.recipientName || r.receiverName || r.name || customerName;
 
   const paymentMethod = String(r.paymentMethod || r.payment?.method || "").toUpperCase();
-  const paymentType = paymentMethod.includes("VIETQR") ? "VietQR" : paymentMethod.includes("COD") ? "COD" : paymentMethod || "—";
+  const paymentType = paymentMethod.includes("VIETQR") ? "QR" : paymentMethod.includes("COD") ? "COD" : paymentMethod || "—";
   const paymentStatus = r.paymentStatus || r.payment?.status || "Chưa thanh toán";
 
 
