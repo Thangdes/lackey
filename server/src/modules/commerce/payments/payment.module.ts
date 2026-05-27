@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
 import { MulterModule } from '@nestjs/platform-express';
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
@@ -18,7 +17,6 @@ import { PaymentTasks } from './payment.tasks';
     CloudinaryModule,
     MailModule,
     MulterModule.register({}),
-    BullModule.registerQueue({ name: 'notifications' }),
   ],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentTasks, PaymentNotificationListener, PaymentReconciliationService],
