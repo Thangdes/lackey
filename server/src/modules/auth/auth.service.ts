@@ -56,8 +56,22 @@ export class AuthService {
     return this.configService.get<number>('MAX_SESSIONS_PER_USER', 5);
   }
 
-  async signup(data: { username: string; email: string; password: string }) {
-    const { username, password } = data;
+  /** Derive a unique username from the email local-part + short random suffix. */
+  private async generateUsername(email: string): Promise<string> {
+    const base = email.split('@')[0].replace(/[^a-z0-9_]/gi, '_').slice(0, 24);
+    let candidate = base;
+    let attempt = 0;
+    while (true) {
+      const existing = await this.prisma.user.findUnique({ where: { username: candidate } });
+      if (!existing) return candidate;
+      attempt++;
+      candidate = `${base}_${Math.random().toString(36).slice(2, 6)}`;
+      if (attempt > 10) throw new ConflictException('Could not generate a unique username');
+    }
+  }
+
+  async signup(data: { fullName?: string; email: string; password: string }) {
+    const { fullName, password } = data;
     const email = this.normalizeEmail(data.email);
 
     const customer = await this.prisma.customer.findUnique({
@@ -69,14 +83,10 @@ export class AuthService {
       throw new ConflictException('Email already registered');
     }
 
-    const existingUserByUsername = await this.prisma.user.findUnique({
-      where: { username },
-    });
-    if (existingUserByUsername) {
-      throw new ConflictException('Username already exists');
-    }
-
-    const hashedPassword = await bcrypt.hash(password, this.bcryptRounds);
+    const [hashedPassword, username] = await Promise.all([
+      bcrypt.hash(password, this.bcryptRounds),
+      this.generateUsername(email),
+    ]);
 
     if (!customer) {
       const newUser = await this.prisma.user.create({
@@ -86,6 +96,7 @@ export class AuthService {
           customer: {
             create: {
               email,
+              fullName: fullName ?? null,
             },
           },
         },
@@ -97,12 +108,16 @@ export class AuthService {
           username,
           password: hashedPassword,
           customer: {
-            connect: {
-              id: customer.id,
-            },
+            connect: { id: customer.id },
           },
         },
       });
+      if (fullName) {
+        await this.prisma.customer.update({
+          where: { id: customer.id },
+          data: { fullName },
+        });
+      }
       return this.generateTokens(newUser.id);
     }
   }
