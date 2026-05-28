@@ -35,24 +35,8 @@ export default function CartBootstrap() {
     };
 
     window.addEventListener("cart:unauthorized", onUnauthorized as EventListener);
-    // Single, debounced cart change invalidation to avoid refetch storms
-    let t: number | null = null;
-    const onCartChanged = () => {
-      if (t) {
-        window.clearTimeout(t);
-      }
-      t = window.setTimeout(() => {
-        try { qc.invalidateQueries({ queryKey: cartKeys.root() }); } catch {}
-        t = null;
-      }, 200);
-    };
-    window.addEventListener("cart:changed", onCartChanged as EventListener);
     return () => {
       window.removeEventListener("cart:unauthorized", onUnauthorized as EventListener);
-      window.removeEventListener("cart:changed", onCartChanged as EventListener);
-      if (t) {
-        window.clearTimeout(t);
-      }
     };
   }, [qc, openAuth]);
 

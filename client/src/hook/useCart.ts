@@ -59,8 +59,6 @@ export function useAddToCart() {
     mutationFn: (payload: CartItemPayload) => cartService.addItem(payload),
     onSuccess: (data) => {
       if (data) qc.setQueryData(keys.root(), data);
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
   });
 }
@@ -86,8 +84,6 @@ export function useSmartCart(): SmartCartApi {
     mutationFn: (payload: CartItemPayload) => cartService.addItem(payload),
     onSuccess: (data) => {
       if (data) qc.setQueryData(keys.root(), data);
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
   });
 
@@ -103,8 +99,6 @@ export function useSmartCart(): SmartCartApi {
     },
     onSuccess: (data) => {
       if (data) qc.setQueryData(keys.root(), data);
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
     onError: (err, variables: { itemId: string; qty: number }) => {
       try {
@@ -125,8 +119,6 @@ export function useSmartCart(): SmartCartApi {
     },
     onSuccess: (data) => {
       if (data) qc.setQueryData(keys.root(), data);
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
   });
 
@@ -134,8 +126,6 @@ export function useSmartCart(): SmartCartApi {
     mutationFn: () => cartService.clear(),
     onSuccess: (data) => {
       if (data) qc.setQueryData(keys.root(), data);
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
   });
 
@@ -145,8 +135,6 @@ export function useSmartCart(): SmartCartApi {
       if (data) {
         qc.setQueryData(keys.root(), data);
       }
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
     onError: (err) => {
       console.error('[CART] Failed to apply discount:', err);
@@ -159,8 +147,6 @@ export function useSmartCart(): SmartCartApi {
       if (data) {
         qc.setQueryData(keys.root(), data);
       }
-      qc.invalidateQueries({ queryKey: keys.root() });
-      qc.invalidateQueries({ queryKey: keys.items() });
     },
     onError: (err) => {
       console.error('[CART] Failed to remove discount:', err);

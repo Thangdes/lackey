@@ -101,10 +101,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
     try {
       setAdding(true);
       await addToCart.mutateAsync({ productVariantId: selectedVariant.id, quantity: toAdd });
-      // Only show toast when adding from 0 -> 1 in cart
-      if ((cartQty || 0) <= 0) {
-        showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: toAdd });
-      }
+      showAddedToCartToast({ name: p.name, thumbnailUrl: p.thumbnailUrl || p.images?.[0], quantity: toAdd });
       const sku = selectedVariant.sku || selectedVariant.id;
       if (sku) setMiniHighlightSku(sku);
     } catch (e: unknown) {
