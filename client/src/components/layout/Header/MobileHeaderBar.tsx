@@ -2,14 +2,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { IoCartOutline } from 'react-icons/io5'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import CartMiniClient from '@/components/cart/CartMiniClient'
 import SearchModal from './SearchModal'
 import { Search } from 'lucide-react'
 import { useSmartCart } from '@/hook/useCart'
-import { Menu, User as UserIcon, ClipboardList, ShoppingCart as ShoppingCartIcon, LayoutGrid, HelpCircle, Phone, Truck, Undo2, FileText, Shield, Info, ChevronDown, ChevronRight, Clock, Eye, Star, Sparkles, Bell } from 'lucide-react'
+import { Menu, User as UserIcon, ClipboardList, ShoppingBag, LayoutGrid, HelpCircle, Phone, Truck, Undo2, FileText, Shield, Info, ChevronDown, ChevronRight, Clock, Eye, Star, Sparkles, Bell } from 'lucide-react'
 import { ROUTES } from '@/constant/route'
 import { categoryService, type Category } from '@/service/category.service'
 import { buildProductDetailPath, buildProductsWithParams } from '@/constant/route'
@@ -81,15 +80,15 @@ const MobileHeaderBar: React.FC = () => {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[85vw] max-w-sm bg-[#FFF8E7] p-0">
+            <SheetContent side="left" className="w-[85vw] max-w-sm bg-white p-0 border-r border-neutral-200/80 shadow-2xl">
               <div className="h-full flex flex-col">
-                <div className="px-4 py-4 bg-gradient-to-r from-[#AE1C2C] to-[#C92A3A] border-b-4 border-black">
-                  <SheetTitle className="text-xl font-[family-name:var(--font-retro)] text-white uppercase tracking-wide flex items-center gap-2">
-                    <Menu className="h-5 w-5" />
+                <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between">
+                  <SheetTitle className="text-lg font-bold text-neutral-950 flex items-center gap-2">
+                    <Menu className="h-5 w-5 text-neutral-500" />
                     Menu
                   </SheetTitle>
                 </div>
-                <div className="flex-1 overflow-y-auto px-3 py-4">
+                <div className="flex-1 overflow-y-auto px-4 py-5 bg-white">
                   <MenuContent />
                 </div>
               </div>
@@ -254,10 +253,12 @@ const MobileHeaderBar: React.FC = () => {
                 title="Giỏ hàng"
               >
                 <span className="relative flex items-center">
-                  <IoCartOutline className="h-7 w-7" />
-                  <span className="absolute -top-2 left-3 inline-flex items-center justify-center bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">
-                    {cartQty}
-                  </span>
+                  <ShoppingBag className="h-6 w-6" />
+                  {cartQty > 0 && (
+                    <span className="absolute -top-1.5 left-3.5 inline-flex items-center justify-center bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 rounded-full">
+                      {cartQty}
+                    </span>
+                  )}
                 </span>
                 <span className="sr-only">Số sản phẩm trong giỏ: {cartQty}</span>
               </Button>
@@ -279,13 +280,13 @@ const MobileHeaderBar: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-full">
+      <div className="w-full mt-0.5">
         <button
           onClick={() => setSearchOpen(true)}
-          className="w-full h-10 px-4 flex items-center gap-2 border-2 border-black bg-white text-left"
+          className="w-full h-10 px-4.5 flex items-center gap-2.5 border border-neutral-200/80 bg-neutral-50 hover:bg-neutral-100/80 rounded-full text-left transition-colors"
         >
-          <Search className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-500">Tìm kiếm bàn phím...</span>
+          <Search className="w-4 h-4 text-neutral-400" />
+          <span className="text-sm text-neutral-400">Tìm kiếm bàn phím...</span>
         </button>
       </div>
       
@@ -331,57 +332,56 @@ const MenuContent: React.FC = () => {
   const topCats = useMemo(() => cats, [cats])
 
   return (
-    <nav className="space-y-3 text-sm">
-      <Section title="Tài khoản" icon={<UserIcon className="h-4 w-4" />}>
-        <MenuLink href={ROUTES.profile} icon={<UserIcon className="h-4 w-4 text-neutral-600" />}>Đăng nhập / Hồ sơ</MenuLink>
-        <MenuLink href={ROUTES.orders} icon={<ClipboardList className="h-4 w-4 text-neutral-600" />}>Đơn hàng của tôi</MenuLink>
-        <MenuLink href={ROUTES.cart} icon={<ShoppingCartIcon className="h-4 w-4 text-neutral-600" />}>Giỏ hàng</MenuLink>
+    <nav className="space-y-4 text-sm">
+      <Section title="Tài khoản" icon={<UserIcon className="h-4.5 w-4.5" />}>
+        <MenuLink href={ROUTES.profile} icon={<UserIcon className="h-4 w-4" />}>Đăng nhập / Hồ sơ</MenuLink>
+        <MenuLink href={ROUTES.orders} icon={<ClipboardList className="h-4 w-4" />}>Đơn hàng của tôi</MenuLink>
+        <MenuLink href={ROUTES.cart} icon={<ShoppingBag className="h-4 w-4" />}>Giỏ hàng</MenuLink>
       </Section>
 
-      <Section title="Danh mục" icon={<LayoutGrid className="h-4 w-4" />} defaultOpen>
-        {loading && <div className="px-2 py-1.5 text-neutral-500">Đang tải...</div>}
-        {error && <div className="px-2 py-1.5 text-red-500">{error}</div>}
+      <Section title="Danh mục" icon={<LayoutGrid className="h-4.5 w-4.5" />} defaultOpen>
+        {loading && <div className="px-3 py-2 text-neutral-400 text-xs">Đang tải...</div>}
+        {error && <div className="px-3 py-2 text-red-500 text-xs">{error}</div>}
         {!loading && !error && (
-          <ul className="grid grid-cols-2 gap-1">
+          <ul className="grid grid-cols-2 gap-1.5 px-1 py-1">
             {topCats.map((c) => (
               <li key={c.id}>
                 <Link
                   href={{ pathname: ROUTES.products, query: { category: c.slug } }}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-100 text-black"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-neutral-50 text-neutral-800 hover:text-neutral-900 border border-transparent hover:border-neutral-100 transition-all"
                 >
-                  <ChevronRight className="h-3.5 w-3.5 text-neutral-400" />
-                  <span className="truncate">{c.name}</span>
+                  <ChevronRight className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+                  <span className="truncate font-medium text-[13px]">{c.name}</span>
                 </Link>
               </li>
             ))}
           </ul>
         )}
-        <div className="pt-1">
-          <Link href={ROUTES.products} className="inline-flex items-center gap-2 px-2 py-1.5 rounded text-[13px] font-medium text-black hover:bg-neutral-100">
-            <LayoutGrid className="h-4 w-4 text-neutral-600" />
+        <div className="pt-2 border-t border-neutral-100/50 mt-1">
+          <Link href={ROUTES.products} className="w-full inline-flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-all">
+            <LayoutGrid className="h-4 w-4 text-neutral-500" />
             <span>Xem tất cả sản phẩm</span>
           </Link>
         </div>
       </Section>
 
-      <Section title="Đã xem gần đây" icon={<Clock className="h-4 w-4" />}>
+      <Section title="Đã xem gần đây" icon={<Clock className="h-4.5 w-4.5" />}>
         {recentCats.length === 0 && recentProducts.length === 0 && (
-          <div className="px-2 py-1.5 text-neutral-500">Chưa có mục nào</div>
+          <div className="px-3 py-4 text-center text-neutral-400 text-xs">Chưa có mục nào</div>
         )}
         {recentCats.length > 0 && (
-          <div className="px-2 pb-2">
-            <div className="mb-1 flex items-center gap-2 text-[12px] font-semibold text-neutral-500">
+          <div className="px-1.5 pb-2">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
               <Eye className="h-3.5 w-3.5" />
               <span>Danh mục</span>
             </div>
-            <ul className="flex flex-wrap gap-1">
+            <ul className="flex flex-wrap gap-1.5">
               {recentCats.slice(0, 8).map((rc) => (
                 <li key={rc.slug}>
                   <Link
                     href={{ pathname: ROUTES.products, query: { category: rc.slug } }}
-                    className="inline-flex items-center gap-2 px-2 py-1.5 rounded-full border border-neutral-200 hover:bg-neutral-100 text-black"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200/80 bg-white hover:bg-neutral-50 text-neutral-700 text-xs font-medium transition-all"
                   >
-                    <ChevronRight className="h-3.5 w-3.5 text-neutral-400" />
                     <span className="truncate max-w-[120px]">{rc.name}</span>
                   </Link>
                 </li>
@@ -390,8 +390,8 @@ const MenuContent: React.FC = () => {
           </div>
         )}
         {recentProducts.length > 0 && (
-          <div className="px-2 pt-1">
-            <div className="mb-1 flex items-center gap-2 text-[12px] font-semibold text-neutral-500">
+          <div className="px-1.5 pt-2 border-t border-neutral-100/50 mt-2">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
               <Clock className="h-3.5 w-3.5" />
               <span>Sản phẩm</span>
             </div>
@@ -400,14 +400,16 @@ const MenuContent: React.FC = () => {
                 <li key={rp.idOrSlug}>
                   <Link
                     href={buildProductDetailPath(rp.idOrSlug)}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-100 text-black"
+                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-neutral-50 text-neutral-700 hover:text-neutral-900 transition-all"
                   >
                     {rp.imageUrl ? (
-                      <Image src={rp.imageUrl} alt={rp.name} width={28} height={28} className="h-7 w-7 rounded object-cover bg-neutral-100" />
+                      <div className="relative h-8 w-8 rounded-lg overflow-hidden border border-neutral-100 bg-neutral-50 shrink-0">
+                        <Image src={rp.imageUrl} alt={rp.name} fill className="object-cover" />
+                      </div>
                     ) : (
-                      <ChevronRight className="h-3.5 w-3.5 text-neutral-400" />
+                      <ChevronRight className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
                     )}
-                    <span className="truncate">{rp.name}</span>
+                    <span className="truncate text-[13px] font-medium">{rp.name}</span>
                   </Link>
                 </li>
               ))}
@@ -416,31 +418,24 @@ const MenuContent: React.FC = () => {
         )}
       </Section>
 
-      <Section title="Bộ sưu tập nổi bật" icon={<Star className="h-4 w-4" />}>
-        <div className="grid grid-cols-2 gap-1 px-1">
-          {/* <Link
-            href="/custom-keychain"
-            className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white border-2 border-black hover:bg-[#AE1C2C] hover:text-white text-black transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] group"
-          >
-            <span aria-hidden className="group-hover:scale-110 transition-transform">
-              <Flame className="h-4 w-4 text-neutral-700" />
-            </span>
-            <span className="truncate text-xs font-bold uppercase tracking-wide">Custom Keychain</span>
-          </Link> */}
-          <CollectionLink label="Bán chạy" icon={<Star className="h-4 w-4 text-neutral-700" />} params={{ sort: 'popular' }} />
-          <CollectionLink label="Hàng mới" icon={<Sparkles className="h-4 w-4 text-neutral-700" />} params={{ sort: 'new' }} />
+      <Section title="Bộ sưu tập" icon={<Star className="h-4.5 w-4.5" />}>
+        <div className="grid grid-cols-3 gap-2 px-1 py-1">
+          <CollectionLink label="Bán chạy" icon={<Star className="h-4 w-4" />} params={{ sort: 'popular' }} />
+          <CollectionLink label="Hàng mới" icon={<Sparkles className="h-4 w-4" />} params={{ sort: 'new' }} />
           <CollectionLink label="Giá tốt" icon={<TagPill />} params={{ sort: 'price_asc' }} />
         </div>
       </Section>
 
-      <Section title="Hỗ trợ & Chính sách" icon={<HelpCircle className="h-4 w-4" />}>
-        <MenuLink href={ROUTES.help} icon={<HelpCircle className="h-4 w-4 text-neutral-600" />}>Trung tâm trợ giúp</MenuLink>
-        <MenuLink href={ROUTES.contact} icon={<Phone className="h-4 w-4 text-neutral-600" />}>Liên hệ</MenuLink>
-        <MenuLink href={ROUTES.shipping} icon={<Truck className="h-4 w-4 text-neutral-600" />}>Vận chuyển</MenuLink>
-        <MenuLink href={ROUTES.return} icon={<Undo2 className="h-4 w-4 text-neutral-600" />}>Đổi trả</MenuLink>
-        <MenuLink href={ROUTES.terms} icon={<FileText className="h-4 w-4 text-neutral-600" />}>Điều khoản</MenuLink>
-        <MenuLink href={ROUTES.privacy} icon={<Shield className="h-4 w-4 text-neutral-600" />}>Quyền riêng tư</MenuLink>
-        <MenuLink href={ROUTES.about} icon={<Info className="h-4 w-4 text-neutral-600" />}>Về chúng tôi</MenuLink>
+      <Section title="Hỗ trợ & Chính sách" icon={<HelpCircle className="h-4.5 w-4.5" />}>
+        <div className="grid grid-cols-1 gap-0.5">
+          <MenuLink href={ROUTES.help} icon={<HelpCircle className="h-4 w-4" />}>Trung tâm trợ giúp</MenuLink>
+          <MenuLink href={ROUTES.contact} icon={<Phone className="h-4 w-4" />}>Liên hệ</MenuLink>
+          <MenuLink href={ROUTES.shipping} icon={<Truck className="h-4 w-4" />}>Vận chuyển</MenuLink>
+          <MenuLink href={ROUTES.return} icon={<Undo2 className="h-4 w-4" />}>Đổi trả</MenuLink>
+          <MenuLink href={ROUTES.terms} icon={<FileText className="h-4 w-4" />}>Điều khoản</MenuLink>
+          <MenuLink href={ROUTES.privacy} icon={<Shield className="h-4 w-4" />}>Quyền riêng tư</MenuLink>
+          <MenuLink href={ROUTES.about} icon={<Info className="h-4 w-4" />}>Về chúng tôi</MenuLink>
+        </div>
       </Section>
     </nav>
   )
@@ -449,18 +444,18 @@ const MenuContent: React.FC = () => {
 const Section: React.FC<{ title: string; icon?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }> = ({ title, icon, defaultOpen = false, children }) => {
   const [open, setOpen] = useState<boolean>(defaultOpen)
   return (
-    <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
+    <div className="bg-white border border-neutral-200/70 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all">
       <button
         type="button"
-        className="w-full flex items-center justify-between px-3 py-2.5 font-bold text-black bg-white hover:bg-[#FFF8E7] transition-colors border-b-2 border-black"
+        className="w-full flex items-center justify-between px-4 py-3.5 font-bold text-neutral-900 bg-white hover:bg-neutral-50/60 active:bg-neutral-50 transition-colors border-b border-neutral-100"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
-        <span className="flex items-center gap-2 text-sm uppercase tracking-wide">
-          {icon}
+        <span className="flex items-center gap-2.5 text-sm uppercase tracking-wide">
+          <span className="text-neutral-500">{icon}</span>
           {title}
         </span>
-        <ChevronDown className={`h-4 w-4 text-black transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 text-neutral-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-[600px]' : 'max-h-0'}`}>
         <div className="px-2 py-3 bg-white">
@@ -472,22 +467,26 @@ const Section: React.FC<{ title: string; icon?: React.ReactNode; defaultOpen?: b
 }
 
 const MenuLink: React.FC<{ href: import('next/link').LinkProps['href']; icon?: React.ReactNode; children: React.ReactNode }> = ({ href, icon, children }) => (
-  <Link href={href} className="flex items-center gap-2.5 px-3 py-2 border-l-4 border-transparent hover:border-[#AE1C2C] hover:bg-[#FFF8E7] text-black transition-all group">
-    {icon && <span aria-hidden className="text-[#AE1C2C] group-hover:scale-110 transition-transform">{icon}</span>}
-    <span className="truncate text-sm font-medium">{children}</span>
+  <Link href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 transition-all duration-150 group">
+    {icon && (
+      <div className="w-8 h-8 rounded-lg bg-neutral-50/80 flex items-center justify-center text-neutral-500 group-hover:bg-white group-hover:text-[var(--brand-secondary)] group-hover:shadow-sm border border-transparent group-hover:border-neutral-100 transition-all shrink-0">
+        {icon}
+      </div>
+    )}
+    <span className="truncate text-sm font-semibold">{children}</span>
   </Link>
 )
 
 const CollectionLink: React.FC<{ label: string; icon: React.ReactNode; params: Record<string, string> }> = ({ label, icon, params }) => (
   <Link
     href={buildProductsWithParams(params)}
-    className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white border-2 border-black hover:bg-[#AE1C2C] hover:text-white text-black transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] group"
+    className="flex flex-col sm:flex-row items-center justify-center gap-2 px-2 py-3 bg-neutral-50 hover:bg-neutral-100/80 text-neutral-800 hover:text-neutral-900 border border-neutral-200/50 rounded-xl transition-all active:scale-98"
   >
-    <span aria-hidden className="group-hover:scale-110 transition-transform">{icon}</span>
-    <span className="truncate text-xs font-bold uppercase tracking-wide">{label}</span>
+    <span aria-hidden className="text-neutral-500 shrink-0">{icon}</span>
+    <span className="truncate text-[10px] font-extrabold uppercase tracking-wider">{label}</span>
   </Link>
 )
 
 const TagPill: React.FC = () => (
-  <span className="inline-flex items-center justify-center h-5 min-w-5 rounded-full bg-neutral-200 text-neutral-700 text-[11px] px-1.5">₫</span>
+  <span className="inline-flex items-center justify-center h-4.5 min-w-4.5 rounded-full bg-neutral-200 text-neutral-700 text-[10px] font-bold">₫</span>
 )
