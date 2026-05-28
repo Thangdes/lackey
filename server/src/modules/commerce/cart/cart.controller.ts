@@ -10,6 +10,8 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
@@ -20,6 +22,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { BulkSetCartDto } from './dto/bulk-set-cart.dto';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 
 interface UserPayload {
   id: string;
@@ -28,121 +31,94 @@ interface UserPayload {
 @ApiTags('Cart')
 @ApiBearerAuth()
 @Controller('cart')
+@UseGuards(JwtAuthGuard)
 export class CartController {
   constructor(
     private readonly cartService: CartService,
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
-  private async getCartIdentifier(
-    userPayload: UserPayload | null,
-    req: Request,
-  ) {
-    if (userPayload) {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userPayload.id },
-        select: { customerId: true },
-      });
-      return { customerId: user?.customerId };
+  private async getCustomerId(userPayload: UserPayload): Promise<string> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userPayload.id },
+      select: { customerId: true },
+    });
+    if (!user?.customerId) {
+      throw new BadRequestException('Only customer accounts can use the cart.');
     }
-    if (!req.cookies.guestCartId) {
-      return { guestCartId: undefined };
-    }
-    return { guestCartId: req.cookies.guestCartId };
+    return user.customerId;
   }
 
   @Get()
-  async getCart(@CurrentUser() user: UserPayload | null, @Req() req: Request) {
-    const identifier = await this.getCartIdentifier(user, req);
+  async getCart(@CurrentUser() user: UserPayload, @Req() req: Request) {
+    const customerId = await this.getCustomerId(user);
     const discountCode = req.cookies?.discountCode as string | undefined;
-    return this.cartService.getCart(identifier, discountCode);
+    return this.cartService.getCart(customerId, discountCode);
   }
 
   @Post('/items')
   @HttpCode(HttpStatus.OK)
   async addItemToCart(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
+    @CurrentUser() user: UserPayload,
     @Body() addToCartDto: AddToCartDto,
   ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    const updatedCart = await this.cartService.addItemToCart(
-      identifier,
-      addToCartDto,
-    );
-
-    if (!identifier.customerId && !req.cookies.guestCartId) {
-      const isProduction = process.env.NODE_ENV === 'production';
-      const secureFlag = isProduction;
-      res.cookie('guestCartId', updatedCart.cartId, {
-        httpOnly: true,
-        secure: secureFlag,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
-    }
-    return updatedCart;
+    const customerId = await this.getCustomerId(user);
+    return this.cartService.addItemToCart(customerId, addToCartDto);
   }
 
   @Patch('/items/:itemId')
   async updateItemQuantity(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
+    @CurrentUser() user: UserPayload,
     @Param('itemId') itemId: string,
     @Body() updateCartItemDto: UpdateCartItemDto,
   ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    return this.cartService.updateItemQuantity(identifier, itemId, updateCartItemDto);
+    const customerId = await this.getCustomerId(user);
+    return this.cartService.updateItemQuantity(
+      customerId,
+      itemId,
+      updateCartItemDto,
+    );
   }
 
   @Delete('/items/:itemId')
   async removeItem(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
+    @CurrentUser() user: UserPayload,
     @Param('itemId') itemId: string,
   ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    return this.cartService.removeItem(identifier, itemId);
+    const customerId = await this.getCustomerId(user);
+    return this.cartService.removeItem(customerId, itemId);
   }
 
   @Post('/clear')
-  async clearCart(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
-  ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    return this.cartService.clearCart(identifier);
+  async clearCart(@CurrentUser() user: UserPayload) {
+    const customerId = await this.getCustomerId(user);
+    return this.cartService.clearCart(customerId);
   }
 
   @Post('/items/bulk-set')
   @HttpCode(HttpStatus.OK)
-  async bulkSet(
-    @CurrentUser() user: UserPayload | null,
-    @Req() req: Request,
-    @Body() dto: BulkSetCartDto,
-  ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    return this.cartService.bulkSetCart(identifier, dto.items);
+  async bulkSet(@CurrentUser() user: UserPayload, @Body() dto: BulkSetCartDto) {
+    const customerId = await this.getCustomerId(user);
+    return this.cartService.bulkSetCart(customerId, dto.items);
   }
 
   @Post('/apply-discount')
   @HttpCode(HttpStatus.OK)
   async applyDiscount(
-    @CurrentUser() user: UserPayload | null,
+    @CurrentUser() user: UserPayload,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Body() dto: ApplyDiscountDto,
   ) {
-    const identifier = await this.getCartIdentifier(user, req);
-    const result = await this.cartService.applyDiscount(identifier, dto.code);
+    const customerId = await this.getCustomerId(user);
+    const result = await this.cartService.applyDiscount(customerId, dto.code);
     const originHeader = (req.headers?.origin as string | undefined) || '';
     const hostToTest = originHeader || `http://${req.hostname || ''}`;
-    const isLocalhost = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(hostToTest);
+    const isLocalhost =
+      /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(hostToTest);
     res.cookie('discountCode', dto.code, {
       httpOnly: true,
-      secure: isLocalhost ? false : true,
+      secure: !isLocalhost,
       sameSite: isLocalhost ? 'lax' : 'none',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -153,20 +129,21 @@ export class CartController {
   @Post('/remove-discount')
   @HttpCode(HttpStatus.OK)
   async removeDiscount(
-    @CurrentUser() user: UserPayload | null,
+    @CurrentUser() user: UserPayload,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const identifier = await this.getCartIdentifier(user, req);
+    const customerId = await this.getCustomerId(user);
     const originHeader = (req.headers?.origin as string | undefined) || '';
     const hostToTest = originHeader || `http://${req.hostname || ''}`;
-    const isLocalhost = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(hostToTest);
+    const isLocalhost =
+      /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(hostToTest);
     res.clearCookie('discountCode', {
       httpOnly: true,
-      secure: isLocalhost ? false : true,
+      secure: !isLocalhost,
       sameSite: isLocalhost ? 'lax' : 'none',
       path: '/',
     });
-    return this.cartService.removeDiscount(identifier);
+    return this.cartService.removeDiscount(customerId);
   }
 }

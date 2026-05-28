@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { CartRepository, CartIdentifier } from './repositories/cart.repository';
+import { CartRepository } from './repositories/cart.repository';
 import { CartCalculator } from './calculators/cart.calculator';
 import { DiscountCalculator } from '@/infrastructure/common/utils/discount.calculator';
 
@@ -14,23 +17,30 @@ export class CartService {
     private readonly cartRepository: CartRepository,
   ) {}
 
-
-  private async computeDiscount(subtotal: number, code?: string, requireValid = false) {
+  private async computeDiscount(
+    subtotal: number,
+    code?: string,
+    requireValid = false,
+  ) {
     if (!code) return { amount: 0, applied: null };
-    
+
     const discount = await this.prisma.discount.findUnique({ where: { code } });
     return DiscountCalculator.computeDiscount(discount, subtotal, requireValid);
   }
 
-  async getCart({ customerId, guestCartId }: CartIdentifier, discountCode?: string, requireValidDiscount = false) {
-    if (!customerId && !guestCartId) {
+  async getCart(
+    customerId: string,
+    discountCode?: string,
+    requireValidDiscount = false,
+  ) {
+    if (!customerId) {
       return {
         cartId: undefined,
         items: [],
         totals: { subtotal: 0, totalItems: 0, totalUniqueItems: 0 },
       };
     }
-    const cartItems = await this.cartRepository.findCartItems({ customerId, guestCartId });
+    const cartItems = await this.cartRepository.findCartItems(customerId);
 
     const items = cartItems.map((i) => CartCalculator.normalizeCartItem(i));
     const totals = CartCalculator.calculateTotals(items);
@@ -42,7 +52,7 @@ export class CartService {
     const totalAfterDiscount = Math.max(0, totals.subtotal - discount);
 
     return {
-      cartId: customerId || guestCartId,
+      cartId: customerId,
       items,
       totals: {
         ...totals,
@@ -53,10 +63,7 @@ export class CartService {
     };
   }
 
-  async addItemToCart(
-    { customerId, guestCartId }: CartIdentifier,
-    addToCartDto: AddToCartDto,
-  ) {
+  async addItemToCart(customerId: string, addToCartDto: AddToCartDto) {
     const { productVariantId, quantity } = addToCartDto;
 
     const variant = await this.prisma.productVariant
@@ -68,13 +75,8 @@ export class CartService {
         throw new NotFoundException('Product variant not found');
       });
 
-    let finalGuestCartId = guestCartId;
-    if (!customerId && !guestCartId) {
-      finalGuestCartId = uuidv4();
-    }
-
     const existingItem = await this.cartRepository.findCartItem(
-      { customerId, guestCartId: finalGuestCartId },
+      customerId,
       productVariantId,
     );
 
@@ -85,20 +87,23 @@ export class CartService {
       throw new BadRequestException('Requested quantity is not available');
     }
     if (existingItem) {
-      await this.cartRepository.updateCartItemQuantity(existingItem.id, finalQty);
+      await this.cartRepository.updateCartItemQuantity(
+        existingItem.id,
+        finalQty,
+      );
     } else {
       await this.cartRepository.createCartItem(
-        { customerId, guestCartId: finalGuestCartId },
+        customerId,
         productVariantId,
         finalQty,
       );
     }
 
-    return this.getCart({ customerId, guestCartId: finalGuestCartId });
+    return this.getCart(customerId);
   }
 
   async updateItemQuantity(
-    identifier: CartIdentifier,
+    customerId: string,
     cartItemId: string,
     updateDto: UpdateCartItemDto,
   ) {
@@ -111,12 +116,15 @@ export class CartService {
         throw new NotFoundException('Cart item not found');
       });
 
-    const finalQty = Math.max(1, Math.min(updateDto.quantity, item.productVariant.stockQuantity));
+    const finalQty = Math.max(
+      1,
+      Math.min(updateDto.quantity, item.productVariant.stockQuantity),
+    );
     await this.cartRepository.updateCartItemQuantity(cartItemId, finalQty);
-    return this.getCart(identifier);
+    return this.getCart(customerId);
   }
 
-  async removeItem(identifier: CartIdentifier, cartItemId: string) {
+  async removeItem(customerId: string, cartItemId: string) {
     await this.prisma.cartItem
       .findUniqueOrThrow({ where: { id: cartItemId } })
       .catch(() => {
@@ -124,26 +132,22 @@ export class CartService {
       });
 
     await this.cartRepository.deleteCartItem(cartItemId);
-    return this.getCart(identifier);
+    return this.getCart(customerId);
   }
 
-  async clearCart({ customerId, guestCartId }: CartIdentifier) {
-    if (!customerId && !guestCartId) {
+  async clearCart(customerId: string) {
+    if (!customerId) {
       return { message: 'Nothing to clear' };
     }
 
-    await this.cartRepository.clearCart({ customerId, guestCartId });
-    return this.getCart({ customerId, guestCartId });
+    await this.cartRepository.clearCart(customerId);
+    return this.getCart(customerId);
   }
 
   async bulkSetCart(
-    identifier: CartIdentifier,
+    customerId: string,
     items: Array<{ productVariantId: string; quantity: number }>,
   ) {
-    const { customerId, guestCartId } = identifier;
-    if (!customerId && !guestCartId) {
-      identifier.guestCartId = uuidv4();
-    }
     for (const it of items) {
       const variant = await this.prisma.productVariant
         .findUniqueOrThrow({
@@ -151,10 +155,12 @@ export class CartService {
           select: { id: true, stockQuantity: true },
         })
         .catch(() => {
-          throw new NotFoundException(`Product variant ${it.productVariantId} not found`);
+          throw new NotFoundException(
+            `Product variant ${it.productVariantId} not found`,
+          );
         });
       const existing = await this.cartRepository.findCartItem(
-        { customerId, guestCartId: identifier.guestCartId },
+        customerId,
         it.productVariantId,
       );
       if (it.quantity <= 0) {
@@ -163,76 +169,30 @@ export class CartService {
         }
         continue;
       }
-      const finalQty = Math.max(1, Math.min(it.quantity, variant.stockQuantity));
+      const finalQty = Math.max(
+        1,
+        Math.min(it.quantity, variant.stockQuantity),
+      );
       if (existing) {
         await this.cartRepository.updateCartItemQuantity(existing.id, finalQty);
       } else {
         await this.cartRepository.createCartItem(
-          { customerId, guestCartId: identifier.guestCartId },
+          customerId,
           it.productVariantId,
           finalQty,
         );
       }
     }
-    return this.getCart(identifier);
+    return this.getCart(customerId);
   }
 
-  async mergeCarts(customerId: string, guestCartId: string, discountCode?: string) {
-    const guestItems = await this.prisma.cartItem.findMany({
-      where: { guestCartId },
-    });
-    if (guestItems.length === 0) return this.getCart({ customerId });
-
-    const userItems = await this.prisma.cartItem.findMany({
-      where: { customerId },
-    });
-    const userItemMap = new Map(
-      userItems.map((item) => [item.productVariantId, item]),
-    );
-
-    // ✅ Batch query để tránh N+1 problem
-    const variantIds = guestItems.map(i => i.productVariantId);
-    const variants = await this.prisma.productVariant.findMany({
-      where: { id: { in: variantIds } },
-      select: { id: true, stockQuantity: true },
-    });
-    const variantMap = new Map(variants.map(v => [v.id, v]));
-
-    for (const guestItem of guestItems) {
-      const userItem = userItemMap.get(guestItem.productVariantId);
-      const variant = variantMap.get(guestItem.productVariantId);
-      const stock = variant?.stockQuantity ?? 0;
-      
-      if (userItem) {
-        // User đã có item này, cộng dồn quantity
-        const finalQty = Math.max(1, Math.min(userItem.quantity + guestItem.quantity, stock));
-        await this.cartRepository.updateCartItemQuantity(userItem.id, finalQty);
-        // Xóa guest item vì đã merge vào user item
-        await this.cartRepository.deleteCartItem(guestItem.id);
-      } else {
-        // User chưa có item này, chuyển ownership
-        const finalQty = Math.max(1, Math.min(guestItem.quantity, stock));
-        await this.prisma.cartItem.update({
-          where: { id: guestItem.id },
-          data: { 
-            customerId, 
-            guestCartId: null,
-            quantity: finalQty,
-          },
-        });
-      }
-    }
-
-    return this.getCart({ customerId }, discountCode);
-  }
-
-  async applyDiscount(identifier: CartIdentifier, code: string) {
-    const baseCart = await this.getCart(identifier);
+  async applyDiscount(customerId: string, code: string) {
+    const baseCart = await this.getCart(customerId);
     await this.computeDiscount(baseCart.totals.subtotal, code, true);
-    return this.getCart(identifier, code, true);
+    return this.getCart(customerId, code, true);
   }
 
-  async removeDiscount(identifier: CartIdentifier) {
-    return this.getCart(identifier);
+  async removeDiscount(customerId: string) {
+    return this.getCart(customerId);
   }
 }

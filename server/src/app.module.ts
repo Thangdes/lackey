@@ -35,14 +35,16 @@ import { WishlistModule } from './modules/commerce/wishlist/wishlist.module';
 import { AttributeModule } from './modules/products/attributes/attribute.module';
 import { BrandModule } from './modules/products/brands/brand.module';
 import { TagModule } from './modules/products/tags/tag.module';
-import { GuestCartAdminModule } from './modules/admin/guest-carts/guest-cart-admin.module';
 import { SepayModule } from './modules/sepay/subscription.module';
 
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '.env.docker'] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', '.env.docker'],
+    }),
     CacheModule.register({
       isGlobal: true,
       ttl: Number(process.env.CACHE_TTL_SECONDS) || 60 * 60 * 24, // default 1 day
@@ -78,9 +80,8 @@ import { SepayModule } from './modules/sepay/subscription.module';
     AttributeModule,
     BrandModule,
     TagModule,
-    GuestCartAdminModule,
     SepayModule,
   ],
   controllers: [HealthController],
 })
-export class AppModule { }
+export class AppModule {}

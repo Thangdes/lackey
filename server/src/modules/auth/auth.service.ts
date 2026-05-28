@@ -7,7 +7,6 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import dayjs = require('dayjs');
-import { CartService } from '@/modules/commerce/cart/cart.service';
 import { UserRole } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import type { StringValue } from 'ms';
@@ -17,9 +16,8 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private cartService: CartService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   private normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
@@ -36,7 +34,10 @@ export class AuthService {
   private get bcryptRounds(): number {
     if (this._bcryptRoundsCache !== null) return this._bcryptRoundsCache;
     const raw = this.configService.get<string | number>('BCRYPT_ROUNDS', 10);
-    if (typeof raw === 'number') { this._bcryptRoundsCache = raw; return raw; }
+    if (typeof raw === 'number') {
+      this._bcryptRoundsCache = raw;
+      return raw;
+    }
     const parsed = Number.parseInt(String(raw).trim(), 10);
     this._bcryptRoundsCache = Number.isFinite(parsed) ? parsed : 10;
     return this._bcryptRoundsCache;
@@ -58,15 +59,21 @@ export class AuthService {
 
   /** Derive a unique username from the email local-part + short random suffix. */
   private async generateUsername(email: string): Promise<string> {
-    const base = email.split('@')[0].replace(/[^a-z0-9_]/gi, '_').slice(0, 24);
+    const base = email
+      .split('@')[0]
+      .replace(/[^a-z0-9_]/gi, '_')
+      .slice(0, 24);
     let candidate = base;
     let attempt = 0;
     while (true) {
-      const existing = await this.prisma.user.findUnique({ where: { username: candidate } });
+      const existing = await this.prisma.user.findUnique({
+        where: { username: candidate },
+      });
       if (!existing) return candidate;
       attempt++;
       candidate = `${base}_${Math.random().toString(36).slice(2, 6)}`;
-      if (attempt > 10) throw new ConflictException('Could not generate a unique username');
+      if (attempt > 10)
+        throw new ConflictException('Could not generate a unique username');
     }
   }
 
@@ -122,8 +129,8 @@ export class AuthService {
     }
   }
 
-  async login(data: { email: string; password: string; guestCartId?: string }) {
-    const { password, guestCartId } = data;
+  async login(data: { email: string; password: string }) {
+    const { password } = data;
     const email = this.normalizeEmail(data.email);
 
     // Single query: tìm customer (chỉ lấy field cần thiết)
@@ -137,8 +144,12 @@ export class AuthService {
       },
     });
 
-    let user: { id: string; password: string; role: UserRole; customerId: string | null } | null =
-      customer?.user ?? null;
+    let user: {
+      id: string;
+      password: string;
+      role: UserRole;
+      customerId: string | null;
+    } | null = customer?.user ?? null;
 
     // Chỉ query supplier nếu customer không có user
     if (!user) {
@@ -163,10 +174,6 @@ export class AuthService {
       throw new UnauthorizedException('Sai email hoặc mật khẩu');
     }
 
-    if (guestCartId && user.role === UserRole.CUSTOMER && user.customerId) {
-      await this.cartService.mergeCarts(user.customerId, guestCartId);
-    }
-
     return this.generateTokens(user.id);
   }
 
@@ -174,10 +181,16 @@ export class AuthService {
     // Tạo cả 2 token song song (không phụ thuộc nhau)
     const [accessToken, refreshToken] = await Promise.all([
       Promise.resolve(
-        this.jwtService.sign({ sub: userId }, { expiresIn: this.jwtAccessExpires }),
+        this.jwtService.sign(
+          { sub: userId },
+          { expiresIn: this.jwtAccessExpires },
+        ),
       ),
       Promise.resolve(
-        this.jwtService.sign({ sub: userId }, { expiresIn: this.jwtRefreshExpires }),
+        this.jwtService.sign(
+          { sub: userId },
+          { expiresIn: this.jwtRefreshExpires },
+        ),
       ),
     ]);
 

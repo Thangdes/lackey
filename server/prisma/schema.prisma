@@ -134,17 +134,15 @@ model Supplier {
 
 model CartItem {
   id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  customerId       String?        @map("customer_id") @db.ObjectId
-  guestCartId      String?        @map("guest_cart_id")
+  customerId       String         @map("customer_id") @db.ObjectId
   productVariantId String         @map("product_variant_id") @db.ObjectId
   quantity         Int            @default(1)
   createdAt        DateTime       @default(now()) @map("created_at")
-  customer         Customer?      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer         Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
   productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
 
-  @@unique([customerId, guestCartId, productVariantId])
+  @@unique([customerId, productVariantId])
   @@index([customerId])
-  @@index([guestCartId])
   @@map("cart_items")
 }
 

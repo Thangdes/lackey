@@ -1,22 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 
-export interface CartIdentifier {
-  customerId?: string;
-  guestCartId?: string;
-}
-
 @Injectable()
 export class CartRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findCartItems(identifier: CartIdentifier) {
-    const whereClause = identifier.customerId
-      ? { customerId: identifier.customerId }
-      : { guestCartId: identifier.guestCartId || null };
-
+  async findCartItems(customerId: string) {
     return this.prisma.cartItem.findMany({
-      where: whereClause,
+      where: { customerId },
       include: {
         productVariant: {
           include: {
@@ -30,25 +21,20 @@ export class CartRepository {
     });
   }
 
-  async findCartItem(identifier: CartIdentifier, productVariantId: string) {
-    const whereClause = identifier.customerId
-      ? { customerId: identifier.customerId, productVariantId }
-      : { guestCartId: identifier.guestCartId, productVariantId };
-
+  async findCartItem(customerId: string, productVariantId: string) {
     return this.prisma.cartItem.findFirst({
-      where: whereClause,
+      where: { customerId, productVariantId },
     });
   }
 
   async createCartItem(
-    identifier: CartIdentifier,
+    customerId: string,
     productVariantId: string,
     quantity: number,
   ) {
     return this.prisma.cartItem.create({
       data: {
-        customerId: identifier.customerId || null,
-        guestCartId: identifier.customerId ? null : identifier.guestCartId,
+        customerId,
         productVariantId,
         quantity,
       },
@@ -68,23 +54,9 @@ export class CartRepository {
     });
   }
 
-  async clearCart(identifier: CartIdentifier) {
-    const whereClause = identifier.customerId
-      ? { customerId: identifier.customerId }
-      : { guestCartId: identifier.guestCartId };
-
+  async clearCart(customerId: string) {
     return this.prisma.cartItem.deleteMany({
-      where: whereClause,
-    });
-  }
-
-  async deleteGuestCartItems(guestCartId: string, itemIds: string[]) {
-    return this.prisma.cartItem.deleteMany({
-      where: {
-        guestCartId,
-        id: { in: itemIds },
-        customerId: null,
-      },
+      where: { customerId },
     });
   }
 }

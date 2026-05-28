@@ -48,26 +48,10 @@ export class AuthController {
   @Post('login')
   async login(
     @Body() loginData: LoginDto,
-    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // Prefer guestCartId from httpOnly cookie over body field (more secure)
-    const guestCartIdFromCookie = req.cookies?.guestCartId as
-      | string
-      | undefined;
-    if (guestCartIdFromCookie) {
-      loginData.guestCartId = guestCartIdFromCookie;
-    }
-
     const tokens = await this.authService.login(loginData);
     this.setAuthCookies(res, tokens);
-
-    // Clear the guest cart cookie after merging
-    if (guestCartIdFromCookie) {
-      const isProduction = process.env.NODE_ENV === 'production';
-      res.clearCookie('guestCartId', buildCookieOptions(isProduction));
-    }
-
     return { message: 'Login successful' };
   }
 
@@ -117,10 +101,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     // Revoke the refresh token in DB so it cannot be reused
     const refreshToken = req.cookies?.refreshToken as string | undefined;
     if (refreshToken) {

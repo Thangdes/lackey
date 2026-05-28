@@ -70,7 +70,6 @@ export class CreateOrderDto {
   notes?: string;
 
   customerId?: string;
-  guestCartId?: string;
 
   @IsString()
   @IsOptional()
