@@ -107,7 +107,8 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
   const afterOrderCreated = useCallback(async (created: CreatedOrderMinimal, usedMethod: Method) => {
     const createdCode: string | null = created?.orderCode ?? created?.code ?? null;
     try { console.debug("[checkout] created order:", created); } catch {}
-    try { if (usedMethod === "COD") localStorage.removeItem("cartItems"); } catch {}
+    try { localStorage.removeItem("cartItems"); } catch {}
+    cart.clear();
     try { sessionStorage.setItem("lastPaymentMethod", usedMethod); } catch {}
 
     if (usedMethod === "VIETQR") {
@@ -160,8 +161,6 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
     try { document.cookie = "justCheckedOut=1; path=/; max-age=180"; } catch {}
     try { if (createdCode) sessionStorage.setItem("lastOrderCode", String(createdCode)); } catch {}
     try { sessionStorage.setItem("lastPaymentMethod", "COD"); } catch {}
-    try { localStorage.removeItem("cartItems"); } catch {}
-    cart.clear();
     try {
       const code = sessionStorage.getItem("lastOrderCode") || undefined;
       setLastOrderCodeState(code || undefined);

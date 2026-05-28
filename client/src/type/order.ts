@@ -57,6 +57,22 @@ export interface OrderDetail extends OrderSummary {
     endDate?: string | null;
     minAmount?: number | null;
   } | null;
+  payments?: Array<{ id?: string; method?: string; amount?: number; status?: string; paidAt?: string | null }>;
+  shippingAddress?: {
+    recipientName?: string;
+    phoneNumber?: string;
+    street?: string;
+    ward?: string;
+    district?: string;
+    city?: string;
+    fullAddress?: string | null;
+  };
+  customer?: {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    phone?: string;
+  };
 }
 
 export interface UpdateOrderStatusPayload {
