@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useReducer, useState, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { showErrorToast, showSuccessToast } from "@/components/toast/AppToast";
+import { orderService } from "@/service/order.service";
+import { sepayService } from "@/service/sepay.service";
+import { cartService } from "@/service/cart.service";
+import type { OrderDetail } from "@/type/order";
+import { showErrorToast, showSuccessToast, showInfoToast } from "@/components/toast/AppToast";
 import { CHECKOUT_TEXT } from "@/constant/checkout";
 import { useAuth } from "@/components/auth/AuthProvider";
 import type { PaymentMethod as Method } from "@/type/checkout";
@@ -127,6 +131,144 @@ export default function CheckoutClient() {
   const [successCountdown, setSuccessCountdown] = useState(10);
   const [noAutoDismiss, setNoAutoDismiss] = useState(false);
   const [pendingRedirectHome, setPendingRedirectHome] = useState(false);
+  const [pendingOrder, setPendingOrder] = useState<OrderDetail | null>(null);
+
+  const mappedPendingItems = useMemo(() => {
+    if (!pendingOrder || !pendingOrder.orderItems) return [];
+    return pendingOrder.orderItems.map((item) => {
+      const variant = item.productVariant;
+      const product = variant?.product;
+      
+      let thumbUrl: string | undefined = undefined;
+      if (product?.thumbnailUrl) {
+        thumbUrl = product.thumbnailUrl;
+      } else if (variant?.imageUrl) {
+        thumbUrl = variant.imageUrl;
+      } else if (variant?.images?.[0]?.url) {
+        thumbUrl = variant.images[0].url;
+      }
+
+      return {
+        sku: variant?.sku || item.productVariantId,
+        productId: product?.id || item.productVariantId,
+        productName: product?.name || "Sản phẩm",
+        variantId: item.productVariantId,
+        variantName: variant?.name || "",
+        price: item.priceAtPurchase ?? variant?.price ?? 0,
+        quantity: item.quantity,
+        thumbnailUrl: thumbUrl,
+      };
+    });
+  }, [pendingOrder]);
+
+  useEffect(() => {
+    if (clientReady && !isCartLoading && items.length === 0) {
+      const orderCode = searchParams?.get("orderCode");
+      const orderId = searchParams?.get("orderId");
+      if (!orderCode && !orderId) {
+        router.replace("/cart");
+      }
+    }
+  }, [clientReady, isCartLoading, items.length, searchParams, router]);
+
+  useEffect(() => {
+    if (!pendingVietQROrderId) {
+      setPendingOrder(null);
+      return;
+    }
+    let active = true;
+    (async () => {
+      try {
+        const order = await orderService.getById(pendingVietQROrderId);
+        if (!active) return;
+
+        if (order.status === "CONFIRMED" || order.status === "COMPLETED") {
+          setLastOrderCodeState(order.orderCode);
+          setOrderSuccessOpen(true);
+          setPendingVietQROrderId(null);
+          const params = new URLSearchParams(searchParams?.toString() || "");
+          params.delete("orderId");
+          params.set("orderCode", order.orderCode || "");
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        } else if (order.status === "CANCELED") {
+          setPendingVietQROrderId(null);
+          const params = new URLSearchParams(searchParams?.toString() || "");
+          params.delete("orderId");
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+          showInfoToast({ title: "Đơn hàng đã hủy", message: "Đơn hàng của bạn đã bị hủy." });
+        } else {
+          setPendingOrder(order);
+          const pm = order.payments?.[0]?.method;
+          if (pm === "BANK_TRANSFER") {
+            const note = `LACKEY-${order.orderCode || order.id}`;
+            setBankTfTransferNote(note);
+            setBankTfOpen(true);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load pending order:", err);
+      }
+    })();
+    return () => { active = false; };
+  }, [pendingVietQROrderId, router, pathname, searchParams, setPendingVietQROrderId]);
+
+  const handleRepay = useCallback(async () => {
+    if (!pendingVietQROrderId) return;
+    try {
+      setPreSubmitLoading(true);
+      const res = await sepayService.createCheckout({
+        orderId: pendingVietQROrderId,
+        returnUrl: window.location.origin
+      });
+      if (res && res.checkoutUrl && res.fields) {
+        const form = document.createElement("form");
+        form.action = res.checkoutUrl;
+        form.method = "POST";
+        form.style.display = "none";
+
+        Object.entries(res.fields).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = String(value);
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    } catch {
+      showErrorToast({ title: "Lỗi", message: "Không thể kết nối với cổng thanh toán SePay. Vui lòng thử lại." });
+    } finally {
+      setPreSubmitLoading(false);
+    }
+  }, [pendingVietQROrderId]);
+
+  const handleCancelAndReorder = useCallback(async () => {
+    if (!pendingVietQROrderId) return;
+    try {
+      setPreSubmitLoading(true);
+      const order = await orderService.getById(pendingVietQROrderId);
+      if (order && order.orderItems) {
+        const cartItemsPayload = order.orderItems.map(item => ({
+          productVariantId: item.productVariantId,
+          quantity: item.quantity || 1
+        }));
+        await cartService.bulkSet(cartItemsPayload);
+      }
+      await orderService.cancel(pendingVietQROrderId, order.orderCode || undefined);
+      await qc.invalidateQueries({ queryKey: cartKeys.root() });
+      setPendingVietQROrderId(null);
+      const params = new URLSearchParams(searchParams?.toString() || "");
+      params.delete("orderId");
+      router.replace(`${pathname}?${params.toString()}`);
+      showSuccessToast({ title: "Đã phục hồi giỏ hàng", message: "Bạn có thể tiến hành đặt hàng lại." });
+    } catch {
+      showErrorToast({ title: "Lỗi", message: "Không thể phục hồi giỏ hàng." });
+    } finally {
+      setPreSubmitLoading(false);
+    }
+  }, [pendingVietQROrderId, qc, searchParams, router, pathname, setPendingVietQROrderId]);
 
   useEffect(() => {
     if (lastOrderCodeState && pathname) {
@@ -649,222 +791,333 @@ export default function CheckoutClient() {
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          {}
+          {/* Cột 1: Thông tin khách hàng & Thanh toán */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            {}
+            {/* Cột 1: Thông tin khách hàng & Thanh toán */}
             <div className="order-1 lg:order-1">
-              <form onSubmit={handleSubmit} className="relative space-y-6">
-                {}
-                <div className="bg-white border border-gray-200 p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-6">CONTACT</h2>
-                  <BuyerInfoForm
-                    user={effectiveUser}
-                    values={{
-                      fullName: buyer.fullName,
-                      email: buyer.email,
-                      phone: buyer.phone,
-                      city: buyer.city,
-                      district: buyer.district,
-                      ward: buyer.ward,
-                      street: buyer.street,
-                      notes: buyer.notes,
-                      shipToDifferent: buyer.shipToDifferent,
-                      altFullName: alt.altFullName,
-                      altPhone: alt.altPhone,
-                      altCity: alt.altCity,
-                      altDistrict: alt.altDistrict,
-                      altWard: alt.altWard,
-                      altStreet: alt.altStreet,
-                    }}
-                    onChange={{
-                      onFullNameChange,
-                      onEmailChange,
-                      onPhoneChange,
-                      onCityChange,
-                      onDistrictChange,
-                      onWardChange,
-                      onStreetChange,
-                      onNotesChange,
-                      onShipToDifferentChange,
-                      onAltFullNameChange,
-                      onAltPhoneChange,
-                      onAltCityChange,
-                      onAltDistrictChange,
-                      onAltWardChange,
-                      onAltStreetChange,
-                    }}
-                    canChooseDistrict={canChooseDistrict}
-                    districtOptions={hcmDistrictOptions}
-                  />
-                </div>
+              {pendingOrder ? (
+                <div className="bg-white border border-gray-200 p-6 rounded-lg space-y-6">
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">Đơn hàng chờ thanh toán</h2>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Mã đơn hàng: <span className="font-semibold text-gray-800">#{pendingOrder.orderCode || pendingOrder.id}</span>
+                      </p>
+                    </div>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                      Chờ thanh toán
+                    </span>
+                  </div>
 
-                {exitModalOpen && (
-                  <div
-                    className="fixed inset-0 z-[100] bg-black/60"
-                    onClick={(e) => { if (e.currentTarget === e.target) onExitCancel(); }}
-                  >
-                    <div className="flex min-h-[100dvh] items-center justify-center p-4">
-                      <div className="w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl animate-in zoom-in-95 duration-200" data-exit-modal-root>
-                        <div className="flex items-center gap-4 border-b border-gray-200 bg-gray-50 px-5 py-4">
-                          <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
-                            <AlertTriangle size={24} strokeWidth={2} />
-                          </span>
-                          <div className="text-lg font-semibold text-gray-900">
-                            {exitContext === 'vietqr' ? 'Rời khỏi thanh toán?' : 'Rời khỏi trang?'}
+                  <div className="bg-amber-50/50 border border-amber-100 rounded-lg p-4 text-sm text-amber-800 leading-relaxed">
+                    Đơn hàng của bạn đã được khởi tạo thành công nhưng chưa hoàn tất thanh toán. Vui lòng thanh toán để chúng tôi có thể xử lý đơn hàng sớm nhất.
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Thông tin nhận hàng</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
+                      <div>
+                        <div className="text-gray-500">Người nhận</div>
+                        <div className="font-medium text-gray-900 mt-0.5">
+                          {pendingOrder.shippingAddress?.recipientName || pendingOrder.customer?.fullName || "—"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-gray-500">Số điện thoại</div>
+                        <div className="font-medium text-gray-900 mt-0.5">
+                          {pendingOrder.shippingAddress?.phoneNumber || pendingOrder.customer?.phone || "—"}
+                        </div>
+                      </div>
+                      <div className="md:col-span-2">
+                        <div className="text-gray-500">Địa chỉ giao hàng</div>
+                        <div className="font-medium text-gray-900 mt-0.5">
+                          {[
+                            pendingOrder.shippingAddress?.street,
+                            pendingOrder.shippingAddress?.ward,
+                            pendingOrder.shippingAddress?.district,
+                            pendingOrder.shippingAddress?.city
+                          ].filter(Boolean).join(", ") || "—"}
+                        </div>
+                      </div>
+                      {pendingOrder.notes && (
+                        <div className="md:col-span-2">
+                          <div className="text-gray-500">Ghi chú</div>
+                          <div className="font-medium text-gray-900 mt-0.5 italic text-gray-700">
+                            &quot;{pendingOrder.notes}&quot;
                           </div>
                         </div>
-                        <div className="px-6 py-6">
-                          {exitContext === 'vietqr' ? (
-                            <p className="text-base text-gray-600 leading-relaxed">
-                              Bạn đang có một đơn hàng đang chờ (VietQR). Bạn có muốn hủy đơn hàng này trước khi rời trang?
-                            </p>
-                          ) : (
-                            <p className="text-base text-gray-600 leading-relaxed">
-                              Form của bạn có dữ liệu chưa lưu. Nếu rời trang, các thông tin đã nhập có thể bị mất. Bạn có chắc muốn rời trang?
-                            </p>
-                          )}
+                      )}
+                    </div>
+                  </div>
 
-                          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                            <button
-                              type="button"
-                              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                              onClick={onExitCancel}
-                            >
-                              Ở lại trang
-                            </button>
-                            <button
-                              type="button"
-                              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-medium transition-colors ${exitContext === 'vietqr' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
-                              onClick={onExitConfirm}
-                            >
-                              {exitContext === 'vietqr' ? 'Hủy đơn và rời trang' : 'Rời trang'}
-                            </button>
-                          </div>
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Phương thức thanh toán</h3>
+                    <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg">
+                      <div className="h-10 w-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600 font-semibold text-sm">
+                        {pendingOrder.payments?.[0]?.method === "BANK_TRANSFER" ? "Bank" : "QR"}
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {pendingOrder.payments?.[0]?.method === "BANK_TRANSFER" 
+                            ? "Chuyển khoản ngân hàng (Thủ công)" 
+                            : "Chuyển khoản VietQR (Tự động)"}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {pendingOrder.payments?.[0]?.method === "BANK_TRANSFER" 
+                            ? "Quét mã QR hoặc nhập thông tin chuyển khoản thủ công" 
+                            : "Thanh toán quét mã QR qua cổng SePay"}
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
 
-                {}
-                <div className="bg-white border border-gray-200 p-6">
-                  <ShippingFeeCard
-                    shippingFee={shippingFee}
-                    formatVND={formatVND}
-                    customerId={customerIdState}
-                    savedAddresses={savedAddresses}
-                    selectedAddressId={selectedAddressId}
-                    onSelectAddress={handleSelectSavedAddress}
-                    onOpenAddressModal={openAddressModal}
-                    currentAddress={{
-                      city: buyer.shipToDifferent ? alt.altCity : buyer.city,
-                      district: buyer.shipToDifferent ? alt.altDistrict : buyer.district,
-                      ward: buyer.shipToDifferent ? alt.altWard : buyer.ward,
-                      street: buyer.shipToDifferent ? alt.altStreet : buyer.street,
-                    }}
-                  />
+                  <div className="pt-4 border-t border-gray-100 space-y-3">
+                    {pendingOrder.payments?.[0]?.method === "BANK_TRANSFER" ? (
+                      <button
+                        type="button"
+                        onClick={() => setBankTfOpen(true)}
+                        className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-sm"
+                      >
+                        Xem hướng dẫn chuyển khoản
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={preSubmitLoading}
+                        onClick={handleRepay}
+                        className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Thanh toán ngay
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={preSubmitLoading}
+                      onClick={handleCancelAndReorder}
+                      className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Hủy đơn & Mua lại
+                    </button>
+                  </div>
                 </div>
-
-                <AddressModal
-                  open={addressModalOpen}
-                  districtOptions={hcmDistrictOptions}
-                  initial={{
-                    fullName: buyer.fullName,
-                    phone: buyer.phone,
-                    city: buyer.city,
-                    district: buyer.district,
-                    ward: buyer.ward,
-                    street: buyer.street,
-                  }}
-                  onClose={handleAddressModalClose}
-                  saving={savingAddress}
-                  onSave={handleAddressSave}
-                />
-
-                {}
-                <div className="bg-white border border-gray-200 p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-6">PAYMENT</h2>
-                  <PaymentMethods
-                    method={method}
-                    onSelect={onSelectMethod}
-                    bankBrandCode={vietQRBank.bankCode?.toUpperCase()}
-                    selectingDisabled={checkoutMut.isPending || createSepayCheckoutMut.isPending}
-                    pending={checkoutMut.isPending || createSepayCheckoutMut.isPending}
-                  />
-                </div>
-
-                {method === "VIETQR" && showVietQR && vietQRUrl && (
+              ) : (
+                <form onSubmit={handleSubmit} className="relative space-y-6">
+                  {/* CONTACT */}
                   <div className="bg-white border border-gray-200 p-6">
-                    <VietQRPanel
-                      qrUrl={vietQRUrl}
-                      transferNote={vietQRTransferNote}
-                      bank={{
-                        bankCode: vietQRBank.bankCode,
-                        bankName: vietQRBank.bankName,
-                        accountNumber: vietQRBank.accountNumber,
-                        accountName: vietQRBank.accountName,
+                    <h2 className="text-lg font-semibold text-gray-900 mb-6">CONTACT</h2>
+                    <BuyerInfoForm
+                      user={effectiveUser}
+                      values={{
+                        fullName: buyer.fullName,
+                        email: buyer.email,
+                        phone: buyer.phone,
+                        city: buyer.city,
+                        district: buyer.district,
+                        ward: buyer.ward,
+                        street: buyer.street,
+                        notes: buyer.notes,
+                        shipToDifferent: buyer.shipToDifferent,
+                        altFullName: alt.altFullName,
+                        altPhone: alt.altPhone,
+                        altCity: alt.altCity,
+                        altDistrict: alt.altDistrict,
+                        altWard: alt.altWard,
+                        altStreet: alt.altStreet,
                       }}
-                      onCopyNote={handleCopyVietQRNote}
-                      onCancel={handleCancelVietQR}
+                      onChange={{
+                        onFullNameChange,
+                        onEmailChange,
+                        onPhoneChange,
+                        onCityChange,
+                        onDistrictChange,
+                        onWardChange,
+                        onStreetChange,
+                        onNotesChange,
+                        onShipToDifferentChange,
+                        onAltFullNameChange,
+                        onAltPhoneChange,
+                        onAltCityChange,
+                        onAltDistrictChange,
+                        onAltWardChange,
+                        onAltStreetChange,
+                      }}
+                      canChooseDistrict={canChooseDistrict}
+                      districtOptions={hcmDistrictOptions}
                     />
                   </div>
-                )}
 
-                {}
-                <SubmitBar
-                  total={total}
-                  formatVND={formatVND}
-                  disabled={submitDisabled}
-                  buttonText={submitButtonText}
-                  loading={preSubmitLoading || checkoutMut.isPending || createSepayCheckoutMut.isPending}
-                />
-              </form>
+                  {/* SHIPPING */}
+                  <div className="bg-white border border-gray-200 p-6">
+                    <ShippingFeeCard
+                      shippingFee={shippingFee}
+                      formatVND={formatVND}
+                      customerId={customerIdState}
+                      savedAddresses={savedAddresses}
+                      selectedAddressId={selectedAddressId}
+                      onSelectAddress={handleSelectSavedAddress}
+                      onOpenAddressModal={openAddressModal}
+                      currentAddress={{
+                        city: buyer.shipToDifferent ? alt.altCity : buyer.city,
+                        district: buyer.shipToDifferent ? alt.altDistrict : buyer.district,
+                        ward: buyer.shipToDifferent ? alt.altWard : buyer.ward,
+                        street: buyer.shipToDifferent ? alt.altStreet : buyer.street,
+                      }}
+                    />
+                  </div>
+
+                  {/* PAYMENT */}
+                  <div className="bg-white border border-gray-200 p-6">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-6">PAYMENT</h2>
+                    <PaymentMethods
+                      method={method}
+                      onSelect={onSelectMethod}
+                      bankBrandCode={vietQRBank.bankCode?.toUpperCase()}
+                      selectingDisabled={checkoutMut.isPending || createSepayCheckoutMut.isPending}
+                      pending={checkoutMut.isPending || createSepayCheckoutMut.isPending}
+                    />
+                  </div>
+
+                  {method === "VIETQR" && showVietQR && vietQRUrl && (
+                    <div className="bg-white border border-gray-200 p-6">
+                      <VietQRPanel
+                        qrUrl={vietQRUrl}
+                        transferNote={vietQRTransferNote}
+                        bank={{
+                          bankCode: vietQRBank.bankCode,
+                          bankName: vietQRBank.bankName,
+                          accountNumber: vietQRBank.accountNumber,
+                          accountName: vietQRBank.accountName,
+                        }}
+                        onCopyNote={handleCopyVietQRNote}
+                        onCancel={handleCancelVietQR}
+                      />
+                    </div>
+                  )}
+
+                  {/* SUBMIT BAR */}
+                  <SubmitBar
+                    total={total}
+                    formatVND={formatVND}
+                    disabled={submitDisabled}
+                    buttonText={submitButtonText}
+                    loading={preSubmitLoading || checkoutMut.isPending || createSepayCheckoutMut.isPending}
+                  />
+                </form>
+              )}
             </div>
 
-            {}
+            {/* Cột 2: Đơn hàng */}
             <div className="order-2 lg:order-2">
               <div className="bg-white border border-gray-200 p-6 lg:sticky lg:top-8">
-                {}
+                {/* Tiêu đề */}
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">Đơn hàng của bạn</h2>
 
                 <OrderSummary
-                  items={toLocalCartItem(items)}
-                  subtotal={subtotal}
-                  shippingFee={effectiveShippingFee}
-                  total={total}
+                  items={pendingOrder ? mappedPendingItems : toLocalCartItem(items)}
+                  subtotal={pendingOrder ? (pendingOrder.subtotalAmount ?? pendingOrder.subtotal ?? 0) : subtotal}
+                  shippingFee={pendingOrder ? (pendingOrder.shippingFee ?? 0) : effectiveShippingFee}
+                  total={pendingOrder ? (pendingOrder.totalAmount ?? pendingOrder.total ?? 0) : total}
                   formatVND={formatVND}
-                  globalWarnings={filteredGlobalWarnings}
-                  itemWarnings={filteredItemWarnings}
-                  discountAmount={appliedCode ? discountAmount : 0}
-                  discountCode={appliedCode || undefined}
+                  globalWarnings={pendingOrder ? [] : filteredGlobalWarnings}
+                  itemWarnings={pendingOrder ? {} : filteredItemWarnings}
+                  discountAmount={pendingOrder ? (pendingOrder.discountAmount ?? 0) : (appliedCode ? discountAmount : 0)}
+                  discountCode={pendingOrder ? (pendingOrder.discount?.code || undefined) : (appliedCode || undefined)}
                   plain
                   showThumbnails
                 />
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <DiscountBox
-                    options={options}
-                    selectedCode={selectedCode}
-                    appliedCode={appliedCode}
-                    discountAmount={discountAmount}
-                    applyingDiscount={applyingDiscount}
-                    itemsLength={items.length}
-                    onSelect={onSelect}
-                    onClear={onClear}
-                    formatVND={formatVND}
-                    plain
-                  />
-                </div>
+                {!pendingOrder && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <DiscountBox
+                      options={options}
+                      selectedCode={selectedCode}
+                      appliedCode={appliedCode}
+                      discountAmount={discountAmount}
+                      applyingDiscount={applyingDiscount}
+                      itemsLength={items.length}
+                      onSelect={onSelect}
+                      onClear={onClear}
+                      formatVND={formatVND}
+                      plain
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {exitModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/60"
+          onClick={(e) => { if (e.currentTarget === e.target) onExitCancel(); }}
+        >
+          <div className="flex min-h-[100dvh] items-center justify-center p-4">
+            <div className="w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl animate-in zoom-in-95 duration-200" data-exit-modal-root>
+              <div className="flex items-center gap-4 border-b border-gray-200 bg-gray-50 px-5 py-4">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+                  <AlertTriangle size={24} strokeWidth={2} />
+                </span>
+                <div className="text-lg font-semibold text-gray-900">
+                  {exitContext === 'vietqr' ? 'Rời khỏi thanh toán?' : 'Rời khỏi trang?'}
+                </div>
+              </div>
+              <div className="px-6 py-6">
+                {exitContext === 'vietqr' ? (
+                  <p className="text-base text-gray-600 leading-relaxed">
+                    Bạn đang có một đơn hàng đang chờ (VietQR). Bạn có muốn hủy đơn hàng này trước khi rời trang?
+                  </p>
+                ) : (
+                  <p className="text-base text-gray-600 leading-relaxed">
+                    Form của bạn có dữ liệu chưa lưu. Nếu rời trang, các thông tin đã nhập có thể bị mất. Bạn có chắc muốn rời trang?
+                  </p>
+                )}
+
+                <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={onExitCancel}
+                  >
+                    Ở lại trang
+                  </button>
+                  <button
+                    type="button"
+                    className={`flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-medium transition-colors ${exitContext === 'vietqr' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
+                    onClick={onExitConfirm}
+                  >
+                    {exitContext === 'vietqr' ? 'Hủy đơn và rời trang' : 'Rời trang'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <AddressModal
+        open={addressModalOpen}
+        districtOptions={hcmDistrictOptions}
+        initial={{
+          fullName: buyer.fullName,
+          phone: buyer.phone,
+          city: buyer.city,
+          district: buyer.district,
+          ward: buyer.ward,
+          street: buyer.street,
+        }}
+        onClose={handleAddressModalClose}
+        saving={savingAddress}
+        onSave={handleAddressSave}
+      />
+
       <BankTransferModal
         open={bankTfOpen}
-        total={total}
+        total={pendingOrder ? (pendingOrder.totalAmount ?? pendingOrder.total ?? 0) : total}
         transferNote={bankTfTransferNote}
         bankCode={vietQRBank.bankCode}
         bankName={vietQRBank.bankName}
