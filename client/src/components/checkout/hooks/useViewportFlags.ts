@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 export type ViewportFlags = {
-  isSmall: boolean; // < 640px
-  isXs340: boolean; // <= 340px
-  isPhone: boolean; // < 480px
-  isBelowMd: boolean; // < 768px
-  isTablet: boolean; // 640-1023px
+  isSmall: boolean; 
+  isXs340: boolean; 
+  isPhone: boolean; 
+  isBelowMd: boolean; 
+  isTablet: boolean; 
 };
 
 export function useViewportFlags(): ViewportFlags {

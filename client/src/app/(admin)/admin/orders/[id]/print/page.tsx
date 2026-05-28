@@ -54,11 +54,11 @@ export default function AdminOrderPrintPage() {
   const { data, isLoading, error } = useOrderById(id);
   const o: OrderDetail | undefined = data;
 
-  // Ensure the browser print header does not include the long site title
+  
   useEffect(() => {
     const prevTitle = document.title;
-    // Use a short title or blank to minimize headers. Many browsers show this in print headers.
-    document.title = ""; // or "Hóa đơn"
+    
+    document.title = ""; 
     return () => {
       document.title = prevTitle;
     };
@@ -91,7 +91,7 @@ export default function AdminOrderPrintPage() {
   const [buyerTaxId, setBuyerTaxId] = useState("");
   const [buyerCompanyAddress, setBuyerCompanyAddress] = useState("");
   const [buyerRepresentative, setBuyerRepresentative] = useState("");
-  const [vatRate, setVatRate] = useState<number>(10); // %
+  const [vatRate, setVatRate] = useState<number>(10); 
   const [pricesIncludeVAT, setPricesIncludeVAT] = useState<boolean>(true);
 
   const vatCalc = useMemo(() => {
@@ -151,7 +151,7 @@ export default function AdminOrderPrintPage() {
 
   return (
     <div className="print:mt-0">
-      {/* Screen-only controls */}
+      {}
       <div className="print:hidden mb-4 space-y-3">
         <div className="flex gap-2 items-center">
           <Link
@@ -381,7 +381,7 @@ export default function AdminOrderPrintPage() {
             </div>
           </div>
 
-          {/* Signature boxes */}
+          {}
           <div className="grid grid-cols-2 gap-6 mt-10 text-sm">
             <div className="text-center">
               <div className="font-medium">Người mua hàng</div>

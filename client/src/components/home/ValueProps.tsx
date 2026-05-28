@@ -15,9 +15,9 @@ export type ValueProp = {
 export type ValuePropsSectionProps = {
   title?: string;
   items?: ValueProp[];
-  /** Use brand accent for icon bubble */
+  
   useBrandAccent?: boolean;
-  /** Wrap with gradient strip and borders similar to Header/Footer */
+  
   gradientStrip?: boolean;
   gradientCss?: string;
 };

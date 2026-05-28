@@ -82,7 +82,7 @@ const BrandCategories: React.FC<Props> = ({
   return (
     <section className="w-full bg-neutral-50 py-16 md:py-20">
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        {/* Header */}
+        {}
         <div className="mb-8 md:mb-12 text-center">
           <h2 className="font-[family-name:var(--font-retro)] text-3xl md:text-4xl lg:text-5xl text-neutral-900 mb-3 tracking-wider uppercase">
             {title}
@@ -94,7 +94,7 @@ const BrandCategories: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Brands Grid */}
+        {}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-8">
           {KEYBOARD_BRANDS.map((brand) => (
             <Link
@@ -102,7 +102,7 @@ const BrandCategories: React.FC<Props> = ({
               href={`${ROUTES.products}?brand=${brand.slug}`}
               className="group bg-white border-2 border-black hover:border-black transition-all overflow-hidden hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
-              {/* Image */}
+              {}
               <div className="relative aspect-square bg-gray-100 overflow-hidden">
                 <Image
                   src={brand.image}
@@ -113,7 +113,7 @@ const BrandCategories: React.FC<Props> = ({
                 />
               </div>
               
-              {/* Content */}
+              {}
               <div className="p-3 bg-white border-t-2 border-black">
                 <h3 className="text-sm md:text-base font-bold text-center uppercase mb-1">
                   {brand.name}
@@ -129,7 +129,7 @@ const BrandCategories: React.FC<Props> = ({
           ))}
         </div>
 
-        {/* View All Button */}
+        {}
         <div className="text-center">
           <Link
             href={viewAllHref}

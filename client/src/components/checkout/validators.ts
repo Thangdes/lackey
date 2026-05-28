@@ -32,8 +32,8 @@ export function validate(params: {
   } = params;
 
   if (!fullName.trim()) return CHECKOUT_ERROR.fullNameRequired;
-  // Email is not required - will use default email if empty
-  // Phone is always required
+  
+  
   if (!phone.trim()) return CHECKOUT_ERROR.phoneRequired;
 
   if (!city) return CHECKOUT_ERROR.cityRequired;

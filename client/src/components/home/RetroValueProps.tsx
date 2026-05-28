@@ -6,7 +6,7 @@ import { useValueProps } from "@/hook/useSiteContent";
 import { ArrowRight } from "lucide-react";
 
 export type RetroValueProp = {
-  icon: string | React.ReactNode; // Emoji or Icon component
+  icon: string | React.ReactNode; 
   title: string;
   description: string;
   ctaHref?: string;
@@ -61,7 +61,7 @@ const RetroValueProps: React.FC<RetroValuePropsProps> = ({
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-6xl mx-auto">
           
-          {/* Section Header */}
+          {}
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
               {title}
@@ -73,16 +73,16 @@ const RetroValueProps: React.FC<RetroValuePropsProps> = ({
             )}
           </div>
 
-          {/* Grid of Value Props */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {displayItems.map((item, index) => (
               <div
                 key={index}
                 className="group bg-white p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-1 flex flex-col border border-gray-100"
               >
-                {/* Content Wrapper */}
+                {}
                 <div className="flex-grow">
-                  {/* Icon */}
+                  {}
                   <div className="mb-8">
                     <div className="w-16 h-16 flex items-center justify-center bg-blue-50 text-blue-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
                       {typeof item.icon === 'string' ? (
@@ -93,18 +93,18 @@ const RetroValueProps: React.FC<RetroValuePropsProps> = ({
                     </div>
                   </div>
 
-                  {/* Title */}
+                  {}
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
                     {item.title}
                   </h3>
 
-                  {/* Description */}
+                  {}
                   <p className="text-base text-gray-600 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
-                {/* CTA Link */}
+                {}
                 {item.ctaHref && item.ctaLabel && (
                   <div className="mt-8 pt-6 border-t border-gray-100">
                     <Link

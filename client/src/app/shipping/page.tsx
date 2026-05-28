@@ -40,7 +40,7 @@ export default function ShippingPage() {
         })}
       </Script>
 
-      {/* Breadcrumb */}
+      {}
       <nav aria-label="Breadcrumb" className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pt-6 pb-4">
         <div className="inline-flex items-center gap-2 text-sm">
           <Link href={ROUTES.home} className="text-neutral-600 hover:text-black transition-colors">Trang chủ</Link>
@@ -49,7 +49,7 @@ export default function ShippingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {}
       <header className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16">
         <div className="max-w-4xl mx-auto text-center space-y-4">
           <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider uppercase text-black">
@@ -59,7 +59,7 @@ export default function ShippingPage() {
         </div>
       </header>
 
-      {/* Content */}
+      {}
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pb-12 md:pb-16">
         <div className="max-w-4xl mx-auto space-y-12">
           

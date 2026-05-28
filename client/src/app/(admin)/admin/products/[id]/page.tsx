@@ -36,7 +36,7 @@ export default function EditProductPage() {
   const [categoryQuery, setCategoryQuery] = useState("");
   const imgUrlRef = useRef<HTMLInputElement | null>(null);
 
-  // Use custom hook for variant management
+  
   const variantsHook = useProductVariants(id, data, setData);
 
   const thumbnailObjectUrl = useMemo(() => (thumbnail ? URL.createObjectURL(thumbnail) : null), [thumbnail]);

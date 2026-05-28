@@ -119,7 +119,7 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
 
   return (
     <div className="flex flex-col h-full">
-      {/* Free Shipping Banner - Fixed at top */}
+      {}
       <div className="shrink-0 px-6 py-4 bg-gray-50">
         {hasFreeShipping ? (
           <div className="flex items-center gap-2 text-sm font-medium text-green-600">
@@ -141,7 +141,7 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         )}
       </div>
 
-      {/* Cart Items - Scrollable */}
+      {}
       <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
         <div className="space-y-4">
           {items.map((it) => (
@@ -159,7 +159,7 @@ export default function CartMiniClient({ highlightSku: forceHighlightSku, hideMi
         </div>
       </div>
 
-      {/* Checkout Section - Fixed at bottom */}
+      {}
       <div className="shrink-0 border-t border-gray-200 bg-white">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">

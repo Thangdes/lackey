@@ -32,11 +32,11 @@ export interface OrderSummary {
   paymentMethod?: string;
   estimatedDelivery?: string;
   deliveryEstimate?: string;
-  // From Prisma Order
+  
   deliveryCode?: string | null;
   notes?: string | null;
   discountId?: string | null;
-  discountAmount?: number; // Decimal serialized as number from API
+  discountAmount?: number; 
 }
 
 export interface OrderDetail extends OrderSummary {
@@ -44,13 +44,13 @@ export interface OrderDetail extends OrderSummary {
   subtotalAmount?: number;
   subtotal?: number;
   shippingFee?: number;
-  // Discount fields from BE
+  
   discountAmount?: number;
   discount?: {
     id?: string;
     code?: string;
     description?: string;
-    type?: string; // FIXED_AMOUNT | PERCENTAGE
+    type?: string; 
     value?: number;
     isActive?: boolean;
     startDate?: string;
@@ -67,12 +67,12 @@ import type { PaymentMethod } from "@/type/checkout";
 export type ShippingMethod = "STANDARD" | "EXPRESS";
 
 export interface CheckoutPayload {
-  // Buyer info (logged-in user may omit email)
+  
   fullName?: string;
   email?: string;
   phone?: string;
 
-  // Shipping address (can be same as buyer or alternate)
+  
   recipientName?: string;
   phoneNumber?: string;
   street?: string;
@@ -80,7 +80,7 @@ export interface CheckoutPayload {
   district?: string;
   city?: string;
 
-  // Order options
+  
   paymentMethod: PaymentMethod;
   shippingMethod?: ShippingMethod;
   shippingFee?: number;

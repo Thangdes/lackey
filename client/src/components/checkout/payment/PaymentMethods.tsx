@@ -33,7 +33,7 @@ export const PaymentMethods = ({ method, onSelect, selectingDisabled, pending }:
 
   return (
     <div className="space-y-4">
-      {/* Payment options */}
+      {}
       <div className="flex flex-col gap-3">
         {orderedEntries.map((m, idx) => {
           const isActive = m === method;
@@ -75,7 +75,7 @@ export const PaymentMethods = ({ method, onSelect, selectingDisabled, pending }:
                   </div>
                 )}
               </button>
-              {/* Mobile-only subtle separator between items */}
+              {}
               {idx < orderedEntries.length - 1 && (
                 <div className="sm:hidden h-px bg-black/10 mx-1 my-1" />
               )}

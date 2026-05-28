@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { errorNormalizers, normalizeErrorForUser } from '@/utils/error-normalizer'
 
-/**
- * Hook để xử lý lỗi một cách thân thiện với người dùng
- */
+
+
+
 export function useErrorHandler() {
   const handleError = useCallback((error: unknown, context?: keyof typeof errorNormalizers) => {
     let message: string

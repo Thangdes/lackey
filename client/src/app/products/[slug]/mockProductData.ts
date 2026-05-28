@@ -1,7 +1,7 @@
 import type { Product } from "@/type/product";
 
-// Mock product data for testing UI/UX with slug "test"
-// Using 'as Product' to bypass strict type checking for mock data
+
+
 export const MOCK_PRODUCT_DATA = {
   id: "mock-product-1",
   name: "Hạt Điều Rang Muối Cao Cấp",
@@ -83,7 +83,7 @@ Hạt điều rang muối của chúng tôi được chọn lọc kỹ càng t�
       sku: "HDM-2000",
       price: 620000,
       discountPrice: 540000,
-      stockQuantity: 0, // Out of stock variant
+      stockQuantity: 0, 
       weight: 2000,
     },
   ],

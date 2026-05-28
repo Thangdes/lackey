@@ -1,6 +1,6 @@
-/**
- * Product component props types
- */
+
+
+
 
 import type { Product, ProductVariant, ProductSort } from "./product";
 import type { OptionItem } from "@/hook/useOptionsData";

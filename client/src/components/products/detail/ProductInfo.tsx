@@ -25,7 +25,7 @@ interface ProductInfoProps {
   outOfStock: boolean;
   totalStock: number;
   stockUnit: string;
-  product?: Product; // NEW: Product data for wishlist
+  product?: Product; 
   onShare?: () => void;
 }
 

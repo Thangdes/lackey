@@ -174,7 +174,7 @@ export default function OrderLookupPage() {
                   onChange={(e) => {
                     const val = e.target.value;
                     if (searchType === "phone") {
-                      // keep digits only for phone input for consistency
+                      
                       const digits = val.replace(/\D+/g, "").slice(0, 12);
                       setCode(digits);
                     } else {

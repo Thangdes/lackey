@@ -111,7 +111,7 @@ function CategoriesPage() {
   const handleSave = useCallback(async () => {
     try {
       setSaving(true);
-      // Always ensure slug is present and normalized before sending to API
+      
       const safeSlug = slugify((slug || name) || "", { lower: true, strict: true });
       if (!safeSlug) {
         toast.error("Vui lòng nhập Tên hoặc Slug hợp lệ");
@@ -139,7 +139,7 @@ function CategoriesPage() {
         return;
       }
 
-      // Upload thumbnail if file is selected
+      
       if (selectedFile) {
         const allowed = ["image/png", "image/jpeg", "image/webp"];
         if (!allowed.includes(selectedFile.type)) {

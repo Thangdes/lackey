@@ -61,7 +61,7 @@ async function fetchPostBySlug(slug: string): Promise<BlogPost | undefined> {
     });
     if (!res.ok) return undefined;
     const json = await res.json();
-    // Unwrap { success, data } envelope if present
+    
     const raw =
       json && typeof json === "object" && (json as { success?: boolean }).success === true && "data" in json
         ? (json as { data: unknown }).data
@@ -72,7 +72,7 @@ async function fetchPostBySlug(slug: string): Promise<BlogPost | undefined> {
   }
 }
 
-// ─── Metadata ────────────────────────────────────────────────────────────────
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = await fetchPostBySlug(slug);
@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await fetchPostBySlug(slug);

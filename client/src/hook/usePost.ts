@@ -27,7 +27,7 @@ export function usePostBySlug(slug?: string) {
   });
 }
 
-// Admin mutations
+
 export function useCreatePost() {
   return useMutation({
     mutationFn: (payload: Partial<BlogPost>) => postService.admin.create(payload),

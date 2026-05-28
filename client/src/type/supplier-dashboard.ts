@@ -1,4 +1,4 @@
-/** Pagination shape returned by supplier-dashboard backend endpoints */
+
 export type Paginated<T> = {
   data: T[];
   meta: { total: number; page: number; limit: number; lastPage: number };
@@ -42,8 +42,8 @@ export type SupplierOrdersQuery = {
   page?: number;
   limit?: number;
   status?: string;
-  from?: string; // YYYY-MM-DD
-  to?: string;   // YYYY-MM-DD
+  from?: string; 
+  to?: string;   
 };
 
 export type SupplierOrderListItem = {

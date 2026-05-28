@@ -14,7 +14,7 @@ import type {
 } from "@/type/supplier-dashboard";
 import type { Paginated as ServerPaginated } from "@/type/supplier-dashboard";
 
-// Re-export for consumers that import from this service
+
 export type {
   SupplierSummary,
   TopSellingProduct,

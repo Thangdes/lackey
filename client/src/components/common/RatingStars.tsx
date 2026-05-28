@@ -4,8 +4,8 @@ import React from "react";
 import { IoIosStar } from "react-icons/io";
 
 export type RatingStarsProps = {
-  value: number; // 0..5
-  size?: number; // icon size in rem px unit via tailwind not needed, we use className
+  value: number; 
+  size?: number; 
   className?: string;
   "aria-label"?: string;
 };

@@ -17,7 +17,7 @@ export type ProductsFilterSidebarProps = {
   CATEGORY_OPTIONS: { id: string; name: string }[];
   DIETARY_OPTIONS?: string[];
 
-  selectedBrands: string[]; // supplier ids
+  selectedBrands: string[]; 
   selectedDietary: string[];
   selectedCategories: string[]; 
 

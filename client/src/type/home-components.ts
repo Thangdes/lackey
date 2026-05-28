@@ -1,6 +1,6 @@
-/**
- * Home page component props types
- */
+
+
+
 
 import type { Product } from "./product";
 import type { Category } from "@/service/category.service";

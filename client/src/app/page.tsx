@@ -10,7 +10,7 @@ import MarqueeBanner from "@/components/home/MarqueeBanner";
 import RetroSaleBanner from "@/components/home/RetroSaleBanner";
 import CategoryIcons from "@/components/home/CategoryIcons";
 import TechNews from "@/components/home/TechNews";
-// import CustomKeychainCTA from "@/components/home/CustomKeychainCTA";
+
 import { 
   KEYCAP_BRANDS, 
   SWITCH_BRANDS, 
@@ -92,7 +92,7 @@ export default function Home() {
         products={ACCESSORIES}
       />
 
-      {/* <CustomKeychainCTA /> */}
+      {}
 
       <MarqueeBanner />
 
@@ -100,10 +100,10 @@ export default function Home() {
       
       <RetroSaleBanner />
 
-      {/* Testimonials section - temporarily hidden */}
-      {/* <ClientOnly>
-        <TestimonialsLoader />
-      </ClientOnly> */}
+      {}
+      {
+
+}
 
       <CategoryIcons />
 

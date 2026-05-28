@@ -9,7 +9,7 @@ import type {
   SiteContentDto,
 } from "@/type/site-content";
 
-// Re-export for consumers
+
 export type { BannerItem, HeroSlide, TestimonialItem, ValuePropItem, SiteContentDto };
 
 const mapBanner = (it: SiteContentDto): BannerItem => ({

@@ -12,7 +12,7 @@ import { PAYMENT_QR } from "@/config/payment";
 import type { OrderDetail } from "@/type/order";
 
 export type UseCheckoutFlowParams = {
-  // validation context
+  
   validateForMethod: (p: {
     method: Method;
     buyer: BuyerState;
@@ -33,7 +33,7 @@ export type UseCheckoutFlowParams = {
   setItemWarnings: (m: Record<string, string[]>) => void;
   priceWarnMessage: string;
 
-  // after-created context
+  
   createSepayCheckoutMut: { mutateAsync: (p: { orderId: string; returnUrl: string }) => Promise<{ checkoutUrl: string; fields: Record<string, string> }> };
   setPendingVietQROrderId: (id: string) => void;
   vietQRAcknowledged: boolean;
@@ -122,7 +122,7 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
       });
 
       if (res && res.checkoutUrl && res.fields) {
-        // Create dynamic form and submit
+        
         const form = document.createElement("form");
         form.action = res.checkoutUrl;
         form.method = "POST";
@@ -138,7 +138,7 @@ export function useCheckoutFlow(params: UseCheckoutFlowParams) {
         
         document.body.appendChild(form);
         form.submit();
-        return; // Don't clear cart yet, let the callback page handle it
+        return; 
       }
       return;
     }

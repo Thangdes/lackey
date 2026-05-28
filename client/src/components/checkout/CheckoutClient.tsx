@@ -93,7 +93,7 @@ export default function CheckoutClient() {
     cancelPending,
   } = useVietQRFlow();
 
-  // Sync state to URL params so it's not lost on reload
+  
   useEffect(() => {
     if (pendingVietQROrderId && pathname) {
       const params = new URLSearchParams(searchParams?.toString() || "");
@@ -104,7 +104,7 @@ export default function CheckoutClient() {
     }
   }, [pendingVietQROrderId, pathname, router, searchParams]);
 
-  // Read state from URL params on mount
+  
   useEffect(() => {
     const oid = searchParams?.get("orderId");
     if (oid && !pendingVietQROrderId) {
@@ -435,7 +435,7 @@ export default function CheckoutClient() {
         } catch { }
       }
       dispatchBuyer({ key: "fullName", value: p.fullName });
-      // Do not clear phone if new saved address payload misses phone
+      
       dispatchBuyer({ key: "phone", value: p.phone || buyer.phone });
       dispatchBuyer({ key: "city", value: p.city });
       dispatchBuyer({ key: "district", value: p.district });
@@ -649,13 +649,13 @@ export default function CheckoutClient() {
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          {/* 2 Column Layout */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            {/* LEFT COLUMN - Forms (Mobile: top, Desktop: left) */}
+            {}
             <div className="order-1 lg:order-1">
               <form onSubmit={handleSubmit} className="relative space-y-6">
-                {/* Contact Section */}
+                {}
                 <div className="bg-white border border-gray-200 p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-6">CONTACT</h2>
                   <BuyerInfoForm
@@ -747,7 +747,7 @@ export default function CheckoutClient() {
                   </div>
                 )}
 
-                {/* Shipping Fee */}
+                {}
                 <div className="bg-white border border-gray-200 p-6">
                   <ShippingFeeCard
                     shippingFee={shippingFee}
@@ -782,7 +782,7 @@ export default function CheckoutClient() {
                   onSave={handleAddressSave}
                 />
 
-                {/* Payment Methods */}
+                {}
                 <div className="bg-white border border-gray-200 p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-6">PAYMENT</h2>
                   <PaymentMethods
@@ -811,7 +811,7 @@ export default function CheckoutClient() {
                   </div>
                 )}
 
-                {/* Submit Button */}
+                {}
                 <SubmitBar
                   total={total}
                   formatVND={formatVND}
@@ -822,10 +822,10 @@ export default function CheckoutClient() {
               </form>
             </div>
 
-            {/* RIGHT COLUMN - Product Summary (Mobile: bottom, Desktop: right) */}
+            {}
             <div className="order-2 lg:order-2">
               <div className="bg-white border border-gray-200 p-6 lg:sticky lg:top-8">
-                {/* Order Items */}
+                {}
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">Đơn hàng của bạn</h2>
 
                 <OrderSummary

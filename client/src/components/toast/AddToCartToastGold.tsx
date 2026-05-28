@@ -14,20 +14,20 @@ export type AddToCartToastPayload = {
   quantity?: number;
 };
 
-/**
- * Gold-themed variant of AddToCartToast
- * Premium golden design with more yellow/amber emphasis
- */
+
+
+
+
 export function showAddedToCartToastGold({ name, thumbnailUrl, quantity = 1 }: AddToCartToastPayload) {
   toast.custom((t) => (
     <div className="flex w-[340px] sm:w-[380px] items-start gap-3 rounded-2xl border-2 border-amber-400 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 p-4 shadow-[0_8px_32px_rgba(245,158,11,0.3),0_0_0_2px_rgba(251,191,36,0.4)] transition-all duration-300 animate-in slide-in-from-bottom-5">
-      {/* Success Icon with Sparkles */}
+      {}
       <div className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 via-amber-400 to-yellow-500 shadow-lg shadow-amber-400/50 shrink-0 animate-in zoom-in-50 duration-500">
         <CheckCircle2 className="w-7 h-7 text-amber-950 drop-shadow-sm" strokeWidth={2.5} />
         <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-amber-600 animate-pulse" strokeWidth={2} />
       </div>
 
-      {/* Product Image */}
+      {}
       {thumbnailUrl ? (
         <div className="relative h-16 w-16 overflow-hidden rounded-xl border-3 border-amber-400 bg-white shrink-0 shadow-lg animate-in fade-in duration-700">
           <Image src={thumbnailUrl} alt={name} fill className="object-cover" />
@@ -35,9 +35,9 @@ export function showAddedToCartToastGold({ name, thumbnailUrl, quantity = 1 }: A
         </div>
       ) : null}
 
-      {/* Content */}
+      {}
       <div className="min-w-0 flex-1 space-y-2">
-        {/* Title with Icon */}
+        {}
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500">
             <ShoppingCart className="w-3.5 h-3.5 text-amber-950" strokeWidth={2.5} />
@@ -47,18 +47,18 @@ export function showAddedToCartToastGold({ name, thumbnailUrl, quantity = 1 }: A
           </div>
         </div>
 
-        {/* Product Name */}
+        {}
         <div className="text-sm text-amber-950 line-clamp-2 leading-snug font-semibold">
           {name}
         </div>
 
-        {/* Quantity Badge */}
+        {}
         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400/20 to-yellow-400/20 border-2 border-amber-400/40 shadow-sm">
           <span className="text-xs text-amber-700 font-semibold">Số lượng:</span>
           <span className="text-sm text-amber-900 font-bold">{quantity}</span>
         </div>
 
-        {/* Action Buttons */}
+        {}
         <div className="flex items-center gap-2 pt-1">
           <Button 
             asChild 

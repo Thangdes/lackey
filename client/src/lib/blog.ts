@@ -8,7 +8,7 @@ function validateAndNormalize(posts: BlogPost[]): BlogPost[] {
   for (const p of posts) {
     if (seen.has(p.slug)) {
       if (!dupSlugs.includes(p.slug)) dupSlugs.push(p.slug);
-      continue; // keep first occurrence
+      continue; 
     }
     seen.add(p.slug);
     unique.push(p);
@@ -24,7 +24,7 @@ function validateAndNormalize(posts: BlogPost[]): BlogPost[] {
     }
   }
 
-  // sort by date desc if valid ISO, fallback to original order
+  
   return unique.slice().sort((a, b) => {
     const da = Date.parse(a.date || "");
     const db = Date.parse(b.date || "");

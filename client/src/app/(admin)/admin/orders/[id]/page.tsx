@@ -133,7 +133,7 @@ export default function AdminOrderDetailPage() {
     return undefined;
   }, [rawPaidAt]);
 
-  // Loading & Error States
+  
   if (!id) return <div className="p-6">Không tìm thấy mã đơn.</div>;
   if (authLoading) return <div className="p-6">Đang kiểm tra quyền truy cập...</div>;
   if (!isAdmin) return <div className="p-6">403 - Bạn không có quyền truy cập trang quản trị.</div>;
@@ -158,7 +158,7 @@ export default function AdminOrderDetailPage() {
 
   if (error || !o) return <div className="p-6">Không thể tải chi tiết đơn hàng.</div>;
 
-  // Extract data
+  
   const r = o as unknown as LooseOrder;
   const customer = r.customer || r.user || {};
   const profile = customer.profile || {};
@@ -228,7 +228,7 @@ export default function AdminOrderDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          {/* Products Section */}
+          {}
           <AdminDetailSection
             title="Sản phẩm"
             description={`${items.length} sản phẩm`}
@@ -258,7 +258,7 @@ export default function AdminOrderDetailPage() {
             )}
           </AdminDetailSection>
 
-          {/* Customer & Shipping Info */}
+          {}
           <div className="grid gap-6 md:grid-cols-2">
             <AdminInfoCard icon={UserIcon} title="Thông tin khách hàng">
               <AdminDetailField label="Họ tên" value={customerName} vertical />
@@ -298,7 +298,7 @@ export default function AdminOrderDetailPage() {
             </AdminInfoCard>
           </div>
 
-          {/* Payment Info */}
+          {}
           <AdminInfoCard icon={CreditCard} title="Thông tin thanh toán">
             <AdminDetailField label="Phương thức" value={paymentType} />
             <AdminDetailField
@@ -312,7 +312,7 @@ export default function AdminOrderDetailPage() {
             {paidAtNormalized && <AdminDetailField label="Thanh toán lúc" value={formatDate(paidAtNormalized)} />}
           </AdminInfoCard>
 
-          {/* Manual Tracking */}
+          {}
           {existingDeliveryCode && (
             <AdminDetailSection title="Tra cứu vận đơn">
               <ManualTracking
@@ -328,7 +328,7 @@ export default function AdminOrderDetailPage() {
             </AdminDetailSection>
           ) : null}
 
-          {/* Order History */}
+          {}
           {history.length > 0 && (
             <AdminDetailSection title="Lịch sử đơn hàng">
               <div className="space-y-2">
@@ -348,9 +348,9 @@ export default function AdminOrderDetailPage() {
           )}
         </div>
 
-        {/* Sidebar */}
+        {}
         <aside className="space-y-6">
-          {/* Order Summary */}
+          {}
           <AdminDetailSection title="Tổng quan đơn hàng">
             <div className="space-y-3">
               <AdminDetailField
@@ -384,12 +384,12 @@ export default function AdminOrderDetailPage() {
             </div>
           </AdminDetailSection>
 
-          {/* Status Updater */}
+          {}
           <AdminDetailSection title="Cập nhật trạng thái">
             <StatusUpdater orderId={id} currentStatus={o.status} />
           </AdminDetailSection>
 
-          {/* Delivery Code */}
+          {}
           <AdminDetailSection title="Mã vận đơn">
             <DeliveryCodeUpdater
               orderId={id}
@@ -426,7 +426,7 @@ export default function AdminOrderDetailPage() {
             )}
           </AdminDetailSection>
 
-          {/* Notes */}
+          {}
           {notes && (
             <AdminDetailSection title="Ghi chú">
               <p className="text-sm text-muted-foreground">{notes}</p>

@@ -16,7 +16,7 @@ export default function ContactClient() {
     phone: "",
     subject: "",
     message: "",
-    company: "", // honeypot
+    company: "", 
   });
   const [copied, setCopied] = useState<"phone" | "email" | null>(null);
 
@@ -35,7 +35,7 @@ export default function ContactClient() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.company) return; // honeypot
+    if (form.company) return; 
     const to = siteConfig.contact.email;
     const subject = encodeURIComponent(form.subject || `Liên hệ từ ${form.name || "Khách hàng"}`);
     const bodyLines = [
@@ -170,7 +170,7 @@ export default function ContactClient() {
             <label htmlFor="message" className="text-sm font-semibold text-gray-700">Nội dung <span className="text-red-500">*</span></label>
             <textarea id="message" name="message" value={form.message} onChange={handleChange} rows={5} required placeholder="Mô tả vấn đề hoặc yêu cầu của bạn..." className="border border-gray-300 rounded-xl bg-gray-50 px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-gray-900 placeholder:text-gray-400 resize-none" />
           </div>
-          {/* Honeypot */}
+          {}
           <input type="text" name="company" value={form.company} onChange={handleChange} className="hidden" autoComplete="off" tabIndex={-1} aria-hidden="true" />
           <div className="md:col-span-2 pt-2">
             <button type="submit" className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-xl font-semibold hover:bg-blue-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2">

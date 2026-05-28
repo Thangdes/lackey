@@ -4,7 +4,7 @@ export type OrderStatus =
   | "PREPARING_SHIPMENT"
   | "COMPLETED"
   | "CANCELED"
-  | "SHIPPED"; // Note: SHIPPED is set via delivery-code API, not via status update
+  | "SHIPPED"; 
 
 export const ORDER_STATUSES: OrderStatus[] = [
   "PENDING_CONFIRMATION",
@@ -15,7 +15,7 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "CANCELED",
 ];
 
-// Allowed to be set via updateStatus() on server
+
 export const ADMIN_UPDATABLE_STATUSES: OrderStatus[] = [
   "PENDING_CONFIRMATION",
   "CONFIRMED",

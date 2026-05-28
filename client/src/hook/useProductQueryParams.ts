@@ -100,7 +100,7 @@ export function useProductQueryParams(): UseProductQueryParamsState {
       if (sid) params.append("supplierIds[]", sid);
     }
 
-    // Add offers to URL
+    
     const keysToRemoveOffers: string[] = [];
     params.forEach((_, key) => { if (key === "offers[]") keysToRemoveOffers.push(key); });
     for (const k of keysToRemoveOffers) params.delete(k);

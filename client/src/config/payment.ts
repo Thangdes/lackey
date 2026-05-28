@@ -1,8 +1,8 @@
 export const PAYMENT_QR = {
-  bankCode: "vcb", // Vietcombank
+  bankCode: "vcb", 
   accountNumber: "0123456789",
   accountName: "EXAMPLE COMPANY",
-  transferNotePrefix: "LACKEY", // e.g., LACKEY LK-<order_code>
+  transferNotePrefix: "LACKEY", 
 } as const;
 
 export function buildVietQRUrl(params: { amount: number; note: string }) {

@@ -10,29 +10,29 @@ export const PROVINCES = [
   "Nghệ An",
   "Hà Tĩnh",
   "Cao Bằng",
-  "Tuyên Quang",       // Tuyên Quang + Hà Giang
-  "Lào Cai",           // Lào Cai + Yên Bái
-  "Thái Nguyên",       // Thái Nguyên + Bắc Kạn
-  "Phú Thọ",           // Phú Thọ + Vĩnh Phúc + Hòa Bình
-  "Bắc Ninh",          // Bắc Ninh + Bắc Giang
-  "Hưng Yên",          // Hưng Yên + Thái Bình
-  "Hải Phòng",         // Hải Phòng + Hải Dương
-  "Ninh Bình",         // Ninh Bình + Hà Nam + Nam Định
-  "Quảng Trị",         // Quảng Trị + Quảng Bình
-  "Đà Nẵng",           // Đà Nẵng + Quảng Nam
-  "Quảng Ngãi",        // Quảng Ngãi + Kon Tum
-  "Gia Lai",           // Gia Lai + Bình Định
-  "Khánh Hòa",         // Khánh Hòa + Ninh Thuận
-  "Lâm Đồng",          // Lâm Đồng + Đắk Nông + Bình Thuận
-  "Đắk Lắk",           // Đắk Lắk + Phú Yên
-  "Thành phố Hồ Chí Minh", // TP.HCM + Bình Dương + Bà Rịa - Vũng Tàu
-  "Đồng Nai",          // Đồng Nai + Bình Phước
-  "Tây Ninh",          // Tây Ninh + Long An
-  "Cần Thơ",           // Cần Thơ + Sóc Trăng + Hậu Giang
-  "Vĩnh Long",         // Vĩnh Long + Bến Tre + Trà Vinh
-  "Đồng Tháp",         // Đồng Tháp + Tiền Giang
-  "Cà Mau",            // Cà Mau + Bạc Liêu
-  "An Giang"           // An Giang + Kiên Giang
+  "Tuyên Quang",       
+  "Lào Cai",           
+  "Thái Nguyên",       
+  "Phú Thọ",           
+  "Bắc Ninh",          
+  "Hưng Yên",          
+  "Hải Phòng",         
+  "Ninh Bình",         
+  "Quảng Trị",         
+  "Đà Nẵng",           
+  "Quảng Ngãi",        
+  "Gia Lai",           
+  "Khánh Hòa",         
+  "Lâm Đồng",          
+  "Đắk Lắk",           
+  "Thành phố Hồ Chí Minh", 
+  "Đồng Nai",          
+  "Tây Ninh",          
+  "Cần Thơ",           
+  "Vĩnh Long",         
+  "Đồng Tháp",         
+  "Cà Mau",            
+  "An Giang"           
 ];
 
 export const HCM_DISTRICTS = [

@@ -3,11 +3,11 @@
 import { create, type StateCreator } from 'zustand'
 
 export type LocationState = {
-  // Back-compat generic fields
+  
   city?: string
   country?: string
   countryCode?: string
-  // Vietnam granular fields
+  
   province?: string
   district?: string
   ward?: string
@@ -15,7 +15,7 @@ export type LocationState = {
   error?: string
   manual?: boolean
   recent: Array<{ city?: string; country?: string }>
-  // actions
+  
   setManualLocation: (city?: string, country?: string) => void
   setVNLocation: (province?: string, district?: string, ward?: string) => void
   requestLocation: () => void
@@ -147,14 +147,14 @@ const creator: StateCreator<LocationState> = (set, get) => ({
 export const useLocationStore = create<LocationState>((set, get, api) => {
   const store = creator(set, get, api)
   if (typeof window !== 'undefined') {
-    // hydrate on load
+    
     store.hydrateFromLocal()
-    // listen to storage changes
+    
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_KEY) store.hydrateFromLocal()
     }
     window.addEventListener('storage', onStorage)
-    // optional: attempt auto-detect in background if nothing set
+    
     setTimeout(() => {
       const s = get()
       if (!s.city && !s.country && !s.loading) store.requestLocation()

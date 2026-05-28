@@ -1,6 +1,6 @@
-/**
- * Toast notification types
- */
+
+
+
 
 export type AppToastOptions = {
   title?: string;

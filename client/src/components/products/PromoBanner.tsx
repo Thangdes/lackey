@@ -6,7 +6,7 @@ import { IoClose } from "react-icons/io5";
 export type PromoBannerProps = {
   className?: string;
   fullBleed?: boolean;
-  mobileHidden?: boolean; // when true, hide banner on mobile (block from md+)
+  mobileHidden?: boolean; 
 };
 
 const PromoBanner: React.FC<PromoBannerProps> = ({ className = "", fullBleed = false, mobileHidden = true }) => {

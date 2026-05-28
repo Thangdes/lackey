@@ -1,7 +1,7 @@
-/**
- * Error Normalizer - Chuyển đổi lỗi từ server thành thông báo thân thiện với người dùng
- * Không hiển thị lỗi hệ thống, chỉ hiển thị thông báo dễ hiểu
- */
+
+
+
+
 
 interface ErrorMapping {
   pattern: RegExp | string;
@@ -10,7 +10,7 @@ interface ErrorMapping {
 }
 
 const ERROR_MAPPINGS: ErrorMapping[] = [
-  // Auth errors
+  
   {
     pattern: /email.*already.*registered|email.*exists/i,
     message: "Email already registered",
@@ -47,7 +47,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Bạn cần đăng nhập để thực hiện hành động này.",
   },
 
-  // Validation errors
+  
   {
     pattern: /password.*at least.*8|password.*minimum.*8/i,
     message: "Password too short",
@@ -64,7 +64,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Vui lòng điền đầy đủ thông tin bắt buộc.",
   },
 
-  // Product/Cart errors
+  
   {
     pattern: /not.*enough.*stock|stock.*unavailable|quantity.*not.*available/i,
     message: "Out of stock",
@@ -81,7 +81,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Giỏ hàng của bạn trống. Vui lòng thêm sản phẩm.",
   },
 
-  // Order errors
+  
   {
     pattern: /order.*not.*found|order.*does.*not.*exist/i,
     message: "Order not found",
@@ -103,7 +103,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Số tiền thanh toán không khớp. Vui lòng thử lại.",
   },
 
-  // Discount/Coupon errors
+  
   {
     pattern: /discount.*code.*invalid|coupon.*invalid|code.*not.*found/i,
     message: "Invalid discount code",
@@ -120,7 +120,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Giá trị đơn hàng chưa đạt mức tối thiểu để sử dụng mã này.",
   },
 
-  // Shipping errors
+  
   {
     pattern: /shipping.*address.*incomplete|address.*invalid/i,
     message: "Invalid shipping address",
@@ -132,7 +132,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
     userMessage: "Chúng tôi hiện không giao hàng đến địa chỉ này.",
   },
 
-  // Server errors
+  
   {
     pattern: /internal.*server.*error|something.*went.*wrong/i,
     message: "Server error",
@@ -150,21 +150,21 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   },
 ];
 
-/**
- * Chuẩn hóa lỗi từ server thành thông báo thân thiện với người dùng
- * @param error - Lỗi từ server (có thể là Error, string, hoặc object)
- * @param fallback - Thông báo mặc định nếu không tìm thấy mapping
- * @returns Thông báo thân thiện với người dùng
- */
+
+
+
+
+
+
 export function normalizeErrorForUser(
   error: unknown,
   fallback: string = "Có lỗi xảy ra. Vui lòng thử lại."
 ): string {
-  // Lấy thông báo lỗi từ các nguồn khác nhau
+  
   let errorMessage = "";
 
   if (error instanceof Error) {
-    // Axios error: thử lấy message từ response.data trước
+    
     const axiosLike = error as unknown as {
       response?: { data?: { message?: unknown } | string; status?: number };
     };
@@ -179,7 +179,7 @@ export function normalizeErrorForUser(
     } else if (typeof respData === "string" && respData.trim()) {
       errorMessage = respData.trim();
     }
-    // Fallback to Error.message (đã được unwrap() xử lý thành server message)
+    
     if (!errorMessage) {
       errorMessage = error.message;
     }
@@ -187,7 +187,7 @@ export function normalizeErrorForUser(
     errorMessage = error;
   } else if (error && typeof error === "object") {
     const err = error as Record<string, unknown>;
-    // Axios-style object
+    
     const respData = (err.response as Record<string, unknown> | undefined)?.data;
     if (respData && typeof respData === "object") {
       const m = (respData as { message?: unknown }).message;
@@ -210,7 +210,7 @@ export function normalizeErrorForUser(
     return fallback;
   }
 
-  // Tìm mapping phù hợp
+  
   for (const mapping of ERROR_MAPPINGS) {
     const pattern = typeof mapping.pattern === "string" 
       ? new RegExp(mapping.pattern, "i")
@@ -221,19 +221,19 @@ export function normalizeErrorForUser(
     }
   }
 
-  // Nếu không tìm thấy mapping, kiểm tra độ dài thông báo
-  // Nếu quá dài hoặc có vẻ là HTML/lỗi hệ thống, trả về fallback
+  
+  
   if (errorMessage.length > 200 || /^<!DOCTYPE|^<html|<[^>]+>/i.test(errorMessage)) {
     return fallback;
   }
 
-  // Nếu thông báo ngắn và không phải lỗi hệ thống, trả về thông báo gốc
+  
   return errorMessage;
 }
 
-/**
- * Chuẩn hóa lỗi cho các trường hợp cụ thể
- */
+
+
+
 export const errorNormalizers = {
   auth: (error: unknown) =>
     normalizeErrorForUser(error, "Lỗi xác thực. Vui lòng thử lại."),

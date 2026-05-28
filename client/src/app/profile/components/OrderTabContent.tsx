@@ -43,7 +43,7 @@ export default function OrderTabContent({
     canceled: "CANCELED",
   };
   const status = statusMap[activeTab];
-  // Persist expanded ids across pagination
+  
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   useEffect(() => {
     if (typeof window === "undefined") return;

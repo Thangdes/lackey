@@ -6,8 +6,8 @@ export function useProvinces() {
   return useQuery<GHNResponse<GHNProvince[]>>({
     queryKey: ['ghn', 'provinces'],
     queryFn: () => shippingService.getProvinces(),
-    staleTime: 1000 * 60 * 60, // 1 hour
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 60, 
+    gcTime: 1000 * 60 * 60 * 24, 
   });
 }
 
@@ -16,8 +16,8 @@ export function useDistricts(provinceId: number | null) {
     queryKey: ['ghn', 'districts', provinceId],
     queryFn: () => shippingService.getDistricts(provinceId!),
     enabled: !!provinceId,
-    staleTime: 1000 * 60 * 60, // 1 hour
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 60, 
+    gcTime: 1000 * 60 * 60 * 24, 
   });
 }
 
@@ -26,7 +26,7 @@ export function useWards(districtId: number | null) {
     queryKey: ['ghn', 'wards', districtId],
     queryFn: () => shippingService.getWards(districtId!),
     enabled: !!districtId,
-    staleTime: 1000 * 60 * 60, // 1 hour
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 60, 
+    gcTime: 1000 * 60 * 60 * 24, 
   });
 }

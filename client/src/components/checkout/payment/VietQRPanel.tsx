@@ -18,7 +18,7 @@ export type VietQRPanelProps = {
 };
 
 export function VietQRPanel({ qrUrl, transferNote, bank, onCopyNote, onCancel }: VietQRPanelProps) {
-  // Build a fallback QR URL from bank/account info if provided
+  
   const fallbackQrUrl = (() => {
     const bankCode = bank.bankCode;
     const accountNumber = bank.accountNumber;
@@ -26,7 +26,7 @@ export function VietQRPanel({ qrUrl, transferNote, bank, onCopyNote, onCancel }:
     if (!bankCode || !accountNumber) return undefined;
     const info = encodeURIComponent(transferNote || "");
     const name = encodeURIComponent(accountName || "");
-    // amount is optional here as this panel doesn't receive it; keep default 0
+    
     const amt = 0;
     return `https://img.vietqr.io/image/${bankCode}-${accountNumber}-compact.png?amount=${amt}&addInfo=${info}&accountName=${name}`;
   })();

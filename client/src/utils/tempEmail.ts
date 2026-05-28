@@ -2,8 +2,8 @@ export function generateTempEmail(
   prefix: string = "guest", 
   domain: string = "temp.hatx.com.vn"
 ): string {
-  const timestamp = Date.now().toString(36); // Base36 timestamp for shorter string
-  const randomPart = Math.random().toString(36).substring(2, 8); // 6 random characters
+  const timestamp = Date.now().toString(36); 
+  const randomPart = Math.random().toString(36).substring(2, 8); 
   
   return `${prefix}-${timestamp}-${randomPart}@${domain}`;
 }
@@ -19,8 +19,8 @@ export function generatePersonalizedTempEmail(
     .replace(/[^a-z0-9]/g, '') 
     .substring(0, 10) || "guest";
   
-  const cleanPhone = phone?.replace(/[^0-9]/g, '').substring(-4) || ""; // Last 4 digits
-  const timestamp = Date.now().toString(36).substring(-4); // Last 4 chars of timestamp
+  const cleanPhone = phone?.replace(/[^0-9]/g, '').substring(-4) || ""; 
+  const timestamp = Date.now().toString(36).substring(-4); 
   
   if (cleanPhone) {
     return `${cleanName}.${cleanPhone}.${timestamp}@${domain}`;

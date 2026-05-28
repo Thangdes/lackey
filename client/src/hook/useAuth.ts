@@ -39,14 +39,14 @@ export function useSignup() {
   return useMutation({
     mutationFn: (payload: { fullName?: string; email: string; password: string }) =>
       authService.signup(payload),
-    // No side-effects in onSuccess — caller is responsible for dispatching events
+    
   });
 }
 
 export function useLogin() {
   return useMutation({
     mutationFn: (payload: { email: string; password: string }) => authService.login(payload),
-    // No side-effects in onSuccess — caller is responsible for dispatching events
+    
   });
 }
 
@@ -72,7 +72,7 @@ export function useLogout() {
       qc.setQueryData<User | null>(keys.profile(), null);
       try { qc.removeQueries({ queryKey: cartKeys.root() }); } catch {}
       try { qc.removeQueries({ queryKey: cartKeys.items() }); } catch {}
-      // Show a consistent logout success toast using shared UI
+      
       showSuccessToast({ title: "Đăng xuất thành công", message: "Hẹn gặp lại bạn!" });
     },
   });

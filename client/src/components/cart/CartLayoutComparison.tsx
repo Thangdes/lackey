@@ -3,14 +3,14 @@
 import React from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-/**
- * Visual comparison of old vs new cart layout
- */
+
+
+
 export default function CartLayoutComparison() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-neutral-50 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xl">
@@ -29,9 +29,9 @@ export default function CartLayoutComparison() {
           </p>
         </div>
 
-        {/* Comparison Grid */}
+        {}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* OLD LAYOUT */}
+          {}
           <div className="space-y-4">
             <div className="bg-red-50 border-2 border-red-300 rounded-xl p-4">
               <h2 className="text-2xl font-bold text-red-800 mb-2 flex items-center gap-2">
@@ -43,10 +43,10 @@ export default function CartLayoutComparison() {
 
             <div className="bg-white border-2 border-red-300 rounded-xl overflow-hidden">
               <div className="p-6">
-                {/* Old Layout Example */}
+                {}
                 <div className="space-y-4">
                   <div className="grid grid-cols-12 gap-4 pb-4 border-b">
-                    {/* Product */}
+                    {}
                     <div className="col-span-6 flex gap-3">
                       <div className="w-16 h-16 bg-gray-200 rounded" />
                       <div>
@@ -55,7 +55,7 @@ export default function CartLayoutComparison() {
                         <div className="text-sm font-semibold mt-1">120,000₫</div>
                       </div>
                     </div>
-                    {/* Quantity */}
+                    {}
                     <div className="col-span-3 flex items-center justify-center">
                       <div className="flex items-center border rounded">
                         <button className="w-8 h-8 border-r">−</button>
@@ -63,7 +63,7 @@ export default function CartLayoutComparison() {
                         <button className="w-8 h-8 border-l">+</button>
                       </div>
                     </div>
-                    {/* Total */}
+                    {}
                     <div className="col-span-3 flex items-center justify-end">
                       <div className="font-bold">240,000₫</div>
                     </div>
@@ -72,7 +72,7 @@ export default function CartLayoutComparison() {
               </div>
             </div>
 
-            {/* Problems */}
+            {}
             <div className="bg-red-50 border border-red-200 rounded-xl p-4">
               <h3 className="font-bold text-red-900 mb-3">⚠️ Vấn đề:</h3>
               <div className="space-y-2 text-sm text-red-800">
@@ -96,7 +96,7 @@ export default function CartLayoutComparison() {
             </div>
           </div>
 
-          {/* NEW LAYOUT */}
+          {}
           <div className="space-y-4">
             <div className="bg-green-50 border-2 border-green-300 rounded-xl p-4">
               <h2 className="text-2xl font-bold text-green-800 mb-2 flex items-center gap-2">
@@ -108,26 +108,26 @@ export default function CartLayoutComparison() {
 
             <div className="bg-white border-2 border-green-300 rounded-xl overflow-hidden shadow-lg">
               <div className="p-6">
-                {/* New Layout Example */}
+                {}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 pb-4 border-b">
-                    {/* Image */}
+                    {}
                     <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg shrink-0 flex items-center justify-center">
                       <span className="text-2xl">📦</span>
                     </div>
-                    {/* Info */}
+                    {}
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-base mb-1">Hạt điều rang muối</div>
                       <div className="text-sm text-gray-600 mb-1">(500g)</div>
                       <div className="text-base font-bold text-gray-900">120,000₫</div>
                     </div>
-                    {/* Quantity */}
+                    {}
                     <div className="flex items-center border-2 border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
                       <button className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 font-bold text-lg">−</button>
                       <span className="w-12 text-center font-bold border-x-2 border-gray-300">2</span>
                       <button className="w-10 h-10 flex items-center justify-center hover:bg-amber-50 font-bold text-lg">+</button>
                     </div>
-                    {/* Total */}
+                    {}
                     <div className="shrink-0 min-w-[100px] text-right">
                       <div className="text-lg font-bold text-gray-900">240,000₫</div>
                       <button className="text-xs text-gray-500 hover:text-red-600 mt-1">Xóa</button>
@@ -137,7 +137,7 @@ export default function CartLayoutComparison() {
               </div>
             </div>
 
-            {/* Benefits */}
+            {}
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <h3 className="font-bold text-green-900 mb-3">✨ Cải thiện:</h3>
               <div className="space-y-2 text-sm text-green-800">
@@ -166,7 +166,7 @@ export default function CartLayoutComparison() {
           </div>
         </div>
 
-        {/* Visual Flow */}
+        {}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-8 text-white">
           <h2 className="text-3xl font-bold mb-6 text-center">🎯 Luồng Thông Tin Mới</h2>
           <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -199,7 +199,7 @@ export default function CartLayoutComparison() {
           </p>
         </div>
 
-        {/* UX Principles */}
+        {}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-xl p-6 shadow-md border border-neutral-200">
             <div className="text-4xl mb-3">🎨</div>
@@ -224,7 +224,7 @@ export default function CartLayoutComparison() {
           </div>
         </div>
 
-        {/* CTA */}
+        {}
         <div className="mt-8 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-2xl p-8 text-center">
           <h2 className="text-3xl font-bold text-neutral-900 mb-4">
             🎉 Layout mới đã được áp dụng!

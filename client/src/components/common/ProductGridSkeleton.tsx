@@ -19,7 +19,7 @@ const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({ count = 6, cl
           key={i} 
           className="bg-white border border-gray-200 rounded-lg overflow-hidden animate-pulse"
         >
-          {/* Image Skeleton */}
+          {}
           <div className="aspect-square w-full bg-gray-100 relative overflow-hidden">
             <div 
               className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100"
@@ -30,24 +30,24 @@ const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({ count = 6, cl
             />
           </div>
           
-          {/* Content Skeleton */}
+          {}
           <div className="p-3 space-y-2">
-            {/* Title */}
+            {}
             <div className="space-y-1.5">
               <div className="h-3.5 bg-gray-200 rounded w-full" />
               <div className="h-3.5 bg-gray-200 rounded w-4/5" />
             </div>
             
-            {/* Rating */}
+            {}
             <div className="flex items-center gap-2">
               <div className="h-3 bg-gray-200 rounded w-12" />
               <div className="h-3 bg-gray-200 rounded w-8" />
             </div>
             
-            {/* Sold */}
+            {}
             <div className="h-3 bg-gray-200 rounded w-20" />
             
-            {/* Price */}
+            {}
             <div className="h-4 bg-gray-200 rounded w-24" />
           </div>
         </div>

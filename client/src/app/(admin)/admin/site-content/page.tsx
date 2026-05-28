@@ -134,7 +134,7 @@ function CreateForm({ type, onCreated }: { type: ContentType; onCreated?: () => 
         isPublished,
       };
       if (type === "BANNER") {
-        // FE renders thumbnail only, but allow storing link if needed
+        
         payload.linkUrl = linkUrl.trim() || undefined;
       } else {
         payload.content = content.trim() || undefined;
@@ -266,7 +266,7 @@ function EditableRow({
   }, [item.id, onDeleted]);
 
   const onUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputEl = e.currentTarget; // capture before any await
+    const inputEl = e.currentTarget; 
     const f = inputEl.files?.[0];
     if (!f) return;
     setUploading(true);
@@ -278,7 +278,7 @@ function EditableRow({
       toast.error(err instanceof Error ? err.message : "Tải hình thất bại");
     } finally {
       setUploading(false);
-      if (inputEl) inputEl.value = ""; // reset input safely
+      if (inputEl) inputEl.value = ""; 
     }
   }, [item.id, onSaved]);
 

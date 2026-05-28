@@ -40,7 +40,7 @@ export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, g
     <Wrapper>
       <WarningList globalWarnings={globalWarnings} itemWarnings={itemWarnings} showBackLink={showBackLink} />
       
-      {/* Product List */}
+      {}
       <div className="space-y-4">
         {items.length === 0 && (
           <div className="text-sm text-gray-600">Giỏ hàng trống</div>
@@ -67,7 +67,7 @@ export const OrderSummary = ({ items, subtotal, shippingFee, total, formatVND, g
         )}
       </div>
 
-      {/* Total Summary */}
+      {}
       <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-600">Tạm tính</span>

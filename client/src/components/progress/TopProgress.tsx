@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 export default function TopProgress() {
   const pathname = usePathname();
-  // Only track pathname so progress shows strictly on real page navigations
+  
   const urlKey = useMemo(() => `${pathname}`, [pathname]);
 
   const [visible, setVisible] = useState(false);
@@ -53,7 +53,7 @@ export default function TopProgress() {
     }, 300);
   }, []);
 
-  // Keep refs in sync with the latest callbacks so we can call them inside effects
+  
   useEffect(() => {
     startRef.current = start;
   }, [start]);
@@ -76,13 +76,13 @@ export default function TopProgress() {
         if (anchor.getAttribute('download') !== null) return;
         const url = new URL(href, location.href);
         if (url.origin !== location.origin) return;
-        // Only start if destination PATHNAME differs (ignore query/hash changes)
+        
         const nextKey = `${url.pathname}`;
         if (nextKey === urlKeyRef.current) return;
         start();
       } catch {}
     };
-    // Use bubble phase so React handlers (which may call preventDefault) run first
+    
     document.addEventListener('click', onDocumentClick);
     return () => document.removeEventListener('click', onDocumentClick);
   }, [start]);
@@ -95,14 +95,14 @@ export default function TopProgress() {
 
   useEffect(() => {
     if (urlKeyRef.current !== urlKey) {
-      // Pathname actually changed
+      
       urlKeyRef.current = urlKey;
       if (startedRef.current) {
-        // If we already started (via click/popstate), finish now
+        
         doneRef.current();
       } else {
-        // Programmatic navigation (router.push/replace) without a click
-        // Start and then finish shortly after
+        
+        
         startRef.current();
         setTimeout(() => {
           if (startedRef.current) doneRef.current();

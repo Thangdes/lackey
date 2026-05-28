@@ -173,7 +173,7 @@ export default function ProfilePage() {
 
   return (
     <div className="px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-4 sm:py-6 md:py-8 xl:py-10 2xl:py-12">
-      {/* Breadcrumb */}
+      {}
       <nav className="mb-6" aria-label="Breadcrumb">
         <div className="inline-flex items-center gap-2 text-sm">
           <Link href="/" className="text-neutral-600 hover:text-black transition-colors">Trang chủ</Link>
@@ -190,7 +190,7 @@ export default function ProfilePage() {
         </div>
       </nav>
 
-      {/* Header */}
+      {}
       <div className="mb-8 p-6 md:p-8 bg-white border border-neutral-200 rounded-2xl flex items-center gap-5">
         <div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-100 rounded-full flex items-center justify-center shrink-0">
           <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-neutral-500" />

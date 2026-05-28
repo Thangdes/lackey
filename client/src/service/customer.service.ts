@@ -6,7 +6,7 @@ import type { Customer, CustomerAddress, CustomerListParams } from "@/type/custo
 export type { CustomerListParams };
 
 export const customerService = {
-  // GET /customers?page=1&limit=10&search=...
+  
   list: async (params: CustomerListParams) => {
     const url = API.customers.list(params.page ?? 1, params.limit ?? 10, params.search);
     const raw = await http.get<
@@ -19,7 +19,7 @@ export const customerService = {
       | ({ data?: Customer[]; items?: Customer[]; customers?: Customer[]; meta?: Record<string, unknown> } & Record<string, unknown>)
     >(raw);
 
-    // Normalize data array
+    
     const data: Customer[] = Array.isArray(payload)
       ? payload
       : (() => {
@@ -30,24 +30,24 @@ export const customerService = {
           return [] as Customer[];
         })();
 
-    // Normalize pagination meta
+    
     const rawMeta = Array.isArray(payload) ? {} : (payload as { meta?: unknown } | undefined)?.meta ?? payload;
     const meta = normalizePaginationMeta(rawMeta, { page: params.page ?? 1, limit: params.limit ?? 10 });
 
     return { data, meta } as { data: Customer[]; meta?: { page?: number; limit?: number; total?: number } };
   },
 
-  // GET /customers/:id
+  
   getById: (id: string) => http.get<unknown>(API.customers.byId(id)).then((raw) => unwrapData<Customer>(raw)),
 
-  // GET /customers/me (current authenticated customer profile)
+  
   getMe: () => http.get<unknown>(API.customers.me).then((raw) => unwrapData<Customer | null>(raw)),
 
-  // GET /customers/:customerId/addresses
+  
   listAddresses: (customerId: string) =>
     http.get<unknown>(API.customers.addresses(customerId)).then((raw) => unwrapDataArray<CustomerAddress>(raw)),
 
-  // POST /customers/:customerId/addresses
+  
   addAddress: (
     customerId: string,
     payload: {
@@ -61,7 +61,7 @@ export const customerService = {
     }
   ) => http.post<unknown>(API.customers.addresses(customerId), payload).then((raw) => unwrapData<CustomerAddress>(raw)),
 
-  // PATCH /customers/:customerId/addresses/:addressId
+  
   updateAddress: (
     customerId: string,
     addressId: string,
@@ -79,7 +79,7 @@ export const customerService = {
       .patch<unknown>(API.customers.addressById(customerId, addressId), payload)
       .then((raw) => unwrapData<CustomerAddress>(raw)),
 
-  // DELETE /customers/:customerId/addresses/:addressId
+  
   removeAddress: (customerId: string, addressId: string) =>
     http
       .delete<unknown>(API.customers.addressById(customerId, addressId))

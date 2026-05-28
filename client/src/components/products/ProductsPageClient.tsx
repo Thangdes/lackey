@@ -31,11 +31,11 @@ const ProductsPageClient: React.FC = () => {
     };
   }, [minPrice, maxPrice]);
 
-  // Get product count from API
+  
   const { data: productsData, isLoading: isLoadingCount } = useProductList(
-    1, // page
-    1, // limit - Only need count, not actual products
-    selectedCategories.length > 0 ? selectedCategories[0] : undefined, // categoryId - using first selected category
+    1, 
+    1, 
+    selectedCategories.length > 0 ? selectedCategories[0] : undefined, 
     q ?? undefined,
     {
       sort: localSort,

@@ -11,7 +11,7 @@ export type Testimonial = {
   name: string;
   avatarUrl?: string;
   imageUrl?: string;
-  rating: number; // 1..5
+  rating: number; 
   content: string;
   role?: string;
 };

@@ -8,7 +8,7 @@ import type { Category } from "@/service/category.service";
 import { ROUTES, buildCategoryPath } from "@/constant/route";
 import { ArrowRight } from "lucide-react";
 
-// Mock categories cho demo - Keyboard themed
+
 const MOCK_CATEGORIES: Category[] = [
   {
     id: "cat-keycap",
@@ -113,7 +113,7 @@ const CategoriesGrid: React.FC<Props> = ({
               </p>
             )}
           </div>
-          {/* Desktop View All Link */}
+          {}
           <Link
             href={viewAllHref}
             className="hidden md:inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold group"
@@ -142,7 +142,7 @@ const CategoriesGrid: React.FC<Props> = ({
                 ) : (
                   <div className="w-full h-full bg-gray-50" />
                 )}
-                {/* Overlay gradient */}
+                {}
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               
@@ -155,7 +155,7 @@ const CategoriesGrid: React.FC<Props> = ({
           ))}
         </div>
 
-        {/* Mobile View All Button */}
+        {}
         <div className="text-center md:hidden mt-8">
           <Link
             href={viewAllHref}

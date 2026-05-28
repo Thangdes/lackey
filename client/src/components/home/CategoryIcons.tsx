@@ -79,12 +79,12 @@ export default function CategoryIcons() {
   return (
     <section className="w-full bg-white py-8 md:py-12 border-b border-gray-100">
       <div className="px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        {/* Header */}
+        {}
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8">
           Danh mục sản phẩm
         </h2>
 
-        {/* Categories Grid */}
+        {}
         <div className="grid grid-cols-5 md:grid-cols-10 gap-4 md:gap-6">
           {CATEGORIES.map((category) => (
             <Link
@@ -92,7 +92,7 @@ export default function CategoryIcons() {
               href={`${ROUTES.products}?category=${category.slug}`}
               className="group flex flex-col items-center gap-3 transition-all hover:-translate-y-1"
             >
-              {/* Image Container */}
+              {}
               <div className="relative w-20 h-20 md:w-24 md:h-24 bg-gray-50 overflow-hidden group-hover:bg-gray-100 transition-colors">
                 <Image
                   src={category.image}
@@ -103,7 +103,7 @@ export default function CategoryIcons() {
                 />
               </div>
               
-              {/* Name */}
+              {}
               <span className="text-xs md:text-sm text-gray-700 text-center font-medium group-hover:text-gray-900">
                 {category.name}
               </span>

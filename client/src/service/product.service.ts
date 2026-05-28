@@ -43,7 +43,7 @@ export const productService = {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 10;
 
-    // Build category params — priority: categorySlugs > categoryIds > categoryId
+    
     const categoryParams: Record<string, unknown> = {};
     const categorySlugs = params?.categorySlugs;
     if (Array.isArray(categorySlugs) && categorySlugs.length > 0) {
@@ -62,7 +62,7 @@ export const productService = {
       }
     }
 
-    // Build supplierId params
+    
     const supplierParams: Record<string, unknown> = {};
     const supplierId = params?.supplierId;
     if (Array.isArray(supplierId)) {
@@ -100,17 +100,17 @@ export const productService = {
       });
   },
 
-  // GET /products/suppliers
+  
   getSuppliers: () =>
     http.get<unknown>(API.product.suppliers).then((raw) => unwrapDataArray<{ id: string; name: string }>(raw)),
 
-  // GET /products/:id
+  
   getById: (id: string) => http.get<unknown>(API.product.byId(id)).then((raw) => unwrapData<Product>(raw)),
 
-  // GET /products/slug/:slug
+  
   getBySlug: (slug: string) => http.get<unknown>(API.product.bySlug(slug)).then((raw) => unwrapData<Product>(raw)),
 
-  // GET /products/:id/related?limit=
+  
   related: (productId: string, limit = 8) =>
     http
       .get<unknown>(`${API.product.byId(productId)}/related?limit=${encodeURIComponent(String(limit))}`)

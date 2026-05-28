@@ -1,16 +1,16 @@
 export function mapBinToShortCode(binOrCode: string | undefined): string | undefined {
   if (!binOrCode) return undefined;
   const map: Record<string, string> = {
-    "970436": "vcb", // Vietcombank
-    "970418": "bidv", // BIDV
-    "970407": "agribank", // Agribank
-    "970423": "vtb", // VietinBank
-    "970400": "sacombank", // Sacombank
-    "970448": "acb", // ACB
-    "970422": "mbbank", // MBBank
-    "970428": "techcombank", // Techcombank
-    "970415": "vpbank", // VPBank
-    "970416": "tpb", // TPBank
+    "970436": "vcb", 
+    "970418": "bidv", 
+    "970407": "agribank", 
+    "970423": "vtb", 
+    "970400": "sacombank", 
+    "970448": "acb", 
+    "970422": "mbbank", 
+    "970428": "techcombank", 
+    "970415": "vpbank", 
+    "970416": "tpb", 
   };
   return /^\d{6}$/.test(binOrCode) ? map[binOrCode] || binOrCode : binOrCode;
 }

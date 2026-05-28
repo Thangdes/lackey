@@ -10,12 +10,12 @@ const ChatWidget: React.FC = () => {
     <>
       <div className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-30 flex flex-col items-end gap-3 pb-[env(safe-area-inset-bottom)] mb-16 md:mb-0">
         
-        {/* Chat Window */}
+        {}
         <div 
           className={`flex flex-col bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-90 opacity-0 pointer-events-none absolute bottom-16 right-0'}`}
           style={{ width: 'min(calc(100vw - 2rem), 380px)', height: '500px', maxHeight: 'calc(100vh - 8rem)' }}
         >
-          {/* Header */}
+          {}
           <div className="bg-gradient-to-r from-[var(--brand-accent)] to-[var(--brand-secondary)] p-4 flex items-center justify-between text-white">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -35,9 +35,9 @@ const ChatWidget: React.FC = () => {
             </button>
           </div>
 
-          {/* Messages Area */}
+          {}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-neutral-50 dark:bg-neutral-950">
-            {/* Bot Message */}
+            {}
             <div className="flex items-start gap-2 max-w-[85%]">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--brand-accent)] to-[var(--brand-secondary)] flex-shrink-0 flex items-center justify-center text-white">
                 <MessageCircle className="w-4 h-4" />
@@ -48,7 +48,7 @@ const ChatWidget: React.FC = () => {
             </div>
           </div>
 
-          {/* Input Area */}
+          {}
           <div className="p-3 bg-white dark:bg-neutral-900 border-t border-neutral-100 dark:border-neutral-800">
             <form className="flex items-center gap-2" onSubmit={(e) => e.preventDefault()}>
               <input 
@@ -66,7 +66,7 @@ const ChatWidget: React.FC = () => {
           </div>
         </div>
 
-        {/* Toggle Button */}
+        {}
         <button
           aria-label={isOpen ? "Đóng Chatbot" : "Mở Chatbot"}
           className={`group relative inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-accent)] to-[var(--brand-secondary)] text-white shadow-xl hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]/50 focus-visible:ring-offset-2 transition-all duration-300 hover:scale-105 active:scale-95 ${isOpen ? 'h-0 w-0 opacity-0 overflow-hidden' : 'h-12 w-12 md:h-14 md:w-14 opacity-100'}`}

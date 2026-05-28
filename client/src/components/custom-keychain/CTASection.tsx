@@ -6,7 +6,7 @@ export function CTASection() {
     <section className="container mx-auto px-4 md:px-6 py-16 md:py-24">
       <div className="max-w-4xl mx-auto">
         <div className="bg-blue-600 rounded-3xl p-10 md:p-16 text-center shadow-lg border border-blue-500 text-white relative overflow-hidden">
-          {/* Decorative circles */}
+          {}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-white opacity-10 blur-2xl pointer-events-none" />
 

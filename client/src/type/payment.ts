@@ -33,7 +33,7 @@ export type OrderItem = {
     city?: string
   }
 
-// Response returned by POST /payments/create-link
+
 export interface PaymentLinkResponse {
   orderId: string;
   orderCode?: string;
@@ -47,7 +47,7 @@ export interface PaymentLinkResponse {
   accountName?: string;
 }
 
-// Response returned by GET /payments/pending
+
 export interface PendingPaymentsResponseMeta {
   page: number;
   limit: number;
@@ -55,7 +55,7 @@ export interface PendingPaymentsResponseMeta {
   totalPages: number;
 }
 
-// Minimal shape for a pending payment item; keep it flexible as backend includes order and customer
+
 export interface PendingPaymentItem {
   id: string;
   status: "PENDING" | "SUCCESS" | "FAILED";
@@ -75,7 +75,7 @@ export interface PendingPaymentsResponse {
   meta: PendingPaymentsResponseMeta;
 }
 
-// Response returned by POST /payments/reconcile-csv
+
 export interface ReconcileCsvResultItem {
   transactionId?: string;
   matchedOrderCode?: string;

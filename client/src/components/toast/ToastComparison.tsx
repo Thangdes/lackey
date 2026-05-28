@@ -6,10 +6,10 @@ import { showAddedToCartToast } from "./AddToCartToast";
 import { showAddedToCartToastGold } from "./AddToCartToastGold";
 import { Palette, Moon, Sun, Sparkles, Check } from "lucide-react";
 
-/**
- * Comparison Component for Toast Designs
- * Compare Dark/Gold vs Full Gold variants
- */
+
+
+
+
 export default function ToastComparison() {
   const [selectedVersion, setSelectedVersion] = useState<"dark" | "gold">("dark");
 
@@ -57,7 +57,7 @@ export default function ToastComparison() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-amber-50/30 to-neutral-50 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 mb-4 shadow-2xl">
             <Palette className="w-10 h-10 text-neutral-900" />
@@ -70,7 +70,7 @@ export default function ToastComparison() {
           </p>
         </div>
 
-        {/* Version Selection */}
+        {}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {versions.map((version) => {
             const Icon = version.icon;
@@ -93,7 +93,7 @@ export default function ToastComparison() {
                 )}
 
                 <div className="p-6">
-                  {/* Header */}
+                  {}
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${version.color} shadow-md`}>
                       <Icon className={`w-6 h-6 ${isSelected ? version.accentColor : "text-white"}`} strokeWidth={2} />
@@ -104,7 +104,7 @@ export default function ToastComparison() {
                     </div>
                   </div>
 
-                  {/* Features */}
+                  {}
                   <div className="space-y-2 mb-4">
                     {version.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start gap-2">
@@ -114,7 +114,7 @@ export default function ToastComparison() {
                     ))}
                   </div>
 
-                  {/* Action Buttons */}
+                  {}
                   <div className="flex gap-2">
                     <Button
                       onClick={(e) => {
@@ -150,7 +150,7 @@ export default function ToastComparison() {
           })}
         </div>
 
-        {/* Implementation Guide */}
+        {}
         <div className="bg-white rounded-2xl shadow-lg border border-neutral-200 p-8">
           <h2 className="text-2xl font-bold text-neutral-900 mb-6 flex items-center gap-2">
             <span className="text-3xl">💻</span>
@@ -158,7 +158,7 @@ export default function ToastComparison() {
           </h2>
 
           <div className="space-y-6">
-            {/* Current Selection */}
+            {}
             <div className="p-4 bg-amber-50 border-2 border-amber-200 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
@@ -169,7 +169,7 @@ export default function ToastComparison() {
               </div>
             </div>
 
-            {/* Code Instructions */}
+            {}
             <div className="space-y-4">
               <h3 className="font-bold text-neutral-900 text-lg">Bước 1: Import function</h3>
               <div className="bg-neutral-900 text-amber-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
@@ -209,7 +209,7 @@ export default function ToastComparison() {
           </div>
         </div>
 
-        {/* Tips */}
+        {}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
             <div className="text-2xl mb-2">🎨</div>

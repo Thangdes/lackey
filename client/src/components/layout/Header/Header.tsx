@@ -187,7 +187,7 @@ const Header: React.FC = (): React.ReactElement => {
             onClick={() => setSearchOpen(false)}
           />
         )}
-        {/* CategoryBar hidden - uncomment to show: {!isMobile && <CategoryBar />} */}
+        {}
       </div>
 
       {(() => {

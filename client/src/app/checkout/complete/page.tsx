@@ -44,7 +44,7 @@ export default function CheckoutCompletePage() {
     try { document.cookie = "justCheckedOut=; path=/; max-age=0"; } catch {}
     (async () => {
       try {
-        // Only clear server cart immediately for COD.
+        
         if (lastMethod === "COD") {
           await cartService.clear();
           try { qc.setQueryData(cartKeys.root(), { items: [] }); } catch {}

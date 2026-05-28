@@ -76,9 +76,9 @@ const PUBLIC_BASE = (() => {
   }
   return normalized;
 })();
-// For SSR: prefer NEXT_INTERNAL_API_BASE (internal/private network URL).
-// If not set (e.g. Vercel serverless without Docker), fall back to NEXT_PUBLIC_API_BASE
-// if it is an absolute URL (https://...), otherwise fall back to localhost for local dev.
+
+
+
 const _internalApiBase = process.env.NEXT_INTERNAL_API_BASE?.replace(/\/$/, "");
 const _publicApiBase = process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "");
 const SSR_BASE = _internalApiBase
@@ -88,10 +88,10 @@ const SSR_BASE = _internalApiBase
   : "http://localhost:8000";
 
 const ensureTrailingSlash = (v: string) => (v.endsWith('/') ? v : `${v}/`);
-// When SSR_BASE is already an absolute URL that contains the API prefix path, don't append API_PREFIX again.
+
 const buildSsrBase = () => {
   if (/^https?:\/\//i.test(SSR_BASE)) {
-    // If SSR_BASE already ends with the api prefix path, use as-is
+    
     const prefixPath = API_PREFIX.replace(/^\//,"").replace(/\/$/,"");
     if (SSR_BASE.includes(`/${prefixPath}`)) return SSR_BASE;
     return `${SSR_BASE}${API_PREFIX}`;
@@ -127,9 +127,9 @@ api.interceptors.response.use(
 
     const url = String(originalRequest?.url || "");
 
-    // Allow POST to cart endpoints for guest users
+    
     if ((url.startsWith("/cart") || url.includes("/cart/")) && method === 'POST') {
-      // Backend handles guest cart - don't reject
+      
       return Promise.resolve(response);
     }
 
@@ -235,11 +235,11 @@ function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
       const data = e?.response?.data as unknown;
       let msg: string | undefined;
       
-      // Handle string response
+      
       if (typeof data === "string") {
         msg = data;
       } 
-      // Handle object response with message property (NestJS exceptions)
+      
       else if (data && typeof data === "object") {
         const m = (data as { message?: unknown }).message;
         if (Array.isArray(m)) {
@@ -249,7 +249,7 @@ function unwrap<T>(p: Promise<AxiosResponse<T>>): Promise<T> {
         }
       }
       
-      // Fallback to status code or generic message
+      
       if (!msg) msg = status ? `HTTP ${status}` : e?.message || "Request failed";
       throw new ApiError(msg, status, data);
     });

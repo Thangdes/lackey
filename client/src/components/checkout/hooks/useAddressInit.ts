@@ -18,10 +18,10 @@ export type UseAddressInitResult = {
   refreshAddresses: () => Promise<void>;
 };
 
-/**
- * Initialize address-related state: load default stored address, fetch profile and customer addresses,
- * select preferred address, and apply to form via provided callbacks.
- */
+
+
+
+
 export function useAddressInit(
   applyAddress: (addr: Address) => void,
   setNameEmailPhone: (name?: string, email?: string, phone?: string) => void,

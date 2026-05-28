@@ -52,7 +52,7 @@ export default function AboutPage() {
         })}
       </Script>
 
-      {/* Breadcrumb */}
+      {}
       <nav aria-label="Breadcrumb" className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pt-6 pb-4">
         <div className="inline-flex items-center gap-2 text-sm">
           <Link href={ROUTES.home} className="text-neutral-600 hover:text-black transition-colors">Trang chủ</Link>
@@ -61,7 +61,7 @@ export default function AboutPage() {
         </div>
       </nav>
 
-      {/* Hero Section - Minimal */}
+      {}
       <section className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-20">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider uppercase text-black">
@@ -81,7 +81,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Features Section - Clean Grid */}
+      {}
       <section className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16 bg-neutral-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-black">Tại sao chọn chúng tôi?</h2>
@@ -101,11 +101,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Info Section - Minimal Cards */}
+      {}
       <section className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
           
-          {/* Shipping */}
+          {}
           <div className="space-y-4">
             <div className="flex items-center gap-3 pb-4 border-b-2 border-neutral-200">
               <Truck className="w-6 h-6 text-black" />
@@ -121,7 +121,7 @@ export default function AboutPage() {
             </Link>
           </div>
 
-          {/* Contact */}
+          {}
           <div className="space-y-4">
             <div className="flex items-center gap-3 pb-4 border-b-2 border-neutral-200">
               <Phone className="w-6 h-6 text-black" />

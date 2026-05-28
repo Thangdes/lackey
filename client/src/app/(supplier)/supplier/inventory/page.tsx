@@ -34,7 +34,7 @@ export default function SupplierInventoryPage() {
         if (!cancelled) setLoading(false);
       }
     };
-    // hydrate initial query from URL
+    
     try {
       const initQ = sp?.get("q");
       if (initQ) setQuery(initQ);
@@ -43,7 +43,7 @@ export default function SupplierInventoryPage() {
     return () => { cancelled = true; };
   }, [sp]);
 
-  // Determine if current user has admin privileges -> allow write only for admin
+  
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -61,7 +61,7 @@ export default function SupplierInventoryPage() {
     return () => { alive = false; };
   }, []);
 
-  // Helpers for inline edit
+  
   const getKey = (productId: string, variantId: string) => `${productId}:${variantId}`;
   const getCurrentQty = React.useCallback((productId: string, variantId: string): number => {
     const prod = items.find((p) => p.id === productId);
@@ -149,7 +149,7 @@ export default function SupplierInventoryPage() {
       await Promise.all(
         picks.map(({ productId, variantId }) => productService.updateVariant(productId, variantId, { stockQuantity: qty }))
       );
-      // refresh
+      
       const data = await supplierDashboardService.inventoryReport();
       setItems(Array.isArray(data) ? data : []);
       setSelected({});

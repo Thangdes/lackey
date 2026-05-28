@@ -290,7 +290,7 @@ const MobileHeaderBar: React.FC = () => {
         </button>
       </div>
       
-      {/* Search Modal */}
+      {}
       <SearchModal 
         isOpen={searchOpen} 
         onClose={() => setSearchOpen(false)} 

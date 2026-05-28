@@ -4,7 +4,7 @@ import React from "react";
 import { Phone, Facebook } from "lucide-react";
 
 export default function FloatingWidget() {
-  // Tạm thời ẩn component này theo yêu cầu của user
+  
   return null;
 
   const contacts = [

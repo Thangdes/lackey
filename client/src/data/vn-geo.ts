@@ -2,7 +2,7 @@ export type Ward = string;
 export type District = { name: string; wards: Ward[] };
 export type Province = { name: string; districts: District[] };
 
-// Minimal sample dataset. Extend as needed.
+
 export const VN_GEO: Province[] = [
   {
     name: 'Hà Nội',

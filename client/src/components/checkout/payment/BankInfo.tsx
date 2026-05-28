@@ -4,7 +4,7 @@ import { VIETQR_MODAL } from "@/constant/checkout";
 import { formatVND } from "@/utils/currency";
 
 export type BankInfoProps = {
-  bankLabel: string; // already resolved bank name/code string for display
+  bankLabel: string; 
   accountNumber: string;
   accountName: string;
   amount: number;

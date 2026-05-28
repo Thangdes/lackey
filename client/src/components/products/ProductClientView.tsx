@@ -373,7 +373,7 @@ const ProductClientView: React.FC<ProductClientViewProps> = ({ product, thumbCol
         </div>
       </div>
 
-      {/* <ProductCTASection /> */}
+      {}
 
       <ProductMobileBar
         price={price}

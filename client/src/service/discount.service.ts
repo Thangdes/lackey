@@ -2,7 +2,7 @@ import { http, httpSuccess } from "@/utils/http";
 import { API } from "@/constant/api";
 import type { Discount, DiscountValidation } from "@/type/discount";
 
-// Re-export for consumers
+
 export type { Discount, DiscountValidation };
 
 export const discountService = {

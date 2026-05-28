@@ -9,7 +9,7 @@ import { HelpCircle, RefreshCcw } from "lucide-react";
 const ProductCTASection: React.FC = () => {
   return (
     <div className="mt-16 mb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Main CTA Banner */}
+      {}
       <div className="bg-blue-50 rounded-3xl p-8 md:p-12 text-center shadow-sm border border-blue-100">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-4">
           Bạn cần tư vấn?
@@ -35,9 +35,9 @@ const ProductCTASection: React.FC = () => {
         </div>
       </div>
 
-      {/* Secondary CTAs Grid */}
+      {}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* CTA 1 */}
+        {}
         <Link 
           href={ROUTES.products}
           className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all flex items-start gap-4"
@@ -51,7 +51,7 @@ const ProductCTASection: React.FC = () => {
           </div>
         </Link>
 
-        {/* CTA 2 */}
+        {}
         <Link 
           href={ROUTES.return}
           className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all flex items-start gap-4"
@@ -65,7 +65,7 @@ const ProductCTASection: React.FC = () => {
           </div>
         </Link>
 
-        {/* CTA 3 */}
+        {}
         <Link 
           href={ROUTES.help}
           className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all flex items-start gap-4"

@@ -33,13 +33,13 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
   const displayImages = images.length > 0 ? images : ["/logo/logo.jpg"];
   const currentImage = displayImages[activeImg] || displayImages[0];
 
-  // Optimize image URLs with Cloudinary transformations
+  
   const optimizeImageUrl = (url: string, width: number = 800, quality: number = 80) => {
     if (!url) return url;
     
-    // Check if it's a Cloudinary URL
+    
     if (url.includes('cloudinary.com')) {
-      // Insert transformation parameters before the version or filename
+      
       const parts = url.split('/upload/');
       if (parts.length === 2) {
         return `${parts[0]}/upload/w_${width},q_${quality},f_auto,c_limit/${parts[1]}`;
@@ -76,7 +76,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
     setFullscreenZoom((prev) => (prev === 1 ? 2 : 1));
   };
 
-  // Handle keyboard navigation in fullscreen
+  
   useEffect(() => {
     if (!fullscreen) return;
 
@@ -96,7 +96,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullscreen, activeImg, displayImages.length]);
 
-  // Lock body scroll when fullscreen is open
+  
   useEffect(() => {
     if (fullscreen) {
       document.body.style.overflow = "hidden";
@@ -111,7 +111,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
   return (
     <div className="w-full">
       <div className="flex flex-col gap-3 md:gap-4">
-        {/* Main Image */}
+        {}
         <div className="w-full">
           <div 
             ref={mainRef}
@@ -155,7 +155,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
           </div>
         </div>
 
-        {/* Horizontal Thumbnails (Shopee Style) */}
+        {}
         {displayImages.length > 1 && (
           <div className="w-full">
             <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar">
@@ -185,14 +185,14 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
         )}
       </div>
 
-      {/* Zoom Hint - Hidden on mobile */}
+      {}
       {zoomed && (
         <div className="hidden md:flex mt-3 justify-center pointer-events-none z-10 text-neutral-500 text-sm">
           <span>Di chuột để zoom • Click để xem toàn màn hình</span>
         </div>
       )}
 
-      {/* Fullscreen Lightbox Modal */}
+      {}
       {fullscreen && (
         <div 
           className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm"
@@ -201,7 +201,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             setFullscreenZoom(1);
           }}
         >
-          {/* Close Button */}
+          {}
           <button
             onClick={() => {
               setFullscreen(false);
@@ -213,12 +213,12 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             <IoClose className="w-7 h-7" />
           </button>
 
-          {/* Image Counter */}
+          {}
           <div className="absolute top-4 left-4 z-50 px-4 py-2 rounded-full bg-black/50 text-white text-sm font-medium">
             {activeImg + 1} / {displayImages.length}
           </div>
 
-          {/* Zoom Toggle Button */}
+          {}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -230,7 +230,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             {fullscreenZoom === 1 ? "Zoom 2x" : "Reset"}
           </button>
 
-          {/* Main Fullscreen Image */}
+          {}
           <div 
             ref={fullscreenRef}
             className="absolute inset-0 flex items-center justify-center p-4 md:p-8"
@@ -253,7 +253,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             </div>
           </div>
 
-          {/* Navigation Buttons */}
+          {}
           {displayImages.length > 1 && (
             <>
               <button
@@ -279,7 +279,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             </>
           )}
 
-          {/* Bottom Thumbnail Strip */}
+          {}
           {displayImages.length > 1 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-4xl w-full px-4">
               <div className="flex gap-2 justify-center overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
@@ -314,7 +314,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({
             </div>
           )}
 
-          {/* Keyboard Hints */}
+          {}
           <div className="absolute bottom-6 left-4 z-50 hidden md:flex flex-col gap-1 text-white/60 text-xs">
             <div>← → : Chuyển ảnh</div>
             <div>ESC : Đóng</div>

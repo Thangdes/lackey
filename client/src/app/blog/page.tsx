@@ -40,7 +40,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
       title: `Bài viết demo ${idx + 1}`,
       excerpt: "Nội dung đang được cập nhật.",
       createdAt,
-      date: createdAt, // legacy alias
+      date: createdAt, 
       coverImage: undefined,
     } as BlogPost;
   });

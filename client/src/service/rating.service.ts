@@ -3,17 +3,17 @@ import { API } from "@/constant/api";
 import type { Review } from "@/type/review";
 
 export const ratingService = {
-  // GET /ratings/product/:productId
+  
   listByProduct: (productId: string) =>
     http.get<unknown[]>(API.ratings.byProduct(productId)).then((items) =>
       (Array.isArray(items) ? items : []).map(normalizeReview)
     ),
-  // POST /ratings (auth)
+  
   create: (payload: { orderId: string; productId: string; productVariantId: string; ratingValue: number; comment?: string }) =>
     http.post<unknown>(API.ratings.root, payload),
-  // Admin endpoints
+  
   admin: {
-    // GET /ratings/admin?page=&limit=&search=
+    
     list: (params?: { page?: number; limit?: number; search?: string }) => {
       const page = params?.page ?? 1;
       const limit = params?.limit ?? 20;
@@ -27,7 +27,7 @@ export const ratingService = {
           return { total, items: items.map(normalizeAdminItem) };
         });
     },
-    // DELETE /ratings/:id
+    
     delete: (id: string) => http.delete<unknown>(API.ratings.byId(id)),
   },
 };

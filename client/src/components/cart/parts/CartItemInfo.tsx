@@ -19,7 +19,7 @@ export type CartItemInfoProps = {
 
 export default function CartItemInfo({ item: it, maxStock, nameClampLines = 2, compact = false, hideStockOnMobile = false, hideVariantOnMobile = false }: CartItemInfoProps) {
   const reviewCountText = useMemo(() => {
-    // Randomized review count: 4 * random up to 1000, capped at "1000+"
+    
     const n = Math.floor(4 * Math.random() * 1000);
     return n >= 1000 ? "1000+" : n.toString();
   }, []);

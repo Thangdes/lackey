@@ -21,7 +21,7 @@ export function usePendingPayments(page?: number, limit?: number) {
   return useQuery<PendingPaymentsResponse>({
     queryKey: paymentKeys.pending(page, limit),
     queryFn: () => paymentService.listPending(page, limit),
-    // Admin endpoint; consider enabling only when authenticated in caller
+    
     staleTime: 10_000,
   });
 }

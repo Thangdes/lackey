@@ -116,7 +116,7 @@ export default function SupplierDashboardPage() {
         </div>
       </section>
 
-      {/* Quick Actions */}
+      {}
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <Link href="/supplier/chart" className="rounded-xl border p-4 hover:bg-neutral-50 transition inline-flex items-center gap-3">
@@ -157,7 +157,7 @@ export default function SupplierDashboardPage() {
         </div>
       </section>
 
-      {/* Revenue Chart */}
+      {}
       <section id="chart" className="rounded-md border overflow-hidden">
         <div className="px-4 py-2 border-b font-medium flex items-center justify-between">
           <span>Biểu đồ doanh thu</span>
@@ -215,7 +215,7 @@ export default function SupplierDashboardPage() {
         </div>
       </section>
 
-      {/* Low stock alert */}
+      {}
       <section className="rounded-md border overflow-hidden">
         <div className="px-4 py-2 border-b font-medium">Cảnh báo tồn kho thấp</div>
         <div className="p-2">

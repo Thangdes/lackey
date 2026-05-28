@@ -33,12 +33,12 @@ export function buildPayload(
   const getEmailWithTempGeneration = (email: string | undefined, fullName?: string, phone?: string) => {
     const cleanEmail = toValue(email);
     
-    // If user provided email, use it
+    
     if (cleanEmail && cleanEmail.length > 0) {
       return cleanEmail;
     }
     
-    // Generate personalized temporary email based on name and phone
+    
     const tempEmail = generatePersonalizedTempEmail(fullName, phone);
     return tempEmail;
   };

@@ -3,7 +3,7 @@ import { API } from "@/constant/api";
 import type { Product } from "@/type/product";
 import type { Category } from "@/type/category";
 
-// Re-export for consumers
+
 export type { Category };
 
 export const categoryService = {
@@ -21,7 +21,7 @@ export const categoryService = {
     return (data as { data?: Category[] } | undefined)?.data ?? (res as { data?: Category[] } | undefined)?.data ?? [];
   },
   headerTop: async () => {
-    // Returns top categories for header (server limits to 7 and sorts by product count desc)
+    
     const res = await http.get<
       | Category[]
       | { data: Category[] }
@@ -37,7 +37,7 @@ export const categoryService = {
   getById: (id: string) => httpSuccess.getData<Category>(API.category.byId(id)),
   getWithProducts: (id: string) =>
     httpSuccess.getData<{ category: Category & { image?: string | null }; products: Product[] }>(API.category.products(id)),
-  // Server returns a plain Category object on create, not { data: Category }
+  
   create: (payload: Partial<Category>) => http.post<Category>(API.category.root, payload),
   update: (id: string, payload: Partial<Category>) => httpSuccess.patchData<Category>(API.category.byId(id), payload),
   delete: (id: string) => httpSuccess.deleteData<{ id: string }>(API.category.byId(id)),

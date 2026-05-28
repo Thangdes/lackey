@@ -63,7 +63,7 @@ const RetroFAQ: React.FC<RetroFAQProps> = ({
     <section className="w-full bg-white py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-3xl mx-auto">
-          {/* Header */}
+          {}
           <div className="text-center mb-12 md:mb-16">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 mb-6 shadow-sm">
               <HelpCircle className="w-8 h-8" />
@@ -78,7 +78,7 @@ const RetroFAQ: React.FC<RetroFAQProps> = ({
             )}
           </div>
 
-          {/* FAQ Items */}
+          {}
           <div className="space-y-4">
             {items.map((item, index) => {
               const isOpen = openIndex === index;

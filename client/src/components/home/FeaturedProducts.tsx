@@ -195,14 +195,14 @@ export default function FeaturedProducts() {
   return (
     <section className="w-full bg-white py-6 md:py-8 border-b border-gray-100">
       <div className="px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        {/* Header with Brand Tabs */}
+        {}
         <div className="flex items-center justify-between mb-4 md:mb-6">
-          {/* Title */}
+          {}
           <h2 className="text-lg md:text-xl font-bold text-gray-900">
             Bàn phím cơ bán chạy
           </h2>
 
-          {/* Brand Tabs */}
+          {}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
             {BRANDS.map((brand) => (
               <button
@@ -228,7 +228,7 @@ export default function FeaturedProducts() {
           </div>
         </div>
 
-        {/* Products Grid */}
+        {}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4">
           {filteredProducts.slice(0, 6).map((product) => (
             <Link
@@ -236,7 +236,7 @@ export default function FeaturedProducts() {
               href={`${ROUTES.products}/${product.slug}`}
               className="group bg-white border border-gray-200 hover:border-gray-300 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-lg"
             >
-              {/* Image Container */}
+              {}
               <div className="relative aspect-square bg-gray-50 overflow-hidden">
                 <Image
                   src={product.image}
@@ -246,7 +246,7 @@ export default function FeaturedProducts() {
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                 />
                 
-                {/* Badges */}
+                {}
                 <div className="absolute top-2 left-2 flex flex-col gap-1">
                   {product.badge && (
                     <div className="bg-red-500 text-white px-2 py-0.5 text-[10px] font-bold uppercase rounded">
@@ -261,14 +261,14 @@ export default function FeaturedProducts() {
                 </div>
               </div>
 
-              {/* Content */}
+              {}
               <div className="p-3">
-                {/* Name */}
+                {}
                 <h3 className="text-sm font-medium text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem] leading-tight">
                   {product.name}
                 </h3>
 
-                {/* Specs */}
+                {}
                 {product.specs && (
                   <div className="flex flex-wrap gap-1 mb-2">
                     {product.specs.slice(0, 2).map((spec, idx) => (
@@ -282,7 +282,7 @@ export default function FeaturedProducts() {
                   </div>
                 )}
 
-                {/* Price */}
+                {}
                 <div className="mb-2">
                   {product.originalPrice ? (
                     <>
@@ -300,7 +300,7 @@ export default function FeaturedProducts() {
                   )}
                 </div>
 
-                {/* Rating */}
+                {}
                 <div className="flex items-center gap-1">
                   <div className="flex items-center">
                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />

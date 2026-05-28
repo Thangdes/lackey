@@ -42,7 +42,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
   const prevOpenRef = useRef(open);
   const syncedRef = useRef(false);
 
-  // Only sync initial values when modal first opens, not on every prop change while open
+  
   useEffect(() => {
     const wasClosedNowOpen = !prevOpenRef.current && open;
     prevOpenRef.current = open;
@@ -52,7 +52,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({ open, initial, onClo
       return;
     }
     
-    // Only sync when modal transitions from closed to open
+    
     if (wasClosedNowOpen && !syncedRef.current) {
       setFullName(initial?.fullName || "");
       setPhone(initial?.phone || "");

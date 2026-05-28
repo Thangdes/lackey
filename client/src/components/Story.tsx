@@ -46,7 +46,7 @@ const Story = () => {
               </ul>
             </div>
 
-            {/* Wholesale callout inside Story */}
+            {}
             <div className="mt-4 rounded-xl border border-black/10 bg-gradient-to-r from-amber-50 to-orange-50 p-4 text-sm text-black/80 shadow-sm">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-2 font-medium">

@@ -40,7 +40,7 @@ export default function HelpPage() {
         })}
       </Script>
 
-      {/* Breadcrumb */}
+      {}
       <nav aria-label="Breadcrumb" className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pt-6 pb-4">
         <div className="inline-flex items-center gap-2 text-sm">
           <Link href={ROUTES.home} className="text-neutral-600 hover:text-black transition-colors">Trang chủ</Link>
@@ -49,7 +49,7 @@ export default function HelpPage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {}
       <header className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 md:py-16">
         <div className="max-w-4xl mx-auto text-center space-y-4">
           <h1 className="font-[family-name:var(--font-retro)] text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider uppercase text-black">
@@ -61,11 +61,11 @@ export default function HelpPage() {
         </div>
       </header>
 
-      {/* Content */}
+      {}
       <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pb-12 md:pb-16">
         <div className="max-w-4xl mx-auto space-y-12">
           
-          {/* FAQ */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">{HELP_PAGE.sections.faq.title}</h2>
             <ul className="space-y-3">
@@ -90,7 +90,7 @@ export default function HelpPage() {
             </ul>
           </section>
 
-          {/* Quick Links */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">{HELP_PAGE.sections.quickLinks.title}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -101,7 +101,7 @@ export default function HelpPage() {
             </div>
           </section>
 
-          {/* User Guide */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">Hướng dẫn sử dụng</h2>
             <div className="grid gap-6 md:grid-cols-2">
@@ -142,7 +142,7 @@ export default function HelpPage() {
             </div>
           </section>
 
-          {/* Cart & Payment */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">Giỏ hàng và Thanh toán</h2>
             <ul className="space-y-3 text-neutral-700">
@@ -161,7 +161,7 @@ export default function HelpPage() {
             </ul>
           </section>
 
-          {/* VietQR */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">Thanh toán VietQR</h2>
             <ul className="space-y-3 text-neutral-700">
@@ -184,7 +184,7 @@ export default function HelpPage() {
             </ul>
           </section>
 
-          {/* Order Lookup */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">Xem và tra cứu đơn hàng</h2>
             <ul className="space-y-3 text-neutral-700">
@@ -199,7 +199,7 @@ export default function HelpPage() {
             </ul>
           </section>
 
-          {/* Support */}
+          {}
           <section>
             <h2 className="text-2xl font-bold text-black mb-6 pb-4 border-b-2 border-neutral-200">Đổi trả & Hỗ trợ</h2>
             <ul className="space-y-3 text-neutral-700">

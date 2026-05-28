@@ -16,7 +16,7 @@ function PaymentResultContent() {
   const clearedRef = useRef(false);
 
   useEffect(() => {
-    // Clear cart if successful
+    
     if (result === "success" && !clearedRef.current) {
       clearedRef.current = true;
       try { localStorage.removeItem("cartItems"); } catch {}

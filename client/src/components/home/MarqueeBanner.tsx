@@ -7,9 +7,9 @@ import Link from "next/link";
 export default function MarqueeBanner() {
   return (
     <section className="relative w-full bg-[#fff100] py-12 md:py-16 overflow-hidden">
-      {/* Marquee Container */}
+      {}
       <div className="relative">
-        {/* Scrolling Text - Duplicate content for seamless loop */}
+        {}
         <div className="flex whitespace-nowrap animate-marquee">
           <MarqueeContent />
           <MarqueeContent />
@@ -17,7 +17,7 @@ export default function MarqueeBanner() {
         </div>
       </div>
 
-      {/* OUT NOW Badge */}
+      {}
       <div className="absolute top-6 right-6 md:top-8 md:right-8 z-20">
         <div className="relative">
           <div className="w-20 h-20 md:w-24 md:h-24 bg-[#00ff9d] rounded-full flex items-center justify-center rotate-12 hover:rotate-0 transition-transform duration-300">
@@ -30,7 +30,7 @@ export default function MarqueeBanner() {
         </div>
       </div>
 
-      {/* CTA Button */}
+      {}
       <div className="text-center mt-8">
         <Link
           href="/products"
@@ -40,7 +40,7 @@ export default function MarqueeBanner() {
         </Link>
       </div>
 
-      {/* CSS Animation */}
+      {}
       <style jsx>{`
         @keyframes marquee {
           0% {
@@ -67,12 +67,12 @@ export default function MarqueeBanner() {
 function MarqueeContent() {
   return (
     <div className="flex items-center gap-8 md:gap-12 pr-8 md:pr-12">
-      {/* Text 1 */}
+      {}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
         KEYCAP ARTISAN
       </span>
 
-      {/* Product Image 1 */}
+      {}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
           src="https://images.unsplash.com/photo-1595225476474-87563907a212?w=400"
@@ -82,12 +82,12 @@ function MarqueeContent() {
         />
       </div>
 
-      {/* Text 2 */}
+      {}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
         CUSTOM BUILD
       </span>
 
-      {/* Product Image 2 */}
+      {}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
           src="https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400"
@@ -97,12 +97,12 @@ function MarqueeContent() {
         />
       </div>
 
-      {/* Text 3 */}
+      {}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
         SWITCH
       </span>
 
-      {/* Product Image 3 */}
+      {}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
           src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400"
@@ -112,12 +112,12 @@ function MarqueeContent() {
         />
       </div>
 
-      {/* Text 4 */}
+      {}
       <span className="font-[family-name:var(--font-retro)] text-6xl md:text-8xl lg:text-9xl font-bold uppercase text-black tracking-wider">
         SETUP ĐỈNH CAO
       </span>
 
-      {/* Product Image 4 */}
+      {}
       <div className="relative w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 shrink-0 bg-white border-4 border-black shadow-2xl hover:scale-110 transition-transform duration-300">
         <Image
           src="https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400"

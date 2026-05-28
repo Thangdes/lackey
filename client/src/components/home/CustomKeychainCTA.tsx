@@ -102,7 +102,7 @@ export default function CustomKeychainCTA() {
                 </div>
               </div>
 
-              {/* Floating Badges */}
+              {}
               <div className="absolute top-12 -left-6 bg-white text-gray-800 px-5 py-3 rounded-2xl shadow-xl border border-gray-100 animate-bounce" style={{ animationDuration: '3s' }}>
                 <span className="text-sm font-bold">
                   Từ 1 chiếc 🎉

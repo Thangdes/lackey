@@ -19,7 +19,7 @@ const Footer = () => {
         }
         setLoading(true);
         try {
-            // TODO: Integrate with newsletter API
+            
             await new Promise(resolve => setTimeout(resolve, 1000));
             showSuccessToast({ title: "Thành công", message: "Đăng ký thành công! Cảm ơn bạn đã theo dõi." });
             setEmail("");
@@ -48,11 +48,11 @@ const Footer = () => {
 
     const PAYMENT_METHODS = [
         { name: "Visa", src: "/logo/payment/visa.svg" },
-        // { name: "Mastercard", src: "/logo/payment/mastercard.svg" },
-        // { name: "JCB", src: "/logo/payment/jcb.svg" },
+        
+        
         { name: "VNPAY", src: "/logo/payment/vnpay.svg" },
         { name: "MoMo", src: "/logo/payment/momo.svg" },
-        // { name: "ZaloPay", src: "/logo/payment/zalopay.svg" },
+        
         { name: "ATM nội địa", src: "/logo/payment/atm.svg" },
         { name: "Tiền mặt", src: "/logo/payment/cash.svg" },
     ];
@@ -118,24 +118,24 @@ const Footer = () => {
                                 </li>
                             ))}
                         </ul>
-                        {/* <Link
-                            href="http://online.gov.vn/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Đã thông báo Bộ Công Thương"
-                            className="mt-4 inline-block"
-                        >
-                            <img
-                                src="http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoSaleNoti.png"
-                                alt="Đã thông báo Bộ Công Thương"
-                                className="h-10 w-auto md:h-12"
-                            />
-                        </Link>
-                        <img
-                            src="https://theme.hstatic.net/200000472237/1001083717/14/logo.png?v=881"
-                            alt="Logo đối tác"
-                            className="h-8 w-auto md:h-10 mt-2"
-                        /> */}
+                        {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
                     </div>
                 </div>
 
@@ -182,7 +182,7 @@ const Footer = () => {
                 <div className="px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6">
                     <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-xs text-gray-400 text-center md:text-left">
                         <span> 2025, LắcKey</span>
-                        {/* <Link href={ROUTES.home} className="hover:text-white">Powered by <span className="font-bold underline">Annamite Labs</span></Link> */}
+                        {}
                         <Link href={ROUTES.return} className="hover:text-white">Chính sách đổi trả</Link>
                         <Link href={ROUTES.privacy} className="hover:text-white">Chính sách bảo mật</Link>
                         <Link href={ROUTES.terms} className="hover:text-white">Điều khoản dịch vụ</Link>

@@ -39,13 +39,13 @@ export default function DeliveryCodeUpdater({ orderId, initialCode, currentStatu
 
   const performUpdate = useCallback(async () => {
     try {
-      // Ensure allowed status before updating delivery code
+      
       const allowed = statusUpper === "CONFIRMED" || statusUpper === "PREPARING_SHIPMENT";
       if (!allowed) {
         try {
           await updateStatus.mutateAsync({ status: "CONFIRMED" });
         } catch {
-          // If cannot set to CONFIRMED, try PREPARING_SHIPMENT as fallback
+          
           await updateStatus.mutateAsync({ status: "PREPARING_SHIPMENT" });
         }
       }
@@ -54,7 +54,7 @@ export default function DeliveryCodeUpdater({ orderId, initialCode, currentStatu
       if (!code) return;
       const updated = await updateCode.mutateAsync(code);
       const nextStatus = String((updated as unknown as { status?: string })?.status || "").toUpperCase();
-      // FE only: thông báo đã bàn giao vận chuyển khi backend trả về SHIPPED
+      
       if (nextStatus === "SHIPPED") {
         toast.success("Đã cập nhật mã vận chuyển • Trạng thái: Đã bàn giao vận chuyển");
       } else {
@@ -101,9 +101,9 @@ export default function DeliveryCodeUpdater({ orderId, initialCode, currentStatu
         </AlertDialog>
       </div>
       <div className="text-[11px] text-black/60">Nhấn &quot;Cập nhật&quot; sẽ lưu mã vận chuyển. Hệ thống sẽ chuyển trạng thái sang &quot;Chuẩn bị giao&quot; nếu cần.</div>
-      {/* {initialCode ? (
-        <div className="text-[11px] text-black/50">Mã hiện tại: {initialCode}</div>
-      ) : null} */}
+      {
+
+}
     </div>
   );
 }

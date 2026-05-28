@@ -81,7 +81,7 @@ export default function OrderInlineDetails({ order }: { order: OrderMinimal }) {
     const c = (carrier || '').toString().toLowerCase();
     const v = (code || '').toString().trim();
     if (!v) return null;
-    // Basic mapping for popular carriers
+    
     if (c.includes('ghn')) return `https://donhang.ghn.vn/?order_code=${encodeURIComponent(v)}`;
     if (c.includes('ghtk')) return `https://i.ghtk.vn/${encodeURIComponent(v)}`;
     if (c.includes('vtp') || c.includes('viettel')) return `https://viettelpost.com.vn/tra-cuu-don-hang?code=${encodeURIComponent(v)}`;

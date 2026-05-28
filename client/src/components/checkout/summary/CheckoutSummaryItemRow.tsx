@@ -20,7 +20,7 @@ export function CheckoutSummaryItemRow({ item, formatVND, warnings, size = "sm" 
   const imgCls = sizeMap[size] || sizeMap.sm;
   return (
     <div className="flex items-start gap-4">
-      {/* Image with quantity badge */}
+      {}
       <div className="relative flex-shrink-0">
         <div className={`${imgCls} overflow-hidden rounded border border-gray-200 bg-gray-50`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -31,13 +31,13 @@ export function CheckoutSummaryItemRow({ item, formatVND, warnings, size = "sm" 
             loading="lazy"
           />
         </div>
-        {/* Quantity badge */}
+        {}
         <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-white text-xs font-semibold border-2 border-white">
           {item.quantity}
         </div>
       </div>
       
-      {/* Product info */}
+      {}
       <div className="flex-1 min-w-0">
         <h4 className="text-sm font-medium text-gray-900 line-clamp-2">
           {item.productName}
@@ -54,7 +54,7 @@ export function CheckoutSummaryItemRow({ item, formatVND, warnings, size = "sm" 
         )}
       </div>
       
-      {/* Price */}
+      {}
       <div className="flex-shrink-0 text-sm font-semibold text-gray-900">
         {formatVND((item.price || 0) * item.quantity)}
       </div>

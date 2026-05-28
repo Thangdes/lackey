@@ -1,6 +1,6 @@
-/**
- * Supplier dashboard types
- */
+
+
+
 
 export type LowStockRow = {
   product: string;

@@ -87,7 +87,7 @@ export default function ProductsFilterBar({
         </div>
       </div>
 
-      {/* Mobile filters */}
+      {}
       <div className="md:hidden mt-4 space-y-3">
         <Select
           defaultValue="priceAsc"

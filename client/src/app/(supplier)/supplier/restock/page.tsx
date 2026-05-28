@@ -39,7 +39,7 @@ export default function SupplierRestockPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Determine if current user has admin privileges -> allow write only for admin
+  
   useEffect(() => {
     let alive = true;
     const check = async () => {

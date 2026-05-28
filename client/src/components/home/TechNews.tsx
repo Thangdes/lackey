@@ -64,7 +64,7 @@ export default function TechNews() {
   return (
     <section className="w-full bg-white py-12 md:py-16">
       <div className="px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        {/* Header */}
+        {}
         <div className="flex items-center justify-between mb-8 md:mb-12">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
@@ -83,7 +83,7 @@ export default function TechNews() {
           </Link>
         </div>
 
-        {/* News Grid */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {NEWS_ARTICLES.map((article) => (
             <Link
@@ -91,7 +91,7 @@ export default function TechNews() {
               href={`${ROUTES.blog}/${article.slug}`}
               className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200"
             >
-              {/* Image */}
+              {}
               <div className="relative aspect-video bg-gray-100 overflow-hidden">
                 <Image
                   src={article.image}
@@ -100,7 +100,7 @@ export default function TechNews() {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
-                {/* Category Badge */}
+                {}
                 <div className="absolute top-3 left-3">
                   <span className="bg-blue-600 text-white px-3 py-1 text-xs font-bold rounded">
                     {article.category}
@@ -108,9 +108,9 @@ export default function TechNews() {
                 </div>
               </div>
 
-              {/* Content */}
+              {}
               <div className="p-4">
-                {/* Meta */}
+                {}
                 <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
@@ -120,12 +120,12 @@ export default function TechNews() {
                   <span>{article.readTime}</span>
                 </div>
 
-                {/* Title */}
+                {}
                 <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {article.title}
                 </h3>
 
-                {/* Excerpt */}
+                {}
                 <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                   {article.excerpt}
                 </p>
@@ -134,7 +134,7 @@ export default function TechNews() {
           ))}
         </div>
 
-        {/* Mobile View All Button */}
+        {}
         <div className="mt-6 text-center md:hidden">
           <Link
             href={ROUTES.blog}

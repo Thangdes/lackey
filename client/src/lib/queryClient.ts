@@ -4,8 +4,8 @@ export function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 30, // 30s
-        gcTime: 1000 * 60 * 10, // 10m
+        staleTime: 1000 * 30, 
+        gcTime: 1000 * 60 * 10, 
         retry: 1,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,

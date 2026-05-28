@@ -7,14 +7,14 @@ export function useIsMobile(): boolean {
   useEffect(() => {
     if (typeof window === 'undefined') return
     const maxWidth = Number(process.env.NEXT_PUBLIC_MOBILE_MAX_WIDTH || 1024)
-    const mq: MediaQueryList = window.matchMedia(`(max-width: ${maxWidth - 1}px)`) // strictly below maxWidth
+    const mq: MediaQueryList = window.matchMedia(`(max-width: ${maxWidth - 1}px)`) 
     const handler = (ev: MediaQueryListEvent | MediaQueryList) => {
       const matches = (ev as MediaQueryListEvent).matches ?? (ev as MediaQueryList).matches
       setIsMobile(!!matches)
     }
-    // init
+    
     handler(mq)
-    // subscribe
+    
     if (typeof mq.addEventListener === 'function') {
       mq.addEventListener('change', handler as (e: MediaQueryListEvent) => void)
     } else if (typeof mq.addListener === 'function') {

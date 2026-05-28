@@ -12,8 +12,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthModal from "@/components/auth/AuthModal";
 import CartBootstrap from "@/components/providers/CartBootstrap";
 import TopProgress from "@/components/progress/TopProgress";
-// import ChristmasPopup from "@/components/seasonal/ChristmasPopup";
-// import ChristmasSnow from "@/components/seasonal/ChristmasSnow";
+
+
 import SkipToContent from "@/components/common/SkipToContent";
 import FloatingWidget from "@/components/common/FloatingWidget";
 import AccessibilityPanel from "@/components/dev/AccessibilityPanel";
@@ -77,16 +77,16 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <TopProgress />
         </Suspense>
-        {/* <ChristmasSnow /> */}
+        {}
         <QueryProvider>
           <AuthProvider>
             <TooltipProvider>
               <LayoutChrome>
                 {children}
-                {/* <GoogleAnalytics gaId="G-CL7D21ZY78" /> */}
+                {}
               </LayoutChrome>
               <AuthModal />
-              {/* <ChristmasPopup /> */}
+              {}
               <CartBootstrap />
               <FloatingWidget />
               <Toaster richColors position="top-right" duration={3000} />

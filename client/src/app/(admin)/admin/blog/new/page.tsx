@@ -64,7 +64,7 @@ export default function AdminBlogNewPage() {
     }
   }, [slugTouched]);
 
-  // removed select-based published change; using Switch instead
+  
 
   const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;

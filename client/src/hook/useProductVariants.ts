@@ -236,7 +236,7 @@ export function useProductVariants(productId: string, data: Product | null, setD
   );
 
   return {
-    // Add Variant State
+    
     nvBaseName,
     nvSku,
     nvPrice,
@@ -255,7 +255,7 @@ export function useProductVariants(productId: string, data: Product | null, setD
     setNvStock,
     setNvWeight,
     
-    // Edit Variant State
+    
     evOpen,
     evSaving,
     evVid,
@@ -277,7 +277,7 @@ export function useProductVariants(productId: string, data: Product | null, setD
     setEvStock,
     setEvWeight,
     
-    // Actions
+    
     onAddVariant,
     onVariantEdit,
     onEditVariantSave,

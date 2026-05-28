@@ -14,13 +14,13 @@ export default function ChristmasSnow() {
   const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
 
   useEffect(() => {
-    // Generate snowflakes
+    
     const flakes: Snowflake[] = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      animationDuration: 10 + Math.random() * 20, // 10-30 seconds
-      opacity: 0.3 + Math.random() * 0.5, // 0.3-0.8
-      size: 2 + Math.random() * 4, // 2-6px
+      animationDuration: 10 + Math.random() * 20, 
+      opacity: 0.3 + Math.random() * 0.5, 
+      size: 2 + Math.random() * 4, 
     }));
     setSnowflakes(flakes);
   }, []);

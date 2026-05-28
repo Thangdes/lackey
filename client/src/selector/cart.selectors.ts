@@ -40,7 +40,7 @@ export function selectSmartCartItems(serverItems: ServerCartItem[]): SmartCartIt
         return typeof v === "string" ? v : undefined;
       })() || it?.productVariant?.sku || it.productVariantId,
       productSlug: it?.product?.slug || it?.productVariant?.product?.slug ||
-        // Fallback: try to generate slug from productId if available
+        
         (it?.product?.id || it?.productVariant?.product?.id) || undefined,
       lineTotal: (() => {
         const v = (it as unknown as { lineTotal?: unknown })?.lineTotal;

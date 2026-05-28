@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       try { window.localStorage.removeItem('cartItems'); } catch {}
     }
-    // After login, refetch cart as authenticated user
+    
     try { await qc.invalidateQueries({ queryKey: cartKeys.root() }); } catch {}
     try { await qc.invalidateQueries({ queryKey: cartKeys.items() }); } catch {}
     try { await qc.refetchQueries({ queryKey: cartKeys.root() }); } catch {}
@@ -145,9 +145,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.logout();
     } finally {
-      // Clear auth user
+      
       persist(null, false);
-      // Clear cart cache to avoid showing stale user cart after logout
+      
       try { qc.removeQueries({ queryKey: cartKeys.root() }); } catch {}
       try { qc.removeQueries({ queryKey: cartKeys.items() }); } catch {}
       try { await cartService.clear(); } catch {}

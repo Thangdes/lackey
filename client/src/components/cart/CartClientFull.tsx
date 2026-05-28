@@ -157,7 +157,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
         }),
       );
     } catch {
-      // Silently handle error
+      
     }
 
     await refreshAddresses();
@@ -242,7 +242,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
           </Sheet>
         </div>
       ) : null}
-      {/* Cart Header */}
+      {}
       <div className="mb-6 pb-4 flex items-center justify-between">
         <h1 className="text-2xl font-medium text-gray-900">
           Shopping cart ({items.length})
@@ -256,16 +256,16 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Cart Items Table */}
+        {}
         <div className="lg:col-span-2">
-          {/* Table Header - Desktop only */}
+          {}
           <div className="hidden md:grid md:grid-cols-12 gap-4 pb-4 mb-4 border-b border-gray-200 text-sm font-medium text-gray-500 uppercase tracking-wide">
             <div className="col-span-6">Product</div>
             <div className="col-span-3 text-center">Quantity</div>
             <div className="col-span-3 text-right">Total</div>
           </div>
 
-          {/* Cart Items */}
+          {}
           <div className="space-y-0">
             {items.map((it) => (
               <CartItemRow
@@ -311,7 +311,7 @@ export default function CartClientFull({ forceHighlightSku }: { forceHighlightSk
         checkoutLabel={CART_UI.checkout}
       />
 
-      {/* Address Modal */}
+      {}
       <AddressModal
         open={addressModalOpen}
         onClose={closeAddressModal}

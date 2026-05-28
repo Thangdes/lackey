@@ -8,9 +8,9 @@ export type Category = {
   badge?: string;
   iconColor?: string;
   emoji?: string;
-  imagePath?: string; // optional image for marketplaces (e.g., /marketplaces/mercari.svg)
-  imageWidth?: number; // optional custom image width for logo rendering
-  imageHeight?: number; // optional custom image height for logo rendering
+  imagePath?: string; 
+  imageWidth?: number; 
+  imageHeight?: number; 
 };
 
 export type CategoryGroup = Category["group"];
