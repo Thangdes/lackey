@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
 import { ShippingService } from './shipping.service';
 import { CalculateFeeDto } from './dto/calculate-fee.dto';
 import { GetDistrictsDto } from './dto/get-districts.dto';
@@ -6,6 +6,7 @@ import { GetWardsDto } from './dto/get-wards.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 @ApiTags('Shipping')
 @Controller('shipping')
@@ -40,13 +41,15 @@ export class ShippingController {
 
   @Post('ghn/:orderId/create')
   @UseGuards(JwtAuthGuard, AdminGuard)
-  async createGhnShipment(@Param('orderId', ParseUUIDPipe) orderId: string) {
+  async createGhnShipment(
+    @Param('orderId', ParseObjectIdPipe) orderId: string,
+  ) {
     return this.shippingService.createGhnShipmentForOrder(orderId);
   }
 
   @Get('ghn/:orderId/tracking')
   @UseGuards(JwtAuthGuard, AdminGuard)
-  async getGhnTracking(@Param('orderId', ParseUUIDPipe) orderId: string) {
+  async getGhnTracking(@Param('orderId', ParseObjectIdPipe) orderId: string) {
     return this.shippingService.getGhnTracking(orderId);
   }
 }

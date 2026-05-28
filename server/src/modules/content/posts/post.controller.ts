@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  ParseUUIDPipe,
   UseInterceptors,
   UploadedFile,
   ParseFilePipe,
@@ -27,6 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { applyDecorators } from '@nestjs/common';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
@@ -54,7 +54,7 @@ export class PostController {
   @UseInterceptors(FileInterceptor('thumbnail'))
   @HttpCode(HttpStatus.OK)
   updateThumbnail(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -72,19 +72,22 @@ export class PostController {
   @Get('admin')
   @AdminAccess()
   findAllAdmin(@Query() query: PaginationQueryDto) {
-    return this.postService.findAllAdmin({ page: query.page, limit: query.limit ?? 20 });
+    return this.postService.findAllAdmin({
+      page: query.page,
+      limit: query.limit ?? 20,
+    });
   }
 
   @Get('admin/:id')
   @AdminAccess()
-  findOneAdmin(@Param('id', ParseUUIDPipe) id: string) {
+  findOneAdmin(@Param('id', ParseObjectIdPipe) id: string) {
     return this.postService.findOne(id);
   }
 
   @Patch(':id')
   @AdminAccess()
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
     return this.postService.update(id, updatePostDto);
@@ -92,13 +95,16 @@ export class PostController {
 
   @Delete(':id')
   @AdminAccess()
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.postService.remove(id);
   }
 
   @Get()
   findAllPublic(@Query() query: PaginationQueryDto) {
-    return this.postService.findAllPublic({ page: query.page, limit: query.limit });
+    return this.postService.findAllPublic({
+      page: query.page,
+      limit: query.limit,
+    });
   }
 
   @Get(':slug')

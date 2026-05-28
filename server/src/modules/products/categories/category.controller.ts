@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   applyDecorators,
   UseGuards,
   UploadedFile,
@@ -26,6 +25,7 @@ import { AdminGuard } from '../../auth/admin.gaurd';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
@@ -43,7 +43,10 @@ export class CategoryController {
 
   @Get()
   findAll(@Query() query: PaginationQueryDto) {
-    return this.categoryService.findAll({ page: query.page, limit: query.limit });
+    return this.categoryService.findAll({
+      page: query.page,
+      limit: query.limit,
+    });
   }
 
   @Get('header')
@@ -52,19 +55,19 @@ export class CategoryController {
   }
 
   @Get(':id/products')
-  findOneWithProducts(@Param('id', ParseUUIDPipe) id: string) {
+  findOneWithProducts(@Param('id', ParseObjectIdPipe) id: string) {
     return this.categoryService.findOneWithProducts(id);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
   @AdminAccess()
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.categoryService.update(id, updateCategoryDto);
@@ -72,7 +75,7 @@ export class CategoryController {
 
   @Delete(':id')
   @AdminAccess()
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.categoryService.remove(id);
   }
 
@@ -81,7 +84,7 @@ export class CategoryController {
   @UseInterceptors(FileInterceptor('thumbnail'))
   @HttpCode(HttpStatus.OK)
   updateThumbnail(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [

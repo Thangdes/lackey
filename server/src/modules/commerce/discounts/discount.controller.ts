@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   UseGuards,
   applyDecorators,
   Query,
@@ -19,6 +18,7 @@ import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 const AdminAccess = () => applyDecorators(UseGuards(JwtAuthGuard, AdminGuard));
 
@@ -37,7 +37,10 @@ export class DiscountController {
   @Get()
   @AdminAccess()
   findAll(@Query() query: PaginationQueryDto) {
-    return this.discountService.findAll({ page: query.page, limit: query.limit });
+    return this.discountService.findAll({
+      page: query.page,
+      limit: query.limit,
+    });
   }
 
   @Get('validate/:code')
@@ -60,14 +63,14 @@ export class DiscountController {
 
   @Get(':id')
   @AdminAccess()
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.discountService.findOne(id);
   }
 
   @Patch(':id')
   @AdminAccess()
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateDiscountDto: UpdateDiscountDto,
   ) {
     return this.discountService.update(id, updateDiscountDto);
@@ -75,8 +78,7 @@ export class DiscountController {
 
   @Delete(':id')
   @AdminAccess()
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.discountService.remove(id);
   }
-
 }

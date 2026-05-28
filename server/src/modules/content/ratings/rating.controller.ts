@@ -5,7 +5,6 @@ import {
   UseGuards,
   Get,
   Param,
-  ParseUUIDPipe,
   applyDecorators,
   Delete,
   Query,
@@ -18,6 +17,7 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 interface UserPayload {
   id: string;
@@ -49,7 +49,7 @@ export class RatingController {
 
   @Get('product/:productId')
   findForProduct(
-    @Param('productId', ParseUUIDPipe) productId: string,
+    @Param('productId', ParseObjectIdPipe) productId: string,
     @Query() query: PaginationQueryDto,
     @Query('minRating') minRating?: string,
     @Query('sort') sort?: 'newest' | 'highest' | 'lowest',
@@ -64,21 +64,26 @@ export class RatingController {
   }
 
   @Get('product/:productId/all')
-  findForProductAll(
-    @Param('productId', ParseUUIDPipe) productId: string,
-  ) {
+  findForProductAll(@Param('productId', ParseObjectIdPipe) productId: string) {
     return this.ratingService.findForProduct(productId);
   }
 
   @Get('admin')
   @AdminAccess()
-  findAllAdmin(@Query() query: PaginationQueryDto, @Query('search') search?: string) {
-    return this.ratingService.findAllAdmin({ page: query.page, limit: query.limit, search: search || '' });
+  findAllAdmin(
+    @Query() query: PaginationQueryDto,
+    @Query('search') search?: string,
+  ) {
+    return this.ratingService.findAllAdmin({
+      page: query.page,
+      limit: query.limit,
+      search: search || '',
+    });
   }
 
   @Delete(':id')
   @AdminAccess()
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.ratingService.remove(id);
   }
 }

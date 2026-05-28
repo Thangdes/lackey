@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { SupplierDashboardService } from './supplier-dashboard.service';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { UserRole } from '@prisma/client';
@@ -19,6 +12,7 @@ import { GetSupplierOrdersDto } from './dto/get-supplier-orders.dto';
 import { RolesGuard } from '@/modules/auth/roles.guard';
 import { Roles } from '@/modules/auth/decorators/roles.decorator';
 import { CurrentSupplierId } from '@/modules/auth/decorators/current-supplier.decorator';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 @ApiTags('Supplier Dashboard')
 @ApiBearerAuth()
@@ -72,7 +66,9 @@ export class SupplierDashboardController {
 
   @Get('revenue-over-time')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
-  @ApiOperation({ summary: 'Get revenue aggregated by day for the last N days' })
+  @ApiOperation({
+    summary: 'Get revenue aggregated by day for the last N days',
+  })
   revenueOverTime(
     @CurrentSupplierId() supplierId: string | null,
     @Query('days') days?: string,
@@ -83,7 +79,9 @@ export class SupplierDashboardController {
 
   @Get('orders-count')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
-  @ApiOperation({ summary: 'Get count of supplier-related orders in the last N days' })
+  @ApiOperation({
+    summary: 'Get count of supplier-related orders in the last N days',
+  })
   ordersCount(
     @CurrentSupplierId() supplierId: string | null,
     @Query('days') days?: string,
@@ -94,7 +92,9 @@ export class SupplierDashboardController {
 
   @Get('restock-candidates')
   @Roles(UserRole.SUPPLIER, UserRole.ADMIN)
-  @ApiOperation({ summary: 'Top variants with low stock and high recent sales' })
+  @ApiOperation({
+    summary: 'Top variants with low stock and high recent sales',
+  })
   restockCandidates(
     @CurrentSupplierId() supplierId: string | null,
     @Query('limit') limit?: string,
@@ -112,7 +112,10 @@ export class SupplierDashboardController {
     status: 200,
     description: 'List of orders retrieved successfully.',
   })
-  getAllOrders(@CurrentSupplierId() supplierId: string | null, @Query() query: GetSupplierOrdersDto) {
+  getAllOrders(
+    @CurrentSupplierId() supplierId: string | null,
+    @Query() query: GetSupplierOrdersDto,
+  ) {
     return this.supplierDashboardService.getAllOrders(supplierId, query);
   }
 
@@ -129,7 +132,7 @@ export class SupplierDashboardController {
   })
   getOrderDetails(
     @CurrentSupplierId() supplierId: string | null,
-    @Param('orderId', ParseUUIDPipe) orderId: string,
+    @Param('orderId', ParseObjectIdPipe) orderId: string,
   ) {
     return this.supplierDashboardService.getOrderDetails(supplierId, orderId);
   }

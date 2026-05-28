@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, UseGuards, applyDecorators } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+  applyDecorators,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/auth.gaurd';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
@@ -6,6 +15,7 @@ import { InventoryService } from './inventory.service';
 import { CreateInventoryMovementDto } from './dto/create-movement.dto';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { PaginationQueryDto } from '@/infrastructure/common/dto/pagination-query.dto';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 interface UserPayload {
   id: string;
@@ -21,7 +31,10 @@ export class InventoryController {
 
   @Post('movements')
   @AdminAccess()
-  createMovement(@Body() dto: CreateInventoryMovementDto, @CurrentUser() user: UserPayload) {
+  createMovement(
+    @Body() dto: CreateInventoryMovementDto,
+    @CurrentUser() user: UserPayload,
+  ) {
     return this.inventoryService.createMovement(dto, user.id);
   }
 
@@ -31,18 +44,22 @@ export class InventoryController {
     @Query() query: PaginationQueryDto,
     @Query('productVariantId') productVariantId?: string,
   ) {
-    return this.inventoryService.listMovements({ page: query.page, limit: query.limit, productVariantId });
+    return this.inventoryService.listMovements({
+      page: query.page,
+      limit: query.limit,
+      productVariantId,
+    });
   }
 
   @Get('variants/:variantId/reserved')
   @AdminAccess()
-  reserved(@Param('variantId', ParseUUIDPipe) variantId: string) {
+  reserved(@Param('variantId', ParseObjectIdPipe) variantId: string) {
     return this.inventoryService.getReservedStock(variantId);
   }
 
   @Get('variants/:variantId/summary')
   @AdminAccess()
-  summary(@Param('variantId', ParseUUIDPipe) variantId: string) {
+  summary(@Param('variantId', ParseObjectIdPipe) variantId: string) {
     return this.inventoryService.getVariantSummary(variantId);
   }
 }

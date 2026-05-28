@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
 import { CmspageService } from './cmspage.service';
@@ -15,6 +14,7 @@ import { UpdateCmspageDto } from './dto/update-cmspage.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '@/modules/auth/admin.gaurd';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 @ApiTags('CMS Pages')
 @ApiBearerAuth()
@@ -39,20 +39,20 @@ export class CmspageController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.cmspageService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateCmspageDto: UpdateCmspageDto,
   ) {
     return this.cmspageService.update(id, updateCmspageDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.cmspageService.remove(id);
   }
 }

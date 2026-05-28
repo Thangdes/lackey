@@ -5,7 +5,6 @@ import {
   UseGuards,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Delete,
 } from '@nestjs/common';
@@ -16,6 +15,7 @@ import { AdminGuard } from '../../auth/admin.gaurd';
 import { CreateSupplierUserDto } from './dto/create-supplier-user.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ParseObjectIdPipe } from '@/infrastructure/common/pipes/parse-object-id.pipe';
 
 @ApiTags('Admin - Suppliers')
 @ApiBearerAuth()
@@ -40,53 +40,53 @@ export class SupplierController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.findSupplierDetails(id);
   }
 
   @Patch(':id')
   updateSupplier(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpdateSupplierDto,
   ) {
     return this.supplierService.updateSupplier(id, dto);
   }
 
   @Delete(':id')
-  deleteSupplier(@Param('id', ParseUUIDPipe) id: string) {
+  deleteSupplier(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.deleteSupplier(id);
   }
 
   @Patch(':id/activate')
-  activateSupplier(@Param('id', ParseUUIDPipe) id: string) {
+  activateSupplier(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.activateSupplier(id);
   }
 
   @Patch('activate/:id')
-  activateSupplierAlt(@Param('id', ParseUUIDPipe) id: string) {
+  activateSupplierAlt(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.activateSupplier(id);
   }
 
   @Patch('deactivate/:id')
-  deactivateSupplier(@Param('id', ParseUUIDPipe) id: string) {
+  deactivateSupplier(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.deactivateSupplierUser(id);
   }
 
   @Patch('reactivate/:id')
-  reactivateSupplier(@Param('id', ParseUUIDPipe) id: string) {
+  reactivateSupplier(@Param('id', ParseObjectIdPipe) id: string) {
     return this.supplierService.reactivateSupplierUser(id);
   }
 
   @Patch('users/:id/password')
   resetSupplierUserPassword(
-    @Param('id', ParseUUIDPipe) userId: string,
+    @Param('id', ParseObjectIdPipe) userId: string,
     @Body('password') password: string,
   ) {
     return this.supplierService.resetSupplierUserPassword(userId, password);
   }
 
   @Delete('users/:id')
-  deleteSupplierUser(@Param('id', ParseUUIDPipe) userId: string) {
+  deleteSupplierUser(@Param('id', ParseObjectIdPipe) userId: string) {
     return this.supplierService.deleteSupplierUser(userId);
   }
 }
