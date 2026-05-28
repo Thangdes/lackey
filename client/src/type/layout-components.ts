@@ -1,12 +1,6 @@
-/**
- * Layout component props types
- */
+import type { CategoryWithCount } from "@/type/category";
 
-import type { Category } from "@/service/category.service";
-
-export interface CategoryWithCount extends Category {
-  productCount?: number;
-}
+export type { CategoryWithCount };
 
 export type CategoryBarProps = {
   showIcons?: boolean;

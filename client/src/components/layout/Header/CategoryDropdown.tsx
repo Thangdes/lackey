@@ -1,14 +1,10 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import type { Category } from "@/service/category.service";
+import type { CategoryWithCount } from "@/type/category";
 import { ROUTES, buildCategoryPath } from "@/constant/route";
 import { Package, Grid3X3 } from "lucide-react";
 import { useHeaderTopCategories } from "@/hook/useCategory";
-
-export interface CategoryWithCount extends Category {
-  productCount?: number;
-}
 
 const CategoryDropdown: React.FC = () => {
   const [open, setOpen] = useState(false);

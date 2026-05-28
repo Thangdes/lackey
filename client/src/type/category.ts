@@ -5,3 +5,7 @@ export type Category = {
   description?: string | null;
   thumbnailUrl?: string | null;
 };
+
+export interface CategoryWithCount extends Category {
+  productCount?: number;
+}

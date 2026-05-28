@@ -1,10 +1,9 @@
 import { http, api } from "@/utils/http";
 import { API } from "@/constant/api";
-import type { BlogPost } from "@/type/blog";
-import type { BlogListResponseItem } from "@/type/blog.type";
+import type { BlogPost, BlogListResponseItem } from "@/type/blog";
 
 export const postService = {
-  // GET /posts?page=&limit=
+  
   list: (params?: { page?: number; limit?: number }) => {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 10;
@@ -20,17 +19,17 @@ export const postService = {
         return normalizeList(arr as BlogListResponseItem[]);
       });
   },
-  // GET /posts/:slug
+  
   getBySlug: (slug: string) => http.get<unknown>(API.blog.bySlug(slug)).then(normalizeDetail),
 
-  // Admin endpoints
+  
   admin: {
-    // GET /posts?page=&limit=
+    
     list: (params?: { page?: number; limit?: number }) => {
       const page = params?.page ?? 1;
       const limit = params?.limit ?? 20;
       const qp = [`page=${page}`, `limit=${limit}`].join("&");
-      // Call admin route for protected, paginated listing
+      
       return http
         .get<unknown>(`${API.blog.admin}?${qp}`)
         .then((payload) => {
@@ -42,9 +41,9 @@ export const postService = {
           return arr.map(normalizeAdminItem);
         });
     },
-    // GET /posts/:id
+    
     getById: (id: string) => http.get<unknown>(API.blog.adminById(id)).then(normalizeAdminDetail),
-    // POST /posts
+    
     create: (payload: Partial<BlogPost>) => {
       const body: Record<string, unknown> = {
         title: payload.title,
@@ -58,7 +57,7 @@ export const postService = {
       Object.keys(body).forEach((k) => { if (body[k] === undefined) delete body[k]; });
       return http.post<unknown>(API.blog.root, body).then(normalizeAdminDetail);
     },
-    // PATCH /posts/:id
+    
     update: (id: string, payload: Partial<BlogPost>) => {
       const body: Record<string, unknown> = {
         title: payload.title,
@@ -72,9 +71,9 @@ export const postService = {
       Object.keys(body).forEach((k) => { if (body[k] === undefined) delete body[k]; });
       return http.patch<unknown>(API.blog.byId(id), body).then(normalizeAdminDetail);
     },
-    // DELETE /posts/:id
+    
     delete: (id: string) => http.delete<unknown>(API.blog.byId(id)),
-    // POST /posts/:id/thumbnail (multipart)
+    
     uploadThumbnail: (id: string, file: File) => {
       const form = new FormData();
       form.append("thumbnail", file);
@@ -103,7 +102,7 @@ function normalizeList(items: BlogListResponseItem[] | unknown): BlogPost[] {
       title,
       excerpt,
       createdAt,
-      date: createdAt, // legacy alias
+      date: createdAt, 
       coverImage,
       authorUsername: typeof author?.username === "string" ? author?.username : undefined,
     } as BlogPost;
@@ -123,7 +122,7 @@ function normalizeDetail(raw: unknown): BlogPost {
     excerpt: toString(r["excerpt"], ""),
     contentHtml: toString(r["content"], ""),
     createdAt,
-    date: createdAt, // legacy alias
+    date: createdAt, 
     updatedAt: toStringU(r["updatedAt"]),
     coverImage: toStringU(r["thumbnailUrl"]),
     authorUsername: typeof author?.username === "string" ? author?.username : undefined,
@@ -133,7 +132,7 @@ function normalizeDetail(raw: unknown): BlogPost {
   } as BlogPost;
 }
 
-// Admin normalizers
+
 function normalizeAdminItem(raw: unknown): BlogPost {
   const r = (raw ?? {}) as Record<string, unknown>;
   const toString = (v: unknown, fb = "") => (typeof v === "string" ? v : v != null ? String(v) : fb);
@@ -145,7 +144,7 @@ function normalizeAdminItem(raw: unknown): BlogPost {
     title: toString(r["title"], ""),
     excerpt: toStringU(r["excerpt"]),
     createdAt,
-    date: createdAt, // legacy alias
+    date: createdAt, 
     updatedAt: toStringU(r["updatedAt"]),
     coverImage: toStringU(r["thumbnailUrl"]),
     metaTitle: toStringU(r["metaTitle"]),
@@ -158,7 +157,7 @@ function normalizeAdminDetail(raw: unknown): BlogPost {
   return normalizeAdminItem(raw);
 }
 
-// helpers
+
 function toBoolU(v: unknown): boolean | undefined {
   if (typeof v === "boolean") return v;
   if (typeof v === "number") return v === 1;

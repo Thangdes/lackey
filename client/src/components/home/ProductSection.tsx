@@ -6,7 +6,7 @@ import { ROUTES } from "@/constant/route";
 import ProductCard from "@/components/common/ProductCard";
 import type { Product as ProductType } from "@/type/product";
 
-type Product = {
+type ProductSectionItem = {
   id: string;
   name: string;
   slug: string;
@@ -29,7 +29,7 @@ type Brand = {
 type ProductSectionProps = {
   title: string;
   brands: Brand[];
-  products: Product[];
+  products: ProductSectionItem[];
   defaultBrand?: string;
 };
 
@@ -45,7 +45,7 @@ export default function ProductSection({
     ? products 
     : products.filter(p => p.brand === activeBrand);
 
-  // Convert to ProductType format for ProductCard
+  
   const convertedProducts: ProductType[] = filteredProducts.slice(0, 6).map((product) => ({
     id: product.id,
     name: product.name,
@@ -74,14 +74,14 @@ export default function ProductSection({
   return (
     <section className="w-full bg-white py-6 md:py-8 border-b border-neutral-100">
       <div className="px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        {/* Header with Brand Tabs */}
+        {}
         <div className="flex items-center justify-between mb-4 md:mb-6">
-          {/* Title */}
+          {}
           <h2 className="text-xl md:text-2xl font-bold text-neutral-900">
             {title}
           </h2>
 
-          {/* Brand Tabs */}
+          {}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
             {brands.map((brand) => (
               <button
@@ -107,7 +107,7 @@ export default function ProductSection({
           </div>
         </div>
 
-        {/* Products Grid */}
+        {}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4">
           {convertedProducts.map((product, index) => (
             <ProductCard
