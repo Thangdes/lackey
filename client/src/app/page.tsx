@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/constant/site";
 import BannerLoader from "@/components/home/BannerLoader";
-
 import PromoStripLoader from "@/components/home/PromoStripLoader";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import ProductSection from "@/components/home/ProductSection";
@@ -10,17 +9,8 @@ import MarqueeBanner from "@/components/home/MarqueeBanner";
 import RetroSaleBanner from "@/components/home/RetroSaleBanner";
 import CategoryIcons from "@/components/home/CategoryIcons";
 import TechNews from "@/components/home/TechNews";
-
-import { 
-  KEYCAP_BRANDS, 
-  SWITCH_BRANDS, 
-  KIT_BRANDS, 
-  ACCESSORY_BRANDS,
-  KEYCAPS,
-  SWITCHES,
-  KITS,
-  ACCESSORIES
-} from "@/data/featuredProducts";
+import { fetchHomeProducts } from "@/lib/home-data";
+import { ROUTES } from "@/constant/route";
 
 export const metadata: Metadata = {
   title: siteConfig.default.title,
@@ -60,55 +50,71 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const { bestSellers, keycaps, switches, kits, accessories, categories } =
+    await fetchHomeProducts();
+
+  const keycapCategory = categories.find((c) => c.slug === "keycap");
+  const switchCategory = categories.find((c) => c.slug === "switch");
+  const kitCategory = categories.find((c) => c.slug === "bo-kit-tu-lap");
+  const accessoryCategory = categories.find((c) => c.slug === "lube-phu-kien");
+
   return (
     <div>
       <BannerLoader />
       <PromoStripLoader />
 
-      <FeaturedProducts />
+      <FeaturedProducts products={bestSellers} categories={categories} />
 
-      <ProductSection 
+      <ProductSection
         title="Keycap bán chạy"
-        brands={KEYCAP_BRANDS}
-        products={KEYCAPS}
+        products={keycaps}
+        viewAllHref={
+          keycapCategory
+            ? `${ROUTES.products}?categorySlugs=keycap`
+            : ROUTES.products
+        }
       />
 
-      <ProductSection 
+      <ProductSection
         title="Switch bán chạy"
-        brands={SWITCH_BRANDS}
-        products={SWITCHES}
+        products={switches}
+        viewAllHref={
+          switchCategory
+            ? `${ROUTES.products}?categorySlugs=switch`
+            : ROUTES.products
+        }
       />
 
-      <ProductSection 
-        title="Kit & Combo bán chạy"
-        brands={KIT_BRANDS}
-        products={KITS}
+      <ProductSection
+        title="Bộ Kit tự lắp"
+        products={kits}
+        viewAllHref={
+          kitCategory
+            ? `${ROUTES.products}?categorySlugs=bo-kit-tu-lap`
+            : ROUTES.products
+        }
       />
 
-      <ProductSection 
-        title="Phụ kiện setup"
-        brands={ACCESSORY_BRANDS}
-        products={ACCESSORIES}
+      <ProductSection
+        title="Phụ kiện & Lube"
+        products={accessories}
+        viewAllHref={
+          accessoryCategory
+            ? `${ROUTES.products}?categorySlugs=lube-phu-kien`
+            : ROUTES.products
+        }
       />
-
-      {}
 
       <MarqueeBanner />
 
       <TopCollections />
-      
+
       <RetroSaleBanner />
-
-      {}
-      {
-
-}
 
       <CategoryIcons />
 
       <TechNews />
-
     </div>
-  )
+  );
 }
