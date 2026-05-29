@@ -19,7 +19,9 @@ export const ROUTES = {
     guide: "/guide",
     blog: "/blog",
     customKeychain: "/custom-keychain",
+    customKeyboard: "/custom-keyboard",
   } as const;
+
   
   export type RouteKey = keyof typeof ROUTES;
   export type RouteValue = (typeof ROUTES)[RouteKey];

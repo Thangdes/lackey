@@ -339,7 +339,13 @@ const MenuContent: React.FC = () => {
         <MenuLink href={ROUTES.cart} icon={<ShoppingBag className="h-4 w-4" />}>Giỏ hàng</MenuLink>
       </Section>
 
+      <Section title="Dịch vụ Custom" icon={<Sparkles className="h-4.5 w-4.5" />} defaultOpen>
+        <MenuLink href={ROUTES.customKeyboard} icon={<Sparkles className="h-4 w-4 text-[var(--brand-secondary)]" />}>✨ Tự Build Bàn Phím</MenuLink>
+        <MenuLink href={ROUTES.customKeychain} icon={<Sparkles className="h-4 w-4 text-[var(--brand-secondary)]" />}>Móc khóa Acrylic Custom</MenuLink>
+      </Section>
+
       <Section title="Danh mục" icon={<LayoutGrid className="h-4.5 w-4.5" />} defaultOpen>
+
         {loading && <div className="px-3 py-2 text-neutral-400 text-xs">Đang tải...</div>}
         {error && <div className="px-3 py-2 text-red-500 text-xs">{error}</div>}
         {!loading && !error && (

@@ -169,6 +169,9 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         <Link href={ROUTES.products} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Sản phẩm
         </Link>
+        <Link href={ROUTES.customKeyboard} className="text-sm font-semibold text-[var(--brand-secondary)] hover:opacity-80 transition-colors uppercase tracking-wide flex items-center gap-1">
+          ✨ Build Phím
+        </Link>
         <Link href={ROUTES.blog} className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Tin tức
         </Link>
@@ -178,9 +181,6 @@ const DesktopHeaderBar: React.FC<DesktopHeaderBarProps> = ({ open: openProp, onO
         <Link href="/contact" className="text-sm font-medium text-neutral-900 hover:text-[var(--brand-secondary)] transition-colors uppercase tracking-wide">
           Liên hệ
         </Link>
-        {
-
-}
       </nav>
 
       <div className="flex items-center gap-3 shrink-0">
